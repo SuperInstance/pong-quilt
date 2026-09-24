@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>pong-quilt — ML you can watch think</title>
+<style>
+ body{font-family:system-ui;background:#0a0e14;color:#cfd8e3;margin:0}
+ header{padding:8px 12px;border-bottom:1px solid #1d2634;font-size:14px}
+ .row{display:flex;gap:10px;padding:6px 12px;flex-wrap:wrap;align-items:center}
+ button{background:#1f6feb;color:#fff;border:0;border-radius:6px;padding:6px 12px}
+ select,input,textarea{background:#0d1420;color:#cfd8e3;border:1px solid #1d2634;border-radius:6px;padding:5px}
+ canvas{background:#05070b;border:1px solid #1d2634;display:block}
+ small{opacity:.7} .L2{border-top:2px solid #3fb950;margin-top:8px}
+ #receipts{font-family:monospace;font-size:10px;max-height:120px;overflow-y:auto;white-space:pre}
+ .ok{color:#3fb950}.bad{color:#f85149}.warn{color:#d29922}
+</style>
+</head>
+<body>
+<header><b>pong-quilt</b> <small>Level 1: real genetic training in your browser — cells project the game state, the net plays, speed ramps until planning-ahead is forced, black swans kill certainty. Level 2: scratch-tile hooks (JEV/MOTH/micro-JEPA/LLM seam).</small></header>
+<div class="row">
+ <button id="go">Train</button><button id="pause">Pause</button>
+ <label>games-at-once <input id="pop" type="range" min="16" max="256" value="48"></label>
+ <label>gens/frame <input id="sub" type="range" min="1" max="8" value="1"></label>
+ <label>decision every <input id="dec" type="range" min="1" max="10" value="4"> frames</label>
+ <label>mutation σ <input id="sig" type="range" min="2" max="40" value="12"></label>
+ <span id="stats">gen 0 · games 0 · best —</span>
+</div>
+<div class="row">
+ <b>Pick up the quilt at a real state:</b>
+ <button onclick="loadLevel('level0')">L0 · random</button>
+ <button onclick="loadLevel('level1')">L1 · mid-training</button>
+ <button onclick="loadLevel('level2')">L2 · near-human</button>
+ <button id="save">Save quilt (download)</button>
+ <input type="file" id="load" style="display:none"><button onclick="document.getElementById('load').click()">Load quilt file</button>
+ <small>checkpoints are pre-run with the same core (tools/prerun.js) — L1 is honestly <i>worse</i> than L0: training is non-monotonic.</small>
+</div>
+<div class="row">
+ <canvas id="game" width="360" height="360"></canvas>
+ <canvas id="cells" width="360" height="120"></canvas>
+ <div><small>projection cells: the state vector the net sees, granularly.<br>blue=ball/paddle geometry, amber=velocity, green=intercept pressure,<br>red=decision countdown (speed-of-action limit).</small>
+ <div id="receipts"></div></div>
+</div>
+<div class="row L2">
+ <b>Level 2 · scratch tile</b>
+ <label>module <select id="l2">
+  <option value="none">none — pure GA</option>
+  <option value="jepa">micro-JEPA (learned 1-step world model)</option>
+  <option value="moth">MOTH (receipted advice ledger)</option>
+  <option value="custom">custom (write below)</option>
+  <option value="llm">LLM seam (Groq, bring-your-own)</option>
+ </select></label>
+ <label>weight: mild→strict <input id="w" type="range" min="0" max="100" value="50"></label>
+ <span id="l2stat" class="ok"></span><br>
+ <textarea id="scratch" rows="4" cols="72">// custom L2 module: suggest(state) -> {move:-1|0|1, confidence:0..1}
+// JEV validates the shape; MOTH receipts the row; weight slider blends it in.
+return { name:"my-loop", suggest(s){ return {move: s.ballX < s.paddleX ? -1 : 1, confidence:0.7}; } };</textarea>
+ <button id="attach">Attach</button>
+ <span id="llmkey" style="display:none">endpoint <input id="ep" placeholder="https://api.groq.com/..." size="30"> key <input id="key" type="password" size="12"> <small>stays in page memory only</small></span>
+</div>
+<script src="core.js"></script>
+<script src="checkpoints/level0.js"></script>
+<script src="checkpoints/level1.js"></script>
+<script src="checkpoints/level2.js"></script>
+<script>
+const PQ=PongQuilt,D=PQ.DEFAULTS,randPQ=PQ.rng(Date.now()%1e9);
+let pop=Array.from({length:D.popSize},()=>PQ.makeNet(randPQ)),scored=[],gen=0,games=0,running=false;
+let champGame=null,champNet=null,receipts=[],receiptHead="0".repeat(64),jepaW=null,l2Mod=null;
+const $=id=>document.getElementById(id);
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h.toString(16).padStart(8,"0");}
+function receipt(kind,move,conf){const row={i:receipts.length,kind,move,conf:+conf.toFixed(2),gen,prev:receiptHead};
+ receiptHead=hash(JSON.stringify(row));row.hash=receiptHead;receipts.push(row);
+ if(receipts.length>40)receipts.shift();
+ $("receipts").textContent=receipts.slice(-12).map(r=>`${r.kind} move=${r.move} w=${r.conf} ${r.hash}←${r.prev.slice(0,8)}`).join("\n");}
+// JEV: the MoveSuggestion type + validator (typesafe weighted answers)
+const MoveSuggestion={type:"{move:-1|0|1, confidence:0..1, source:string}",
+ validate(s){if(!s||typeof s!=="object")return"not an object";
+  if(![-1,0,1].includes(s.move))return"move must be -1|0|1";
+  if(typeof s.confidence!=="number"||s.confidence<0||s.confidence>1)return"confidence must be 0..1";
+  return null;}};
+// micro-JEPA: linear 1-step predictor of ball x, LMS-trained on real transitions
+function jepaInit(){jepaW=[0,0,0.5];}
+function jepaLearn(prev,cur){if(!jepaW)jepaInit();const pred=jepaW[0]*prev[0]+jepaW[1]*prev[3]+jepaW[2];
+ const err=cur[0]-pred,lr=0.05;jepaW[0]+=lr*err*prev[0];jepaW[1]+=lr*err*prev[3];jepaW[2]+=lr*err;}
+function jepaSuggest(s){if(!jepaW)jepaInit();const px=Math.max(-1,Math.min(1,jepaW[0]*s.ballX+jepaW[1]*s.velY+jepaW[2]));
+ const err=s.ballX-px;return{move:err<-0.05?-1:err>0.05?1:0,confidence:0.6,source:"jepa"};}
+function stateOf(g){return{ballX:g.x,ballY:g.y,velX:g.vx,velY:g.vy,paddleX:g.px,speed:g.speedMul,frames:g.frames,hits:g.hits};}
+async function l2Suggest(g){const m=$("l2").value,w=$("w").value/100;if(m==="none")return null;
+ let s=null,src="none";
+ if(m==="jepa"){s=jepaSuggest(stateOf(g));src="jepa";}
+ else if(m==="moth"){s={move:g.vy>0?(g.x<g.px+D.paddleW/2?-1:1):0,confidence:0.8,source:"moth"};}
+ else if(m==="custom"){s=l2Mod&&l2Mod.suggest?l2Mod.suggest(stateOf(g)):null;src=l2Mod?l2Mod.name:"custom";}
+ else if(m==="llm"){const ep=$("ep").value,k=$("key").value;if(!ep||!k){$("l2stat").textContent="LLM seam needs endpoint+key (never leaves your browser except to that endpoint)";return null;}
+  try{const r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},
+   body:JSON.stringify({model:"llama-3.1-8b-instant",messages:[{role:"user",content:`pong advice, JSON {move:-1|0|1,confidence}: ball x=${g.x.toFixed(2)} y=${g.y.toFixed(2)} vx=${g.vx.toFixed(2)} vy=${g.vy.toFixed(2)} paddle=${g.px.toFixed(2)}`}],response_format:{type:"json_object"}})});
+   s=JSON.parse((await r.json()).choices[0].message.content);src="llm";}catch(e){$("l2stat").textContent="LLM call failed: "+e.message;return null;}}
+ if(!s)return null;const bad=MoveSuggestion.validate(s);
+ if(bad){receipt("REFUSAL/v1",0,0);$("l2stat").textContent="JEV refused: "+bad;$("l2stat").className="bad";return null;}
+ $("l2stat").textContent=`${src} suggests move=${s.move} conf=${s.confidence}`;$("l2stat").className="ok";
+ receipt(s.source||src==="none"?"L2":s.source||src,s.move,s.confidence*w);
+ if(Math.random()<s.confidence*w)return s;return null;}
+function blend(act,sug){return sug?sug.move:act;}
+function oneGen(){D.popSize=+$("pop").value;D.decisionInterval=+$("dec").value;
+ while(pop.length<D.popSize)pop.push(PQ.mutate(pop[Math.floor(Math.random()*4)||0],randPQ,$("sig").value/100));
+ scored=pop.slice(0,D.popSize).map(n=>{const r=PQ.playOne(n,randPQ);games++;return{net:n,...r};});
+ scored.sort((a,b)=>b.fitness-a.fitness);
+ pop=PQ.runGeneration(pop.slice(0,D.popSize),scored,randPQ,$("sig").value/100);
+ champNet=scored[0].net;champGame=PQ.newGame(randPQ);gen++;
+ $("stats").textContent=`gen ${gen} · games ${games} · best ${scored[0].fitness|0} (frames ${scored[0].frames}, speed x${scored[0].maxSpeed.toFixed(2)})`;}
+function draw(){const c=$("game").getContext("2d"),W=360;c.fillStyle="#05070b";c.fillRect(0,0,W,W);
+ const s=g=>g*W;c.strokeStyle="#1d2634";for(let i=1;i<8;i++){c.beginPath();c.moveTo(i*45,0);c.lineTo(i*45,W);c.stroke();}
+ if(champGame){c.fillStyle="#58a6ff";c.beginPath();c.arc(s(champGame.x),s(champGame.y),5,0,7);c.fill();
+  c.fillRect(s(champGame.px),s(0.95),D.paddleW*W,6);
+  c.fillStyle="#d29922";c.fillText(`x${champGame.speedMul.toFixed(2)} · ${champGame.frames}f · ${champGame.hits} hits`,8,16);}
+ const cc=$("cells").getContext("2d");cc.fillStyle="#05070b";cc.fillRect(0,0,360,120);
+ if(champGame){const inp=PQ.sense(champGame),names=["ball x","ball y","vel x","vel y","intercept","speed"],cols=["#58a6ff","#58a6ff","#d29922","#d29922","#3fb950","#bc8cff"];
+  inp.forEach((v,i)=>{cc.fillStyle=cols[i];cc.fillRect(8+i*58,110-Math.min(100,Math.abs(v)*100),16,Math.min(100,Math.abs(v)*100));
+   cc.fillStyle="#8b949e";cc.fillText(names[i],8+i*58,118);});
+  cc.fillStyle="#f85149";const cd=(D.decisionInterval-champGame.frames%D.decisionInterval)/D.decisionInterval;
+  cc.fillRect(8+6*58,110-cd*100,16,cd*100);cc.fillStyle="#8b949e";cc.fillText("decision",8+6*58,118);}}
+function live(){ // champion plays one live frame with L2 blended in
+ if(!champGame||!running)return;
+ const prev=PQ.sense(champGame),o=PQ.forward(champNet,prev);
+ let act=o[0]>o[2]?(o[0]>o[1]?-1:0):(o[2]>o[1]?1:0);
+ l2Suggest(champGame).then(s=>{const a=blend(act,s);
+  if(!PQ.step(champGame,a)){jepaLearn(prev,PQ.sense(champGame));receipt("DEATH",0,0);champGame=PQ.newGame(randPQ);}});
+ if(champGame)jepaLearn(prev,PQ.sense(champGame));}
+function tick(){if(running){for(let i=0;i<+$("sub").value;i++)oneGen();}live();draw();requestAnimationFrame(tick);}
+$("go").onclick=()=>{running=true;};$("pause").onclick=()=>{running=false;};
+$("save").onclick=()=>{const blob=new Blob([JSON.stringify({gen,best:champNet,pop:pop.slice(0,8),stats:{games,best:scored[0]&&scored[0].fitness}})],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-gen${gen}.json`;a.click();receipt("SAVE",0,1);};
+$("load").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const q=JSON.parse(t);
+ pop=q.pop.concat(pop.slice(q.pop.length));gen=q.gen||0;receipt("LOAD",0,1);});};
+function loadLevel(l){const cp=window.PONG_QUILT_CHECKPOINTS&&window.PONG_QUILT_CHECKPOINTS[l];
+ if(!cp){alert("checkpoints not found — serve the folder over http (or open via file://) so checkpoints/*.js load");return;}
+ pop=cp.pop.slice();gen=cp.gen;champNet=cp.pop[0];champGame=null;
+ $("stats").textContent=`${l}: gen ${cp.gen} · best ${cp.bestFitness} (speed x${cp.maxSpeed}) — training from here is real`;
+ receipt("LOAD/"+l.toUpperCase(),0,1);}
+$("l2").onchange=()=>{$("llmkey").style.display=$("l2").value==="llm"?"inline":"none";
+ if($("l2").value==="moth")receipt("MOTH-ON",0,1);};
+$("attach").onclick=()=>{try{const f=new Function($("scratch").value);const m=f();
+ if(MoveSuggestion.validate(m.suggest(stateOf(PQ.newGame(Math.random)))))throw new Error("suggest() failed JEV validation on probe");
+ l2Mod=m;$("l2").value="custom";$("l2stat").textContent="attached: "+m.name;$("l2stat").className="ok";receipt("ATTACH",0,1);}
+ catch(e){$("l2stat").textContent="attach failed: "+e.message;$("l2stat").className="bad";}};
+tick();
+</script>
+</body>
+</html>
