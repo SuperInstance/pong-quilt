@@ -168,6 +168,11 @@ function continueGen(){
 // carries BOTH nets' content ids. The loser breeds at 2x sigma. Seeded by
 // the browser's rng stream; the committed artifact (checkpoints/coev.js) is
 // pre-run under node with DEFAULTS.seed and md5-verified.
+// Round 5 (P1 fix): the evaluators' evalOne must return `fitness` — that is
+// the field makeEvaluator records — WITH the coev-specific alias alongside,
+// and the map below reads e.net (the evaluator's record field), not e.cand.
+// Round 4 receipted the crash: undefined fitness -> undefined champion net ->
+// JSON.parse(JSON.stringify(undefined)) froze the demo on generation 1.
 function startGenC(){if(!coev){const n=+$("pop").value;coev={popS:Array.from({length:n},()=>PQ.makeNet(randPQ)),
   popE:Array.from({length:n},()=>PQ.makeNet(randPQ)),sChamp:null,eChamp:null,genC:0,last:null,
   ledger:PQ.makeLedger(300),evalS:null,evalE:null};}
@@ -175,17 +180,17 @@ function startGenC(){if(!coev){const n=+$("pop").value;coev={popS:Array.from({le
  while(coev.popS.length<n)coev.popS.push(PQ.makeNet(randPQ));
  while(coev.popE.length<n)coev.popE.push(PQ.makeNet(randPQ));
  coev.evalS=PQ.makeEvaluator(coev.popS,(net)=>{const r=PQ.playAdv(net,coev.popE[Math.floor(randPQ()*coev.popE.length)],randPQ);
-  games++;return{sFitness:r.sFitness,frames:r.frames,hits:r.hits};},{eliteK:D.elites});
+  games++;return{fitness:r.sFitness,sFitness:r.sFitness,frames:r.frames,hits:r.hits};},{eliteK:D.elites});
  coev.evalE=PQ.makeEvaluator(coev.popE,(net)=>{const r=PQ.playAdv(coev.popS[Math.floor(randPQ()*coev.popS.length)],net,randPQ);
-  games++;return{eFitness:r.eFitness,enderHits:r.enderHits};},{eliteK:D.elites});}
+  games++;return{fitness:r.eFitness,eFitness:r.eFitness,enderHits:r.enderHits};},{eliteK:D.elites});}
 function continueGenC(){
  for(let g=0;g<+$("sub").value;g++){
   if(!coev||!coev.evalS)startGenC();
   const chunk=coev.popS.length>64?24:coev.popS.length;
   const snapS=coev.evalS.step(chunk),snapE=coev.evalE.step(chunk);
   if(!snapS.done||!snapE.done)break; // still streaming; resume next frame
-  const bred=PQ.runCoevGeneration(coev.popS,coev.popE,snapS.elites.map(e=>({net:e.cand,sFitness:e.sFitness})),
-   snapE.elites.map(e=>({net:e.cand,eFitness:e.eFitness})),randPQ,$("sig").value/100,coev.last);
+  const bred=PQ.runCoevGeneration(coev.popS,coev.popE,snapS.elites.map(e=>({net:e.net,sFitness:e.sFitness})),
+   snapE.elites.map(e=>({net:e.net,eFitness:e.eFitness})),randPQ,$("sig").value/100,coev.last);
   coev.popS=bred.popS;coev.popE=bred.popE;
   const h2h=PQ.playAdv(bred.sChamp.net,bred.eChamp.net,randPQ); // the receipted match
   coev.sChamp={net:bred.sChamp.net,fitness:h2h.sFitness};coev.eChamp={net:bred.eChamp.net,fitness:h2h.eFitness};

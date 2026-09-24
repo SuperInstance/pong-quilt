@@ -78,7 +78,7 @@ browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node tests/honesty.test.js && node tests/ring.test.js &&
 node tests/streaming.test.js && node tests/seam.test.js &&
-node tests/jepa.test.js && node tests/coev.test.js` (41 tests total).
+node tests/jepa.test.js && node tests/coev.test.js && node tests/coev-glue.test.js` (45 tests total).
 
 | Claim | Proof | Verify by |
 |-------|-------|-----------|
@@ -128,7 +128,9 @@ The committed artifact (`node tools/prerun-coev.js`, ≈2 min, seed 20260924):
   classic checkpoints' provenance is untouched.
 
 In the demo: mode select → **C1 · COEVOLUTION**, press Train (both populations
-evolve; the survivor's paddle is blue, the ender's violet, both drawn at their
+evolve — Round 5: this browser path is node-pinned by `tests/coev-glue.test.js`,
+which drives the exact shipped glue expressions headlessly; the survivor's paddle
+is blue, the ender's violet, both drawn at their
 effective widths). The **C1 · coevolved pair** chip loads the artifact's
 champions read-only; training onward from them is real.
 
