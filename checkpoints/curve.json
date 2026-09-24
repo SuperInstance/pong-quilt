@@ -1,0 +1,91 @@
+{
+ "seed": 20260924,
+ "gens": 260,
+ "ringWrites": 261,
+ "samples": [
+  {
+   "gen": 0,
+   "fitness": 4867
+  },
+  {
+   "gen": 13,
+   "fitness": 5520
+  },
+  {
+   "gen": 26,
+   "fitness": 6475
+  },
+  {
+   "gen": 39,
+   "fitness": 6675
+  },
+  {
+   "gen": 52,
+   "fitness": 6675
+  },
+  {
+   "gen": 65,
+   "fitness": 6650
+  },
+  {
+   "gen": 78,
+   "fitness": 6650
+  },
+  {
+   "gen": 91,
+   "fitness": 6700
+  },
+  {
+   "gen": 104,
+   "fitness": 6700
+  },
+  {
+   "gen": 117,
+   "fitness": 6625
+  },
+  {
+   "gen": 130,
+   "fitness": 6650
+  },
+  {
+   "gen": 143,
+   "fitness": 6650
+  },
+  {
+   "gen": 156,
+   "fitness": 6650
+  },
+  {
+   "gen": 169,
+   "fitness": 6675
+  },
+  {
+   "gen": 182,
+   "fitness": 6650
+  },
+  {
+   "gen": 195,
+   "fitness": 6675
+  },
+  {
+   "gen": 208,
+   "fitness": 6675
+  },
+  {
+   "gen": 221,
+   "fitness": 6675
+  },
+  {
+   "gen": 234,
+   "fitness": 6700
+  },
+  {
+   "gen": 247,
+   "fitness": 6700
+  },
+  {
+   "gen": 260,
+   "fitness": 6675
+  }
+ ]
+}

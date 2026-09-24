@@ -2,6 +2,66 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
+## Round 2 — kimi1 — 2026-09-24 — vs quilt-edge-ml (sibling) + v1
+
+### Played versions: v1 (e98cf66 baseline) + sibling survey (quilt-edge-ml @9605a24)
+
+### Deltas observed (shapes of change)
+- **Pattern port, ring_buffer → makeRing**: champion history is now a bounded
+  FIFO (240 gens in the demo, 261 in prerun). The demo grew a live
+  **fitness strip** (green polyline, min→max labeled) and prerun emits
+  `checkpoints/curve.json` (21 samples of all 261 gens). The curve is the
+  shape of the lesson, now an artifact instead of three rows.
+- **Pattern port, out_of_core → makeEvaluator**: fitness evaluation streams one
+  candidate per `step()`; only a bounded elite archive + stats survive. In the
+  browser, pops >64 chunk across animation frames (≤24 evals/frame) — the page
+  no longer blocks per generation at high *games-at-once*. Flat memory at any
+  population size; scheduling (chunk size) verified not to affect results.
+- **Determinism fix** (the round's real hunt): v1's black swans drew from
+  unseeded `Math.random()`, so `tools/prerun.js` was NOT reproducible — every
+  run produced different checkpoints from the same seed, and the README table
+  was single-run provenance. Reproduced by running twice (different numbers),
+  fixed by threading the seeded rng into `step/playOne`. Verified: two
+  consecutive prerun runs are byte-identical (md5).
+- **New verified curve** (seed 20260924): L0 4,867 (4,567f, 12 hits, ×2.83) →
+  L1 6,625 (6,000f cap, 25 hits, ×3.40) → L2 6,675 (6,000f cap, 27 hits).
+  Climb by gen 39, then plateau under the frame cap with visible dips
+  (6,700 ↔ 6,625). Non-monotonicity moved from the checkpoint rows into the
+  plateau wobble — finer-grained, and shown live on the strip.
+
+### Lies hunted
+- [P0, fixed] Non-reproducible prerun (unseeded swans) — see above. Caught by
+  running twice; the ">= vs <" class of bug below was caught by tests before
+  commit.
+- [P1, fixed] `makeEvaluator` elite-insertion comparison inverted (`>=` where
+  `<` belongs): the archive kept the *worst* candidates and dropped the best.
+  Caught by test 9 (brute-force top-K tie order) before any commit; the buggy
+  run had already generated checkpoints — those were discarded and regenerated
+  after the fix (L1/L2 numbers above are the corrected ones; level0 is
+  identical either way, it predates selection).
+- [P1, fixed] First prerun draft discarded `step()`'s return snapshot, so the
+  generation result was undefined. Caught by running (TypeError), not reading.
+
+### Refusals (honest, with reasons)
+- **First/last-mile sense-vector filter: NOT ported.** It would change the
+  sense() contract that L0–L2 were evolved under, silently invalidating their
+  provenance — the exact sin this repo exists to catch. Round-3 candidate:
+  enable from gen 0, re-evolve, keep both curves.
+
+### Where the sibling still beats us
+- Their ring buffer is durable (JSONL on eMMC, fsync per record, survives
+  power loss); ours is in-memory only.
+- They stream from disk with a real `partial_fit` loop against sklearn-class
+  models; our substrate is a GA with no incremental-learning story beyond the
+  micro-JEPA tile.
+- They ship TFLite/ONNX/Edge-Impulse substrates and first/last-mile filters;
+  we have none of those.
+- Their tests run in CI; ours run when someone runs `node --test`.
+
+### Verdict
+MERGEABLE (Round 2 ships the two ports, the strip, the curve artifact, and
+reproducible numbers; sibling keeps the substrate zoo crown).
+
 ## Round 1 — kimi1 — 2026-09-24 — vs v1 (e98cf66)
 
 ### Played versions: v1 only (first round — no prior to delta against)

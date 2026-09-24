@@ -36,7 +36,11 @@
 </div>
 <div class="row">
  <canvas id="game" width="360" height="360"></canvas>
- <canvas id="cells" width="360" height="120"></canvas>
+ <div>
+  <canvas id="cells" width="360" height="120"></canvas><br>
+  <canvas id="curve" width="360" height="60" style="margin-top:6px"></canvas>
+  <small>champion-fitness strip: ring-buffered history (bounded — oldest evicted),<br>pattern ported from <b>quilt-edge-ml</b>'s ring_buffer. live proof training is non-monotonic.</small>
+ </div>
  <div><small>projection cells: the state vector the net sees, granularly.<br>blue=ball/paddle geometry, amber=velocity, green=intercept pressure,<br>red=decision countdown (speed-of-action limit).</small>
  <div id="receipts"></div></div>
 </div>
@@ -63,8 +67,9 @@ return { name:"my-loop", suggest(s){ return {move: s.ballX < s.paddleX ? -1 : 1,
 <script src="checkpoints/level2.js"></script>
 <script>
 const PQ=PongQuilt,D=PQ.DEFAULTS,randPQ=PQ.rng(Date.now()%1e9);
-let pop=Array.from({length:D.popSize},()=>PQ.makeNet(randPQ)),scored=[],gen=0,games=0,running=false;
+let pop=Array.from({length:D.popSize},()=>PQ.makeNet(randPQ)),gen=0,games=0,running=false;
 let champGame=null,champNet=null,receipts=[],receiptHead="0".repeat(64),jepaW=null,l2Mod=null;
+let champRing=PQ.makeRing(240),evalGen=null,lastSnap=null; // champRing: bounded champion history (edge-ml port)
 const $=id=>document.getElementById(id);
 function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h.toString(16).padStart(8,"0");}
 function receipt(kind,move,conf){const row={i:receipts.length,kind,move,conf:+conf.toFixed(2),gen,prev:receiptHead};
@@ -99,13 +104,26 @@ async function l2Suggest(g){const m=$("l2").value,w=$("w").value/100;if(m==="non
  receipt(s.source||src==="none"?"L2":s.source||src,s.move,s.confidence*w);
  if(Math.random()<s.confidence*w)return s;return null;}
 function blend(act,sug){return sug?sug.move:act;}
-function oneGen(){D.popSize=+$("pop").value;D.decisionInterval=+$("dec").value;
+// L1 training loop, edge-ml style: fitness evaluation streams through
+// PQ.makeEvaluator (out-of-core port) — one candidate per step, only a
+// bounded elite archive survives. Big populations are chunked across
+// animation frames instead of freezing the page on a synchronous eval.
+function startGen(){D.popSize=+$("pop").value;D.decisionInterval=+$("dec").value;
+ if(pop.length>D.popSize)pop.length=D.popSize; // pin to slider; old loop never exceeded it either
  while(pop.length<D.popSize)pop.push(PQ.mutate(pop[Math.floor(Math.random()*4)||0],randPQ,$("sig").value/100));
- scored=pop.slice(0,D.popSize).map(n=>{const r=PQ.playOne(n,randPQ);games++;return{net:n,...r};});
- scored.sort((a,b)=>b.fitness-a.fitness);
- pop=PQ.runGeneration(pop.slice(0,D.popSize),scored,randPQ,$("sig").value/100);
- champNet=scored[0].net;champGame=PQ.newGame(randPQ);gen++;
- $("stats").textContent=`gen ${gen} · games ${games} · best ${scored[0].fitness|0} (frames ${scored[0].frames}, speed x${scored[0].maxSpeed.toFixed(2)})`;}
+ evalGen={ev:PQ.makeEvaluator(pop,(n)=>{const r=PQ.playOne(n,randPQ);games++;return r;},{eliteK:D.elites})};}
+function continueGen(){
+ for(let g=0;g<+$("sub").value;g++){
+  if(!evalGen)startGen();
+  const chunk=pop.length>64?24:pop.length; // >64-at-once pops spread over frames (bounded work/frame)
+  const snap=evalGen.ev.step(chunk);
+  if(!snap.done)break; // generation still streaming; resume next frame
+  lastSnap=snap;
+  pop=PQ.runGeneration(pop,snap.elites,randPQ,$("sig").value/100);
+  champNet=snap.elites[0].net;champGame=PQ.newGame(randPQ);gen++;
+  champRing.write({gen,fitness:snap.best.fitness});
+  $("stats").textContent=`gen ${gen} · games ${games} · best ${snap.best.fitness|0} (frames ${snap.best.frames}, speed x${snap.best.maxSpeed.toFixed(2)})`;
+  evalGen=null;}}
 function draw(){const c=$("game").getContext("2d"),W=360;c.fillStyle="#05070b";c.fillRect(0,0,W,W);
  const s=g=>g*W;c.strokeStyle="#1d2634";for(let i=1;i<8;i++){c.beginPath();c.moveTo(i*45,0);c.lineTo(i*45,W);c.stroke();}
  if(champGame){c.fillStyle="#58a6ff";c.beginPath();c.arc(s(champGame.x),s(champGame.y),5,0,7);c.fill();
@@ -116,7 +134,14 @@ function draw(){const c=$("game").getContext("2d"),W=360;c.fillStyle="#05070b";c
   inp.forEach((v,i)=>{cc.fillStyle=cols[i];cc.fillRect(8+i*58,110-Math.min(100,Math.abs(v)*100),16,Math.min(100,Math.abs(v)*100));
    cc.fillStyle="#8b949e";cc.fillText(names[i],8+i*58,118);});
   cc.fillStyle="#f85149";const cd=(D.decisionInterval-champGame.frames%D.decisionInterval)/D.decisionInterval;
-  cc.fillRect(8+6*58,110-cd*100,16,cd*100);cc.fillStyle="#8b949e";cc.fillText("decision",8+6*58,118);}}
+  cc.fillRect(8+6*58,110-cd*100,16,cd*100);cc.fillStyle="#8b949e";cc.fillText("decision",8+6*58,118);}
+ const cv=$("curve").getContext("2d");cv.fillStyle="#05070b";cv.fillRect(0,0,360,60); // champion strip
+ const pts=champRing.tail(120);
+ if(pts.length>1){const fs=pts.map(p=>p.fitness),lo=Math.min(...fs),hi=Math.max(...fs),rg=Math.max(1,hi-lo);
+  cv.strokeStyle="#3fb950";cv.lineWidth=1.5;cv.beginPath();
+  pts.forEach((p,i)=>{const x=4+i*(352/Math.max(1,pts.length-1)),y=52-((p.fitness-lo)/rg)*44;i?cv.lineTo(x,y):cv.moveTo(x,y);});cv.stroke();
+  cv.fillStyle="#8b949e";cv.font="10px monospace";
+  cv.fillText(`champion ${lo|0}→${hi|0} · last ${pts.length} gens · ring ${champRing.size}/${champRing.capacity}`,4,10);}}
 function live(){ // champion plays one live frame with L2 blended in
  if(!champGame||!running)return;
  const prev=PQ.sense(champGame),o=PQ.forward(champNet,prev);
@@ -124,9 +149,9 @@ function live(){ // champion plays one live frame with L2 blended in
  l2Suggest(champGame).then(s=>{const a=blend(act,s);
   if(!PQ.step(champGame,a)){jepaLearn(prev,PQ.sense(champGame));receipt("DEATH",0,0);champGame=PQ.newGame(randPQ);}});
  if(champGame)jepaLearn(prev,PQ.sense(champGame));}
-function tick(){if(running){for(let i=0;i<+$("sub").value;i++)oneGen();}live();draw();requestAnimationFrame(tick);}
+function tick(){if(running)continueGen();live();draw();requestAnimationFrame(tick);}
 $("go").onclick=()=>{running=true;};$("pause").onclick=()=>{running=false;};
-$("save").onclick=()=>{const blob=new Blob([JSON.stringify({gen,best:champNet,pop:pop.slice(0,8),stats:{games,best:scored[0]&&scored[0].fitness}})],{type:"application/json"});
+$("save").onclick=()=>{const blob=new Blob([JSON.stringify({gen,best:champNet,pop:pop.slice(0,8),stats:{games,best:lastSnap&&lastSnap.best.fitness}})],{type:"application/json"});
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-gen${gen}.json`;a.click();receipt("SAVE",0,1);};
 $("load").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const q=JSON.parse(t);
  pop=q.pop.concat(pop.slice(q.pop.length));gen=q.gen||0;receipt("LOAD",0,1);});};

@@ -25,17 +25,47 @@ uploads. **Not a simulation — the training is real computation in your browser
 ### Real starting states (the quilt you pick up)
 
 `tools/prerun.js` evolves checkpoints with the **same core** the browser runs
-(`node tools/prerun.js`; verified on Node v22):
+(`node tools/prerun.js`; verified on Node v22, byte-reproducible — black swans
+draw from the seeded rng, so same `DEFAULTS.seed` → identical checkpoint bytes,
+md5-verified across two runs):
 
 | Level | Gen | Best fitness | Frames | Hits | Max speed |
 |-------|-----|-------------|--------|------|-----------|
-| L0 random | 0 | 2,949 | 2,899 | 2 | ×2.16 |
-| L1 mid-training | 60 | 1,242 | 1,192 | 2 | ×1.48 |
-| L2 near-human | 260 | 6,125 | 6,000 (cap) | 5 | ×3.40 |
+| L0 random | 0 | 4,867 | 4,567 | 12 | ×2.83 |
+| L1 mid-training | 60 | 6,625 | 6,000 (cap) | 25 | ×3.40 |
+| L2 near-human | 260 | 6,675 | 6,000 (cap) | 27 | ×3.40 |
 
-L1 is honestly **worse** than L0 — training is non-monotonic, and a checkpoint
-that regressed is a truer artifact than a smoothed curve. Loading a level and
-pressing Train continues real evolution from that population.
+The canonical curve (`checkpoints/curve.json`, 21 sampled points of the full
+261-generation champion ring) climbs fast — 4,867 → 6,675 by gen 39 — then
+**plateaus under the frame cap**: once the champion survives all 6,000 frames,
+fitness can only grow via hits (×25 each), and the strip shows the plateau
+wobbling (6,700 ↔ 6,625) instead of a smoothed ascent. Training is
+non-monotonic at the fine scale even when the trend climbs; a checkpoint that
+dips is a truer artifact than a fitted curve. Loading a level and pressing
+Train continues real evolution from that population.
+
+## Edge-ML patterns (Round 2 — crushed in from quilt-edge-ml)
+
+Friendly-competition port from [SuperInstance/quilt-edge-ml](https://github.com/SuperInstance/quilt-edge-ml)
+(the UNO Q edge-ML substrate zoo). Two of their patterns lifted into this core:
+
+| Their pattern | Our port | Where it lives |
+|---------------|----------|----------------|
+| `ring_buffer.py` — bounded FIFO, oldest evicted | `makeRing(capacity)` — champion fitness history, bounded; drives the **live fitness strip** in the demo and `checkpoints/curve.json` | `core.js`, `index.html`, `tools/prerun.js` |
+| `out_of_core.py` — stream batches, never load the dataset, `partial_fit` | `makeEvaluator(candidates, evalOne, {eliteK})` — one candidate per `step()`; only a bounded elite archive + running stats survive. Populations >64 are **chunked across animation frames** instead of freezing the page | `core.js`, `index.html`, `tools/prerun.js` |
+
+Also fixed on contact: black swans used unseeded `Math.random()`, so the old
+README table was single-run provenance — re-running prerun produced *different*
+checkpoints from the same seed. Swans now draw from the rng passed into
+`step/playOne` (browser still defaults to live `Math.random`). Everything below
+is reproducible by running. Pins: `node --test` (15 tests: ring eviction/order,
+streaming-eval equivalence to brute-force top-K under ties, chunked == one-shot,
+determinism).
+
+**Honestly not ported (this round):** their first/last-mile input filters —
+filtering the sense vector would change the I/O contract every existing
+checkpoint was evolved under, invalidating their provenance. Round-3 candidate,
+requires re-evolving checkpoints with the filter active from gen 0.
 
 ## Level 2 — the scratch tile (JEV · MOTH · micro-JEPA · LLM seam)
 
