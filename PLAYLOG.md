@@ -537,6 +537,43 @@ the true paddle, and a coevolution mode whose arms race is receipted).
 ### Verdict
 MERGEABLE (Round 2 ships the two ports, the strip, the curve artifact, and
 reproducible numbers; sibling keeps the substrate zoo crown).
+## Round 2 — kimi1 — 2026-09-24 — quantum-audio L2 module (branch quantum-audio-L2)
+
+### Deltas observed
+- New L2 module family: `qa.js` (sonify → labeled-sim QPAM channel →
+  autocorrelation imaging → MoveSuggestion). Zero-dep, UMD like core.js, so
+  the browser and `node tools/test-qa.js` run the SAME code — 8/8 green.
+- The waveform-imaging strip (violet = clean sonification, amber = decoded)
+  makes the lossy channel visible: you watch the advice degrade as noise
+  grows, which is the honest heart of the demo.
+- Sibling survey caught a real lie upstream: quilt-quantumaudio-demo's
+  substrate claims "same prompt → same hash (modulo shot noise)" but at
+  shots=2000 over its own 882-sample text audio the decode is shot noise
+  (run-to-run pearson ~0.02, 4/4 distinct hashes). See the spec's
+  verified-claims table. Corrected, not propagated.
+
+### Lies hunted (this round)
+- [P1, fixed] Integer-lag autocorrelation biased imaged position by up to
+  1/16 field; parabolic interpolation fixed it (test 3/4 caught it).
+- [P1, fixed] Initial sonify() assumed [-1,1] state units; stateOf() is
+  [0,1]. Convention mismatch — caught by the direction test.
+- [note] Sim channel noise model (1.6/√shotsPerBin) is sized from ONE
+  measured QPAM operating point, not fitted. v0 honesty is "visibly
+  lossy", not "statistically faithful".
+
+### Next
+- [small] REAL_QPAM seam: bring-your-own encode/decode endpoint (like the
+  LLM seam) so the channel can be the real thing when a server exists.
+- [small] Receipt a QA-REFUSAL row when the sim labels itself exhausted
+  (pot-bound), not just silent null.
+- [medium] Compare advisor diets: GA alone vs +jepa vs +qa-sim vs +moth,
+  champion fitness over N gens, receipts as the differ.
+
+### Verdict
+MERGEABLE (labeled sim, tested, receipts flow through the existing JEV/MOTH
+rails).
+
+---
 
 ## Round 1 — kimi1 — 2026-09-24 — vs v1 (e98cf66)
 

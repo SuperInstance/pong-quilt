@@ -186,6 +186,16 @@ slider from mild suggestion to strict override**:
   so a dead game's reply can no longer rebrand onto its successor. Formerly a
   known lie, receipted in Rounds 4–5; pinned FAIL-first by
   `tests/seam-glue.test.js`.)*
+- **quantum audio — QPAM waveform-imaging** (`qa.js`) — sonify the game state
+  into a tone, push it through a **labeled deterministic stand-in** for the
+  quantumaudio-demo's QPAM lossy round-trip (low-pass + seeded shot noise;
+  real qiskit can't run in a zero-dep page, so the seam is named, not faked —
+  echovision doctrine), image the ball position back with autocorrelation,
+  and suggest from the image. Confidence = imaging self-consistency, capped
+  at 0.5: a stand-in never claims full trust. JEV-validated and
+  MOTH-receipted like every module; the violet/amber strip draws clean vs
+  decoded waveform live. Spec: `research/2026-09-24-quantum-audio-L2.md`.
+  Verified by running: `node tools/test-qa.js` (8 tests).
 
 ## Doctrine
 
