@@ -37,6 +37,7 @@
 <div class="row">
  <canvas id="game" width="360" height="360"></canvas>
  <canvas id="cells" width="360" height="120"></canvas>
+ <canvas id="qa" width="180" height="60"></canvas>
  <div><small>projection cells: the state vector the net sees, granularly.<br>blue=ball/paddle geometry, amber=velocity, green=intercept pressure,<br>red=decision countdown (speed-of-action limit).</small>
  <div id="receipts"></div></div>
 </div>
@@ -48,6 +49,7 @@
   <option value="moth">MOTH (receipted advice ledger)</option>
   <option value="custom">custom (write below)</option>
   <option value="llm">LLM seam (Groq, bring-your-own)</option>
+ <option value="qa">quantum audio — QPAM waveform-imaging (labeled sim stand-in)</option>
  </select></label>
  <label>weight: mild→strict <input id="w" type="range" min="0" max="100" value="50"></label>
  <span id="l2stat" class="ok"></span><br>
@@ -58,13 +60,14 @@ return { name:"my-loop", suggest(s){ return {move: s.ballX < s.paddleX ? -1 : 1,
  <span id="llmkey" style="display:none">endpoint <input id="ep" placeholder="https://api.groq.com/..." size="30"> key <input id="key" type="password" size="12"> <small>stays in page memory only</small></span>
 </div>
 <script src="core.js"></script>
+<script src="qa.js"></script>
 <script src="checkpoints/level0.js"></script>
 <script src="checkpoints/level1.js"></script>
 <script src="checkpoints/level2.js"></script>
 <script>
 const PQ=PongQuilt,D=PQ.DEFAULTS,randPQ=PQ.rng(Date.now()%1e9);
 let pop=Array.from({length:D.popSize},()=>PQ.makeNet(randPQ)),scored=[],gen=0,games=0,running=false;
-let champGame=null,champNet=null,receipts=[],receiptHead="0".repeat(64),jepaW=null,l2Mod=null;
+let champGame=null,champNet=null,receipts=[],receiptHead="0".repeat(64),jepaW=null,l2Mod=null,qaVis=null;
 const $=id=>document.getElementById(id);
 function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h.toString(16).padStart(8,"0");}
 function receipt(kind,move,conf){const row={i:receipts.length,kind,move,conf:+conf.toFixed(2),gen,prev:receiptHead};
@@ -89,6 +92,8 @@ async function l2Suggest(g){const m=$("l2").value,w=$("w").value/100;if(m==="non
  if(m==="jepa"){s=jepaSuggest(stateOf(g));src="jepa";}
  else if(m==="moth"){s={move:g.vy>0?(g.x<g.px+D.paddleW/2?-1:1):0,confidence:0.8,source:"moth"};}
  else if(m==="custom"){s=l2Mod&&l2Mod.suggest?l2Mod.suggest(stateOf(g)):null;src=l2Mod?l2Mod.name:"custom";}
+ else if(m==="qa"){const s0=stateOf(g),qseed=gen*997+g.frames;s=QuantumAudioL2.suggest(s0,qseed);src="qa-sim";
+  const cl=QuantumAudioL2.sonify(s0);qaVis={clean:cl,decoded:QuantumAudioL2.channel(cl,qseed)};}
  else if(m==="llm"){const ep=$("ep").value,k=$("key").value;if(!ep||!k){$("l2stat").textContent="LLM seam needs endpoint+key (never leaves your browser except to that endpoint)";return null;}
   try{const r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},
    body:JSON.stringify({model:"llama-3.1-8b-instant",messages:[{role:"user",content:`pong advice, JSON {move:-1|0|1,confidence}: ball x=${g.x.toFixed(2)} y=${g.y.toFixed(2)} vx=${g.vx.toFixed(2)} vy=${g.vy.toFixed(2)} paddle=${g.px.toFixed(2)}`}],response_format:{type:"json_object"}})});
@@ -116,7 +121,12 @@ function draw(){const c=$("game").getContext("2d"),W=360;c.fillStyle="#05070b";c
   inp.forEach((v,i)=>{cc.fillStyle=cols[i];cc.fillRect(8+i*58,110-Math.min(100,Math.abs(v)*100),16,Math.min(100,Math.abs(v)*100));
    cc.fillStyle="#8b949e";cc.fillText(names[i],8+i*58,118);});
   cc.fillStyle="#f85149";const cd=(D.decisionInterval-champGame.frames%D.decisionInterval)/D.decisionInterval;
-  cc.fillRect(8+6*58,110-cd*100,16,cd*100);cc.fillStyle="#8b949e";cc.fillText("decision",8+6*58,118);}}
+  cc.fillRect(8+6*58,110-cd*100,16,cd*100);cc.fillStyle="#8b949e";cc.fillText("decision",8+6*58,118);}
+ if(qaVis){const qa=$("qa").getContext("2d"),W2=180;qa.fillStyle="#05070b";qa.fillRect(0,0,W2,60);
+  qa.fillStyle="#8b949e";qa.fillText("waveform-imaging (sim QPAM): clean vs decoded",4,10);
+  const plot=(arr,col,y0)=>{qa.strokeStyle=col;qa.beginPath();
+   for(let i=0;i<arr.length;i++){const x=4+i*(W2-8)/(arr.length-1),y=y0-arr[i]*18;i?qa.lineTo(x,y):qa.moveTo(x,y);}qa.stroke();};
+  plot(qaVis.clean,"#bc8cff",22);plot(qaVis.decoded,"#d29922",46);}}
 function live(){ // champion plays one live frame with L2 blended in
  if(!champGame||!running)return;
  const prev=PQ.sense(champGame),o=PQ.forward(champNet,prev);
