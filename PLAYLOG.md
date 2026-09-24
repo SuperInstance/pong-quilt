@@ -1,6 +1,143 @@
 # PLAYLOG — the experiment's memory
 
-## Round 2 — kimi1 — 2026-09-24 — vs v1 (e98cf66)
+Every round is a receipted observation in the loop. Newest first.
+
+## Round 7 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R7 spec item 2 — receipt eviction counter) + play-tester — vs main 1ae696b (post-quantum-audio merge)
+
+### Played versions: v1 (e98cf66) → edge-ml-crush (b06d901) → round-3-builder/v2 (0722670) → R4 (e8774a2) → R5 (7882d99) → R6 (d8ec449) → main (1ae696b)
+
+### Builder receipt (the one small — Round 7 spec item 2: receipt panel eviction counter, the DECIDE-IT item)
+- **what:** the page state gained `receiptEvicted=0`; the shipped `receipt()`
+  now counts (`if(receipts.length>40){receipts.shift();receiptEvicted++}`)
+  and the panel suffix renders `[N shown / M evicted]` exactly when M>0 —
+  the makeLedger pattern, the repo's last silent-drop honesty gap closed.
+  Row construction untouched (`i` keeps its write-order value, prev/hash
+  chain unbroken — pinned), README's "Known lie, queued" replaced with the
+  fixed-note, VERIFIED_CLAIMS gained the `receipt-glue` row.
+- **why:** Rounds 3→6 receipted the freeze four times and marked it "DECIDE
+  IT" twice; the spec had already decided the shape (count, like
+  makeLedger). This round ships the decision.
+- **verify (FAIL-first, then green):** new `tests/receipt-glue.test.js`
+  extracts the VERBATIM shipped receipt() from index.html (line-anchored —
+  extraction fails loudly if the page moves) and drives it headlessly: (1)
+  extraction integrity; (2) 45 writes → 40 held, count=5, panel shows
+  "40 shown / 5 evicted"; (3) within the bound → no suffix, count 0;
+  (4) prev→hash chain unbroken across the eviction boundary. Against the
+  pre-fix page: test (2) FAILS (silent shift, no count — the four-round
+  lie). Against the fix: 4/4 PASS. Suite 49→53 tests, all green; prerun
+  md5s byte-identical (coev.js `946e639a…`, L0/L1/L2, curve) — provenance
+  untouched. Observation pinned, not fixed: post-bound writes all reuse
+  `i=40` (length pinned) — cosmetic index collision, pre-existing.
+
+### Deltas observed (shapes of change)
+- **d(venue)/d(version): the failure surface migrated OUTSIDE the loop.**
+  Rounds 1–6 chased lies inside play-tested versions; main 1ae696b broke
+  without any round at all — the quantum-audio merge (PR #3) never passed
+  through the experiment. Parse-check of the inline `<script>` across all
+  seven versions: v1 OK, edge-ml-crush OK, v2 OK, R4 OK, R5 OK, R6 OK,
+  main **SYNTAX ERROR**. The GAN's blind spot is merge integration — a
+  sibling can ship around the discriminator. Shape: the loop pins what it
+  plays; what it doesn't play can die silently. The experiment just
+  demonstrated its own necessity.
+- **The memory got stitched wrong too (merge disorder, P3-process).**
+  This file's top now carries a STALE duplicate "Round 2" (the pre-
+  honesty-pass version from PR #1) above Round 6, presenting fixed P0s
+  (unseeded swan, ghost hitbox, JEPA skew) as current truth, with the
+  "Newest first" header displaced mid-file. Rounds 3–6's log (below) is
+  the canonical chain. Flagged, and the repair is specced (R8 process
+  item).
+- **The learning numbers are still frozen by honesty, not stagnation.**
+  L0 5,767 / L1 8,800 / L2 8,700 and the coev arms race reproduce
+  byte-identical for the fifth straight round (coev.js md5 `946e639a…`).
+  What moves is coverage: suite 41→45→49→53, VERIFIED_CLAIMS 12→13 rows,
+  and now three of three browser-glue seams (C1, seam, receipt) are
+  node-drivable.
+
+### Lies hunted
+- [P0, NEW, confirmed by running, NOT fixed — R8 spec item 1] **main is
+  dead on arrival.** The quantum-audio merge broke `draw()`: the champion
+  strip's `cv.moveTo` became `qa.moveTo` (a block-scoped const from the
+  qaVis branch), `});cv.stroke();` became `}).stroke();` (forEach returns
+  undefined), and one extra `}` slid in — the inline `<script>` no longer
+  parses. Verified by running: `new Function(inlineScript)` on main →
+  "Unexpected token 'function'"; on the R6 tip → OK; v1/R2/v2/R4/R5 all
+  OK. Nothing on the page runs: no game, no training, no receipts.
+  Repro: repro-r7-strip.js (parse-checks every inline block).
+- [P1, confirmed 4th consecutive round by running, NOT fixed — R8 spec 2]
+  loadCoev re-chains artifact rows onto fresh genesis, then banners the
+  artifact's head. Repro re-ran verbatim through the extracted glue:
+  banner `8663279a` vs displayed re-chained head `83a099d4`.
+- [P2, confirmed 3rd consecutive round by running, NOT fixed — R8 spec 3]
+  coev "games-at-once" slider only grows the populations
+  (`while(pop<n)push`), never shrinks. Repro re-ran: slider 16→8 → pops
+  stay 16/16 while the classic loop pins both ways.
+- [P2, FIXED this round] receipt panel silent eviction past 40 — the
+  five-round lie, DECIDE-IT'd twice (Builder receipt).
+- [credit sibling — no lie found in the new module] `qa.js` honors its
+  honesty contract under running: deterministic seeded channel, `SIM_MAX_CONF`
+  0.5 cap holds over a 200-state sweep (max observed 0.5), source tag
+  always "qa-sim", pot-bound guard returns null on a silent channel,
+  imaging resolves left/right correctly, `node tools/test-qa.js` 8/8. One
+  quality note, not fabrication: advice is wrong-direction 3.7% of a
+  ball-field sweep (all near the paddle deadzone edge), and confidence is
+  self-consistency, blind to that bias — the contract says so openly.
+- (nothing found in: fitness weights, ring, evaluator top-K, effective
+  paddle, seeded swans, JEPA representation, seam pacing/timeout/gameId,
+  coev rules/determinism, checkpoint consistency, prerun
+  byte-reproducibility — all reproduce as claimed, twice-run this round.)
+
+### Next version spec (Round 8)
+- [small] Fix the draw() regression (restore `cv.moveTo`/`});cv.stroke();`,
+  drop the extra `}`) and PIN it: a `tests/page-parse.test.js` that extracts
+  every inline `<script>` block from index.html and asserts it parses —
+  the exact class of P0 this round found, FAIL-first against main —
+  verify: test fails on 1ae696b's index.html, passes after the fix.
+- [small] loadCoev head honesty: banner `coev.ledger.head` (the re-anchored
+  chain actually displayed) or render artifact rows read-only with original
+  hashes + "anchored at genesis" — why: receipts pane shows a chain the
+  banner doesn't name (P1, 4 rounds) — verify: displayed terminal hash ==
+  displayed head, asserted through the extracted glue.
+- [small] Coev pop-slider parity: pin `coev.popS/popE.length = n` on
+  shrink, same as the classic loop — why: the slider label lies after a
+  shrink (P2, 3 rounds) — verify: harness test — set pop 16→train→set
+  8→train, pops are 8.
+- [small] Repair PLAYLOG merge disorder: mark the stale duplicate Round 2
+  (pre-honesty-pass, from PR #1) as superseded and restore the
+  "Newest first" header above Round 6 — why: the memory currently presents
+  fixed P0s as current truth — verify: file reads R7→R6→R5→R4→R3→R2→R1
+  with one Round 2 only.
+- [medium] Merge-gate doctrine (process, not code): a sibling PR may not
+  merge without either one play-test round or a node-parse/smoke pin in
+  CI — why: the P0 this round existed only because a merge bypassed the
+  loop — verify: repo rule written into EXPERIMENTS.md + the page-parse
+  pin running in CI.
+- [medium] Extract loadCoev into the requireable glue (receipt() is pinned
+  now; loadCoev is the last unpinned browser surface among the open items)
+  — why: completes glue coverage — verify: R8 items 2–3 tested through it.
+- [medium] C1 scaling study: pop 48+, gens 300+ in prerun-coev — does
+  SURVIVOR-CAP recur? a second regime flip is the next shape (carried from
+  R3–R7 queues) — verify: ledger receipted, md5-stable, arms-race rows
+  cited.
+- [epic] First/last-mile sense filter from gen 0: re-evolve both lineages
+  under the filtered contract, keep BOTH curves, archive old checkpoints
+  with provenance notes (carried from R2–R7 queues).
+
+### Verdict
+MERGEABLE (Round 7 ships the receipt-eviction pin — FAIL-first — and
+receipts the new P0 plus the two remaining carried items; 53/53 tests
+green, checkpoint md5s byte-identical, no provenance touched. Note: main
+is P0-dead on arrival; this branch does NOT fix the brace — the page
+stays dark until R8 spec item 1.)
+
+---
+
+> **Merge-disorder note (Round 7):** the entry below this line is a STALE
+> duplicate of Round 2 (pre-honesty-pass, merged in via PR #1). Every
+> finding in it was fixed in Rounds 2–6 (seeded swans, JEPA skew, ghost
+> hitbox, seam pacing, receipt cap). The canonical chain is R7→R6→R5→R4→
+> R3→R2→R1 below. Repair specced as R8 item 4.
+
+## Round 2 — kimi1 — 2026-09-24 — vs v1 (e98cf66) [STALE DUPLICATE — superseded by the canonical Round 2 entry below; see merge-disorder note above]
 
 ### Played versions: v1 only (Round 1's next-version spec unimplemented; this round delivers its [medium] 'first adversarial play-test' item)
 
