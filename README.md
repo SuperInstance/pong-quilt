@@ -179,12 +179,13 @@ slider from mild suggestion to strict override**:
   game has died** — stale advice is counted, never applied. Replies pass JEV
   and the weight slider before touching the paddle. Drop counters render live
   in the status line. Keys stay in page memory. Contract pinned by
-  `tests/seam.test.js` (now **41 tests** — Round 4 added the seam-timeout pins:
-  a hung endpoint frees the seam, counts `timedOut`, errors out; a fast reply
-  cancels its timer).
-  *(Known lie, queued for Round 5: the game-id tag is stamped at reply
-  arrival, not at ask time — a reply meant for a dead game can be applied to
-  the next one. See PLAYLOG Round 4.)*
+  `tests/seam.test.js` (seam-timeout pins: a hung endpoint frees the seam,
+  counts `timedOut`, errors out; a fast reply cancels its timer).
+  *(Round 6: the game-id tag is stamped at ASK time — `askGame` maps the seam
+  seq to the asking gameId at fire, and the reply arrival echoes that stamp,
+  so a dead game's reply can no longer rebrand onto its successor. Formerly a
+  known lie, receipted in Rounds 4–5; pinned FAIL-first by
+  `tests/seam-glue.test.js`.)*
 
 ## Doctrine
 

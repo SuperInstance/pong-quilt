@@ -392,6 +392,7 @@
     { id: "coev-rules", claim: "C1 coevolution: ender blocks return the ball downward; only the survivor's line can die", proofTest: "tests/coev.test.js" },
     { id: "coev-determinism", claim: "C1 coevolution is seeded-deterministic — same seed, same champions and ledger", proofTest: "tests/coev.test.js" },
     { id: "coev-glue", claim: "the browser C1 training loop runs end-to-end — evaluator→map→runCoevGeneration→h2h, champions are real nets, ledger rows hash-chain (Round 5)", proofTest: "tests/coev-glue.test.js" },
+    { id: "seam-glue", claim: "the seam stamps the asking gameId at fire — a dead game's reply is dropped, never rebranded onto its successor (Round 6)", proofTest: "tests/seam-glue.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];
   return { DEFAULTS, rng, makeNet, forward, mutate, step, newGame, sense, playOne,

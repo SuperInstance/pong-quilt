@@ -2,6 +2,104 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
+## Round 6 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R6 spec item 1 — gameId-at-ask) + play-tester — vs round-5 tip (7882d99)
+
+### Played versions: v1 (e98cf66) → edge-ml-crush (b06d901) → round-3-builder (0722670, "v2") → round-4 (e8774a2) → round-5 (7882d99)
+
+### Builder receipt (the one small — Round 6 spec item 1: gameId stamped at ASK, not arrival)
+- **what:** the seam glue gained `askGame=new Map()`; `maybeFireSeam` records
+  `askGame.set(seq,gameId)` at fire; the shipped `onResult` echoes
+  `gameId:askGame.get(seq)` (and `askGame.delete(seq)`) on delivery, on JEV
+  refusal, and on transport error. A reply that outlives its game is stamped
+  with the game that ASKED, so `takeAdvice()`'s existing stale-drop fence
+  (`pendingAdvice.gameId!==gameId`) now actually fires — the R4/R5 P1 is closed.
+- **why:** the gameId tag was stamped at reply ARRIVAL, reading the live
+  closure — a dead game's held reply was rebranded with its successor's id
+  and applied to a game that never asked. Confirmed three consecutive rounds
+  (R4 found, R5 re-ran, R6 re-ran verbatim: `STALE ADVICE APPLIED`).
+- **verify (FAIL-first, then green):** new `tests/seam-glue.test.js` extracts
+  the VERBATIM shipped glue from index.html (line-anchored from
+  `let llmSeam=null` through `takeAdvice` — extraction fails loudly if the
+  page moves) and drives it headlessly with a gated fetch: (1) STALE reply
+  from a dead game is dropped, never applied; (2) FRESH reply for the live
+  game still flows (no regression); (3) the ask-map is cleaned on delivery
+  AND on error (no unbounded growth); (4) extraction integrity. Against the
+  Round-5 page: 2/4 FAIL (stale applied; no ask-map). Against the fix: 4/4
+  PASS. Suite 49/49 green; `node tools/prerun.js` md5s byte-identical to
+  Rounds 3–5 (coev.js `946e639a…`, L0/L1/L2, curve) — provenance untouched.
+  VERIFIED_CLAIMS gained the `seam-glue` row (wristband two-way match holds);
+  README's known-lie admission replaced with the fixed-note.
+
+### Deltas observed (shapes of change)
+- **d(honesty)/d(version): the browser integration surface keeps shrinking
+  under the pin.** v1 failures lived in the core; edge-ml-crush pinned the
+  units; R4 showed failures migrating between units; R5 pinned the C1
+  training glue; R6 pins the seam glue. Two of the three browser-glue
+  surfaces are now node-drivable, and the demo's flagship lie about its own
+  flagship feature ("tags every reply with the asking game") is finally
+  cashable. Shape: the GAN is working — each round the discriminator's
+  headlamp narrows onto a smaller unpinned region (loadCoev, receipt panel,
+  pop-slider remain).
+- **Learning numbers are still frozen by honesty, not stagnation.** L0 5,767 /
+  L1 8,800 / L2 8,700 and the coev arms race (gen-110 SURVIVOR-CAP → gen-115
+  559f ender counter-kill, md5 `946e639a…`) reproduce byte-identical for the
+  fourth straight round. What moves is coverage: suite 41→45→49.
+
+### Lies hunted
+- [P1, FIXED this round] seam gameId stamped at reply ARRIVAL — R6 repro re-ran
+  verbatim pre-fix (`STALE ADVICE APPLIED`, third consecutive confirmation);
+  fix + FAIL-first pin shipped (Builder receipt).
+- [P1, confirmed third consecutive round by running, NOT fixed — R7 spec 1]
+  `loadCoev` re-chains artifact rows onto fresh genesis, then banners the
+  artifact's head. Repro re-ran deterministically: banner `8663279a` vs
+  displayed re-chained head `83a099d4` (first displayed row re-chained away
+  from original row-110 hash `6c072f4c`). The receipts pane shows a chain the
+  banner doesn't name.
+- [P2, confirmed second round by running, NOT fixed — R7 spec 2] coev
+  "games-at-once" slider only grows the populations (`while(pop<n)push`),
+  never shrinks — classic loop pins both ways. Repro re-ran: pops 256 →
+  slider 16 → train → pops stay 256/256 while the classic loop pins to 16.
+  The label lies after a shrink.
+- [P2, deferred FOUR rounds (R3→R4→R5→R6), NOT fixed — R7 spec 3] receipt
+  panel silent eviction past 40 rows. Repro re-ran: 45 writes → panel holds
+  40, no eviction counter (makeLedger counts its evictions honestly;
+  receipt() does not). The shipped comment still says "known lie".
+- (nothing found in: fitness weights, ring, evaluator top-K, effective
+  paddle, seeded swans, JEPA representation, seam pacing/timeout, coev
+  rules/determinism, checkpoint consistency, prerun byte-reproducibility —
+  all reproduce as claimed, twice-run this round.)
+
+### Next version spec (Round 7)
+- [small] loadCoev head honesty: banner `coev.ledger.head` (the re-anchored
+  chain actually displayed) or render artifact rows read-only with original
+  hashes + "anchored at genesis" — why: receipts pane shows a chain the
+  banner doesn't name (P1 above, deterministic repro) — verify: displayed
+  terminal hash == displayed head, asserted through the extracted glue.
+- [small] Receipt panel eviction counter (`receipt()` gains `evicted`, panel
+  shows "40 shown / N evicted" like makeLedger) — why: the repo's last known
+  silent-drop honesty gap, deferred four rounds — verify: drive receipt()
+  45× in the harness, count surfaces. DECIDE IT.
+- [small] Coev pop-slider parity: pin `coev.popS/popE.length = n` on shrink,
+  same as the classic loop — why: the slider label lies after a shrink (P2
+  above) — verify: harness test — set pop 16→train→set 8→train, pops are 8.
+- [medium] Extract loadCoev + receipt() into the requireable glue (with seam
+  and C1 glue pinned, these three open items all live in the last unpinned
+  browser surface) — why: the meta-fix completes the glue coverage — verify:
+  R7 items 1–3 tested through it.
+- [medium] C1 scaling study: pop 48+, gens 300+ in prerun-coev — does
+  SURVIVOR-CAP recur? a second regime flip is the next shape (carried from
+  R3/R4/R5/R6 queues) — verify: ledger receipted, md5-stable, arms-race rows
+  cited.
+- [epic] First/last-mile sense filter from gen 0: re-evolve both lineages
+  under the filtered contract, keep BOTH curves, archive old checkpoints with
+  provenance notes (carried from R2–R6 queues).
+
+### Verdict
+MERGEABLE (Round 6 ships the gameId-at-ask fix — FAIL-first pinned — and
+receipts the three remaining open items a third/fourth time: 49/49 tests
+green, checkpoint md5s byte-identical, no provenance touched).
+
+
 ## Round 5 — kimi1 — 2026-09-24 — mode: BUILDER (one small: R5 spec item 1) + play-tester — vs round-4 tip (e8774a2)
 
 ### Played versions: v1 (e98cf66) → edge-ml-crush (b06d901) → round-3-builder (0722670, "v2") → round-4 (e8774a2)
