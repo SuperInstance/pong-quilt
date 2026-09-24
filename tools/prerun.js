@@ -10,8 +10,13 @@
 //  - black swans draw from the seeded rng, so this script is byte-reproducible:
 //    same DEFAULTS.seed -> identical checkpoint bytes. Verified by running
 //    twice and diffing (see PLAYLOG Round 2).
+// Round 3 (branch round-3-builder): fitness = frames + hits*100 (HIT_WEIGHT),
+// so a 0-hit luck champion can never top a hitter (honesty pass). Checkpoints
+// regenerated under the new weights; md5 of every emitted file is printed so
+// provenance is a checksum, not a promise.
 const PQ = require("../core.js");
 const fs = require("fs"), path = require("path");
+const crypto = require("crypto");
 const D = PQ.DEFAULTS;
 const rand = PQ.rng(D.seed);
 const TOTAL_GENS = 260, CURVE_SAMPLES = 20;
@@ -65,4 +70,9 @@ for (let g = 61; g <= TOTAL_GENS; g++) {
 }
 emit("level2", TOTAL_GENS);
 emitCurve();
-console.log("checkpoints written:", fs.readdirSync(path.join(__dirname, "..", "checkpoints")).join(", "));
+const cpDir = path.join(__dirname, "..", "checkpoints");
+for (const f of fs.readdirSync(cpDir).sort()) {
+  const md5 = crypto.createHash("md5").update(fs.readFileSync(path.join(cpDir, f))).digest("hex");
+  console.log(`md5  ${f}  ${md5}`);
+}
+console.log("checkpoints written:", fs.readdirSync(cpDir).join(", "));

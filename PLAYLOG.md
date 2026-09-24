@@ -2,6 +2,85 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
+## Round 3 — kimi1 — 2026-09-24 — honesty pass + C1 coevolution
+
+### Played versions: v2 (this branch) vs v1+Round-2 stack (PR #1 #2 #3 open at press time)
+
+### What was specified → what shipped (deltas as shape)
+- **[medium] Fitness honesty pass** → `fitnessOf(frames,hits)=frames+hits×100`
+  (`HIT_WEIGHT`) as the single formula in core.js. Shape of the delta: the
+  old ×25 plateau inverted — a capped 0-hit survivor (6,000) used to beat any
+  hitter dying before frame 5,725; now it always loses to ≥1 hit past
+  frame 5,900 (pinned). Checkpoints re-evolved: L0 5,767 (4,567f/12h), L1
+  8,800 (cap/28h), L2 8,700 (cap/27h) — note L1 > L2, honestly.
+- **[medium] Verified-claims wristband** → `VERIFIED_CLAIMS` registry in
+  core.js rendered as a badge panel (green=node-pinned, amber=browser-only).
+  Two-way match pinned: every claim's proofTest exists, every test file
+  backs a claim. Shape: the README headline table now cites its reproducing
+  command per row; the badge is data, not decoration.
+- **[medium] LLM seam pacing** → `makeSeam` in core.js: fire on death or
+  ~every 150 frames (never per frame — Round 2 shipped fetch-per-rAF),
+  one-in-flight (extras counted), ≥2 s pacing, replies tagged with the asking
+  game and dropped stale. Shape: the demo's l2stat shows live drop counters;
+  the fence comment admits the stale path is defensive under strict
+  serialization and the counter proves it stands.
+- **[small] Effective paddle** → `effectivePaddle(px)` = the 0.20 registered
+  zone (±0.02 over the 0.16 bar), one source for draw + death-check + C1
+  physics. The ghost hitbox (drawn 0.16 vs registered 0.20) is gone.
+- **[C1] COEVOLUTION** → the GAN pair shipped as `newAdvGame/stepAdv/
+  playAdv/runCoevGeneration/netId/makeLedger` + `tools/prerun-coev.js`.
+  PSRO-style random-opponent evaluation, champion h2h receipted per gen into
+  a hash-chained ledger with both net ids, **the loser breeds at 2×σ**.
+  Shape of the verified artifact (seed 20260924, 120 gens × 24+24):
+  early kills at ~113–160f → survivor rallies of 2,460–4,844f by gen 75 →
+  **gen 110 first SURVIVOR-CAP** (eFit 5) → **gen 115 the loser-mutated ender
+  kills in 559f**. The arms race is in the ledger, not asserted.
+  md5 `946e639a…` stable across two runs; L0–L2 provenance untouched.
+- **[carried-over small] micro-JEPA skew fix** (Round 2 item 3, absent from
+  the sibling stack): `makeJepa` learns and infers on the same `sense()`
+  vector. The old skew is pinned as a measured ≥5× mean-error ratio.
+
+### Lies hunted
+- [P1, fixed] Ghost hitbox: registration zone 0.20 vs drawn 0.16 — the
+  effective margin existed only in prose. Now one constant, three consumers
+  (draw, death check, C1 blocks), boundary-probed at ±0.001.
+- [P1, fixed] README claimed velocity grows per hit; step() recomputes
+  speedMul from frames after every boost multiplication — the per-hit boost
+  is dead code in the classic lineage (checkpoint-provenance freeze kept it
+  that way). C1 makes boosts real via an accumulator; the README now admits
+  both. Caught by reading while wiring the same mechanic for C1.
+- [P1, fixed] Seam fetched per animation frame and applied replies in
+  arrival order. Now paced/serialized/stale-fenced, counters honest.
+- [process] First C1 training run: ender won 40/40 h2h — the loser-mutation
+  design (2σ on the champion slot) destroyed the survivor's accumulated
+  skill every generation: degenerate GAN. Fixed to loser-population 2σ
+  breeding with elites intact (PSRO evaluation), which produced the gen-110
+  cap and gen-115 counter-kill. The regime flip is the proof the fix worked.
+
+### Refusals (honest, with reasons)
+- **MOTH receipt panel cap-40 silent eviction: NOT fixed** (deferred to
+  Round 4). It requires deciding whether the panel should count evictions
+  like makeLedger does or page — a product call, not a builder call.
+- **edge-ml first/last-mile input filters: still NOT ported** (Round-2
+  refusal stands; invalidates checkpoint I/O contract).
+- **L1 hitBoost revival: refused** — changing classic physics invalidates
+  L0–L2 provenance; the dead code is documented instead.
+
+### Where Round 4 should push
+- Receipt panel: counted evictions or pagination; the cap-40 silent shift is
+  the repo's last known honesty gap.
+- First/last-mile sense filter from gen 0, both lineages re-evolved, both
+  curves kept.
+- C1 scaling: pop 48+, gens 300+ — does the survivor reach recurring caps?
+  A second regime flip (SURVIVOR-CAP streak) would be the next shape.
+- LLM seam: a real endpoint in the loop (currently bring-your-own), plus a
+  timeout on in-flight requests (a hung fetch stalls the seam; the fence
+  comment says so).
+
+### Verdict
+MERGEABLE (Round 3 ships the honesty pass, the wristband, the paced seam,
+the true paddle, and a coevolution mode whose arms race is receipted).
+
 ## Round 2 — kimi1 — 2026-09-24 — vs quilt-edge-ml (sibling) + v1
 
 ### Played versions: v1 (e98cf66 baseline) + sibling survey (quilt-edge-ml @9605a24)
