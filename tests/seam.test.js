@@ -72,3 +72,48 @@ test("transport rejection resolves through onResult as an error, not a hang", as
   assert.deepEqual(errs, ["endpoint down"]);
   assert.equal(seam.inFlight, false); // failure frees the seam — no stuck lock
 });
+
+// Round 4 (queued by Round 3): a hung transport must not stall the seam forever.
+test("timeout frees the seam: hung transport counts timedOut, errors out, next fire allowed", async () => {
+  let t = 0;
+  const errs = [];
+  let calls = 0;
+  const seam = PQ.makeSeam({
+    transport: () => { calls++; return new Promise(() => {}); }, // never resolves — the hung endpoint
+    minIntervalMs: 0, timeoutMs: 25, now: () => t,
+    onResult: (res, seq, err) => { if (err) errs.push(err.message); } });
+  assert.equal(seam.fire({}), 1);
+  assert.equal(seam.inFlight, true);
+  assert.equal(seam.fire({}), null); // still in flight — refused, counted
+  await new Promise((r) => setTimeout(r, 80)); // let the 25ms timeout fire
+  assert.equal(seam.inFlight, false, "timeout freed the seam");
+  assert.equal(seam.dropped.timedOut, 1, "the death is counted, not hidden");
+  assert.equal(seam.dropped.inFlight, 1);
+  assert.equal(seam.dropped.stale, 0, "the late transport arrival is fenced by settle(), not double-counted");
+  assert.equal(errs.length, 1);
+  assert.match(errs[0], /seam timeout after 25ms/);
+  t += 1;
+  assert.equal(seam.fire({}), 2, "the seam lives again after a timeout");
+  await new Promise((r) => setTimeout(r, 80)); // second hung request also times out
+  assert.equal(calls, 2);
+  assert.equal(seam.dropped.timedOut, 2);
+});
+
+test("fast resolution cancels the timer: no timeout counted, normal delivery", async () => {
+  let t = 0;
+  const scheduled = [], cancelled = [];
+  let fakeTimer = 0;
+  const delivered = [];
+  const seam = PQ.makeSeam({
+    transport: () => Promise.resolve({ move: -1 }),
+    minIntervalMs: 0, timeoutMs: 1000, now: () => t,
+    schedule: (fn, ms) => { const h = ++fakeTimer; scheduled.push({ h, ms }); return h; },
+    cancel: (h) => cancelled.push(h),
+    onResult: (res, seq) => delivered.push(res) });
+  seam.fire({}); await tick();
+  assert.deepEqual(scheduled.map((s) => s.ms), [1000], "timer armed");
+  assert.deepEqual(cancelled, scheduled.map((s) => s.h), "timer cancelled on fast delivery");
+  assert.deepEqual(delivered, [{ move: -1 }]);
+  assert.equal(seam.dropped.timedOut, 0);
+  assert.equal(seam.inFlight, false);
+});
