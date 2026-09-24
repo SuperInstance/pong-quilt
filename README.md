@@ -164,9 +164,11 @@ slider from mild suggestion to strict override**:
   unpossible by construction.
 - **MOTH** — accepted/refused suggestions append **hash-chained receipt rows**
   (`kind, move, weight, gen, prev_hash, row_hash`), visible live. REFUSAL/v1
-  rows are first-class citizens, per fleet doctrine. *Known lie, queued:*
-  the panel silently shifts at 40 rows while the C1 ledger counts its
-  evictions honestly — Round 4.
+  rows are first-class citizens, per fleet doctrine. *Formerly a known lie
+  (Rounds 3–6): the panel silently shifted at 40 rows while the C1 ledger
+  counted its evictions honestly. Round 7 decides it the ledger way —
+  `receiptEvicted` counts every eviction and the panel shows
+  "N shown / M evicted"; pinned FAIL-first by `tests/receipt-glue.test.js`.*
 - **JEV** — the `MoveSuggestion` type with a runtime validator. Anything
   failing validation is refused and receipted, never silently coerced.
 - **custom scratch tile** — write a JS module in the page, attach it; it must

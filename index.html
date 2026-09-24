@@ -84,7 +84,7 @@ return { name:"my-loop", suggest(s){ return {move: s.ballX < s.paddleX ? -1 : 1,
 <script>
 const PQ=PongQuilt,D=PQ.DEFAULTS,randPQ=PQ.rng(Date.now()%1e9);
 let pop=Array.from({length:D.popSize},()=>PQ.makeNet(randPQ)),gen=0,games=0,running=false;
-let champGame=null,champNet=null,receipts=[],receiptHead="0".repeat(64),l2Mod=null,qaVis=null;
+let champGame=null,champNet=null,receipts=[],receiptHead="0".repeat(64),receiptEvicted=0,l2Mod=null,qaVis=null;
 let champRing=PQ.makeRing(240),evalGen=null,lastSnap=null;
 let jepa=PQ.makeJepa(); // one representation: learn() and suggest() both take sense() vectors
 let coev=null;          // C1 state, lazily built by startGenC()
@@ -93,8 +93,9 @@ const $=id=>document.getElementById(id);
 function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h.toString(16).padStart(8,"0");}
 function receipt(kind,move,conf){const row={i:receipts.length,kind,move,conf:+conf.toFixed(2),gen,prev:receiptHead};
  receiptHead=hash(JSON.stringify(row));row.hash=receiptHead;receipts.push(row);
- if(receipts.length>40)receipts.shift(); // silent eviction — known lie, Round-4 queue (COEV's ledger counts its evictions honestly)
- $("receipts").textContent=receipts.slice(-12).map(r=>`${r.kind} move=${r.move} w=${r.conf} ${r.hash}←${r.prev.slice(0,8)}`).join("\n");}
+ if(receipts.length>40){receipts.shift();receiptEvicted++;} // counted, like makeLedger — a bounded panel that admits it forgets
+ $("receipts").textContent=receipts.slice(-12).map(r=>`${r.kind} move=${r.move} w=${r.conf} ${r.hash}←${r.prev.slice(0,8)}`).join("\n")
+  +(receiptEvicted?`\n[${receipts.length} shown / ${receiptEvicted} evicted]`:"");}
 // wristband: render VERIFIED_CLAIMS. green = node-pinned, amber = browser-only.
 function renderWristband(){$("wristband").innerHTML=PQ.VERIFIED_CLAIMS.map(c=>
  `<span class="badge ${c.proofTest?"ok":"warn"}" title="${c.proofTest||"browser-only"}">✓ ${c.claim}</span>`).join("");}
