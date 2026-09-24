@@ -78,7 +78,7 @@ browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node tests/honesty.test.js && node tests/ring.test.js &&
 node tests/streaming.test.js && node tests/seam.test.js &&
-node tests/jepa.test.js && node tests/coev.test.js` (39 tests total).
+node tests/jepa.test.js && node tests/coev.test.js` (41 tests total).
 
 | Claim | Proof | Verify by |
 |-------|-------|-----------|
@@ -89,7 +89,7 @@ node tests/jepa.test.js && node tests/coev.test.js` (39 tests total).
 | ring buffer: bounded FIFO, monotonic counter (Round 2) | node-pinned | `node tests/ring.test.js` |
 | streaming evaluator elites == brute-force top-K (Round 2) | node-pinned | `node tests/streaming.test.js` |
 | micro-JEPA learns & infers on ONE representation | node-pinned | `node tests/jepa.test.js` |
-| LLM seam: death/interval pacing, serialized, stale fenced | node-pinned | `node tests/seam.test.js` |
+| LLM seam: death/interval pacing, serialized, stale fenced, hung requests time out | node-pinned | `node tests/seam.test.js` |
 | C1 rules: ender blocks return the ball down; only the survivor's line can die | node-pinned | `node tests/coev.test.js` |
 | C1 determinism: same seed → same champions & ledger | node-pinned | `node tests/coev.test.js` |
 | projection cells / fitness strip / receipt panel render | browser-only (amber) | open `index.html` |
@@ -177,7 +177,12 @@ slider from mild suggestion to strict override**:
   game has died** — stale advice is counted, never applied. Replies pass JEV
   and the weight slider before touching the paddle. Drop counters render live
   in the status line. Keys stay in page memory. Contract pinned by
-  `tests/seam.test.js`.
+  `tests/seam.test.js` (now **41 tests** — Round 4 added the seam-timeout pins:
+  a hung endpoint frees the seam, counts `timedOut`, errors out; a fast reply
+  cancels its timer).
+  *(Known lie, queued for Round 5: the game-id tag is stamped at reply
+  arrival, not at ask time — a reply meant for a dead game can be applied to
+  the next one. See PLAYLOG Round 4.)*
 
 ## Doctrine
 

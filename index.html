@@ -109,9 +109,9 @@ function stateOf(g){return{ballX:g.x,ballY:g.y,velX:g.vx,velY:g.vy,paddleX:g.px,
 // refuses during in-flight, and tags every reply with the game that asked —
 // a reply for a dead game is dropped, not applied.
 let llmSeam=null,pendingAdvice=null,lastAdviceAt=-1e9,deathJustNow=false;
-const ADVICE_EVERY=150,SEAM_MIN_MS=2000;
+const ADVICE_EVERY=150,SEAM_MIN_MS=2000,SEAM_TIMEOUT_MS=8000; // Round 4: a hung endpoint can no longer stall the seam forever
 function ensureSeam(){if(llmSeam)return llmSeam;
- llmSeam=PQ.makeSeam({minIntervalMs:SEAM_MIN_MS,transport:(payload)=>{const ep=$("ep").value,k=$("key").value;
+ llmSeam=PQ.makeSeam({minIntervalMs:SEAM_MIN_MS,timeoutMs:SEAM_TIMEOUT_MS,transport:(payload)=>{const ep=$("ep").value,k=$("key").value;
   return fetch(ep,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},
    body:JSON.stringify({model:"llama-3.1-8b-instant",messages:[{role:"user",content:`pong advice, JSON {move:-1|0|1,confidence}: ball x=${payload.x} y=${payload.y} vx=${payload.vx} vy=${payload.vy} paddle=${payload.px}`}],response_format:{type:"json_object"}})})
    .then(r=>r.json()).then(j=>JSON.parse(j.choices[0].message.content));},
@@ -126,8 +126,8 @@ function maybeFireSeam(g){const m=$("l2").value;if(m!=="llm")return;
  if(!due)return;
  const seq=ensureSeam().fire({x:g.x.toFixed(2),y:g.y.toFixed(2),vx:g.vx.toFixed(2),vy:g.vy.toFixed(2),px:g.px.toFixed(2)});
  if(seq!==null){lastAdviceAt=g.frames;deathJustNow=false; // death trigger consumed by a real fire
-  if(llmSeam.dropped.inFlight+llmSeam.dropped.paced>0)$("l2stat").textContent=
-   `seam: fired#${seq} · dropped(in-flight ${llmSeam.dropped.inFlight}, paced ${llmSeam.dropped.paced}, stale ${llmSeam.dropped.stale})`;}}
+  if(llmSeam.dropped.inFlight+llmSeam.dropped.paced+llmSeam.dropped.timedOut>0)$("l2stat").textContent=
+   `seam: fired#${seq} · dropped(in-flight ${llmSeam.dropped.inFlight}, paced ${llmSeam.dropped.paced}, stale ${llmSeam.dropped.stale}, timed-out ${llmSeam.dropped.timedOut})`;}}
 function takeAdvice(){ // consume pendingAdvice only if it belongs to the live game
  if(!pendingAdvice)return null;
  if(pendingAdvice.gameId!==gameId){pendingAdvice=null;return null;} // stale — dropped, never applied

@@ -2,6 +2,114 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
+## Round 4 — kimi1 — 2026-09-24 — mode: BUILDER (one queued small) + play-tester — vs v2 (round-3-builder, PR #4)
+
+### Played versions: v1 (e98cf66) → edge-ml-crush (b06d901) → round-3-builder (0722670, "v2")
+
+### Builder receipt (the one small queued item — Round 3 queue #4: seam timeout)
+- **what:** `makeSeam` gained `timeoutMs` (default 0 = pinned Round-3 behavior,
+  opt-in) + injectable `schedule`/`cancel`. A timer races the transport;
+  exactly-once `settle()` is shared by timeout and delivery — whichever lands
+  first owns the request, the late arrival dies on the fence (and is NOT
+  double-counted stale). On timeout: `inFlight` freed, `dropped.timedOut++`,
+  `onResult(null, seq, Error)` — counted, not hidden.
+- **why:** Round 3 queued it: a hung fetch held `inFlight` forever, silently
+  refusing every future advice fire (dropped.inFlight climbing with no error
+  surface).
+- **verify:** `tests/seam.test.js` +2 pins — (1) hung transport: timeout frees
+  the seam, counts timedOut, errors out, next fire allowed, late arrival not
+  double-counted; (2) fast resolution cancels its timer. Suite 41/41 green;
+  `node tools/prerun.js` md5s byte-identical to Round 3 (provenance
+  untouched); browser wiring `SEAM_TIMEOUT_MS=8000` + timed-out counter in the
+  drop display.
+
+### Deltas observed (shapes of change)
+- **The units held; the wiring hatched.** All 41 node tests green; prerun
+  byte-reproducible (L0 5,767 / L1 8,800 / L2 8,700, L1>L2 honestly); coev
+  artifact reproduces gen-110 SURVIVOR-CAP and gen-115 559f counter-kill, md5
+  `946e639a…`. But the browser glue between pinned units — the surface NO
+  test drives — contains two P1s (below). Shape of d(honesty)/d(version): the
+  core is now well-pinned; the experiment's uncovered surface migrated from
+  "inside the units" to "between the units." Coverage shape moved, failure
+  mode moved with it — the loop working as designed (this round exists).
+
+### Lies hunted
+- [P1, confirmed by running, NOT fixed — spec item 1] **Browser C1 training
+  crashes on generation 1.** `startGenC` feeds `makeEvaluator` evalOne fns
+  returning `{sFitness|eFitness}`, but the evaluator records `r.fitness` →
+  `undefined`; `continueGenC` then maps `e.cand`/`e.sFitness` (fields are
+  `net`/`fitness`) → `runCoevGeneration` receives `net: undefined` →
+  `JSON.parse(JSON.stringify(undefined))` throws SyntaxError inside the rAF
+  tick → the whole demo freezes. Repro: the exact index.html expressions run
+  under node (`"undefined" is not valid JSON`). The README's "press Train
+  (both populations evolve)" is uncashable in browser; only the node-built
+  artifact chip works. tests/coev.test.js builds records by hand, exactly
+  like prerun-coev.js — the contract seam between evaluator and C1 glue is
+  unpinned, and that is where the lie lived.
+- [P1, confirmed by running, NOT fixed — spec item 2] **The seam's gameId tag
+  is stamped at reply ARRIVAL, not at ask.** `onResult` reads the live
+  `gameId` closure when the response lands; a reply meant for a dead game is
+  branded with the successor's id and applied to a game that never asked.
+  Repro under node with a gated transport: "STALE ADVICE APPLIED." README's
+  "tags every reply with the asking game, drops replies whose game has died"
+  overclaims; README now carries the known-lie admission.
+- [P2, confirmed by running, NOT fixed — spec item 3] **`loadCoev` re-chains
+  artifact ledger rows onto a fresh genesis, then banners the artifact's
+  head.** Repro: banner head `a3e5255e` vs re-chained displayed rows head
+  `632fc08b` — the receipts pane shows a chain the banner doesn't name.
+- [P2, still open — carried] receipt panel silent shift at 40; evictions
+  uncounted (makeLedger proves the honest pattern exists in-repo). Deferred
+  twice — decide it.
+- [fixed this round] seam timeout (see Builder receipt).
+- (nothing found in: fitness weights, effective paddle, ring, evaluator
+  top-K, JEPA representation, coev rules/determinism — all reproduce as
+  claimed.)
+
+### Refusals (honest, with reasons)
+- **First/last-mile sense filter: NOT built** (carried from R2/R3 queues) —
+  it changes the sense() I/O contract; the honest build re-evolves BOTH
+  lineages from gen 0 and archives the old checkpoints' provenance. That is
+  an epic, not a one-item round. Spec'd as the standing medium/epic item.
+
+### Next version spec (Round 5)
+- [small] Fix the C1 browser wiring: evaluator records carry the eval
+  result's fields (`Object.assign` merge or `fitness` alias in the C1 evalOne
+  fns) AND `continueGenC` maps `e.net`/`e.sFitness`/`e.eFitness` — why: the
+  flagship Round-3 mode freezes the demo on gen 1 (P1 above) — verify: node
+  integration test driving the EXACT browser expressions
+  (evaluator→map→runCoevGeneration→h2h completes, champions are real nets,
+  ledger row hashes).
+- [small] gameId-at-ask: stamp the asking gameId into the fire payload, echo
+  it through onResult (or keep a seq→gameId map in the glue) — why: stale
+  advice currently applies to the successor game (P1 above) — verify: the
+  Round-4 repro becomes a test: dead-game reply dropped, never applied.
+- [small] loadCoev head honesty: either banner `coev.ledger.head` (the
+  re-anchored chain actually displayed) or render artifact rows read-only
+  with original hashes + "anchored at genesis, N rows elided" — verify:
+  displayed terminal hash == displayed head, asserted in the extracted glue
+  test (spec item below).
+- [small] Receipt panel eviction counter (`receipt()` gains `evicted`,
+  panel shows "40 shown / N evicted" like makeLedger) — why: the repo's last
+  known silent-drop honesty gap, deferred twice — verify: drive receipt()
+  45× in the extracted glue test, assert count surfaces.
+- [medium] Extract the browser glue (C1 loop, seam glue, receipt fn,
+  loadCoev) into a requireable `demo-glue.js` consumed by index.html AND
+  tests — why: both P1s this round lived in the unpinned integration surface;
+  the meta-fix makes the glue node-drivable so the discriminator can hunt it
+  headlessly — verify: this spec's small items 1–4 are tested through it.
+- [medium] C1 scaling study: pop 48+, gens 300+ in prerun-coev — does
+  SURVIVOR-CAP recur? a second regime flip (cap streak → ender answer) is
+  the next shape — verify: ledger receipted, md5-stable, arms-race rows cited
+  (carried from R3 queue).
+- [epic] First/last-mile sense filter from gen 0: re-evolve both lineages
+  under the filtered contract, keep BOTH curves for comparison, archive old
+  checkpoints with a provenance note (carried from R2/R3 queues).
+
+### Verdict
+MERGEABLE (Round 4 ships the seam-timeout receipt — the one small queued item
+— and receipts two P1s + two P2s as the Round-5 spec; 41/41 tests green,
+checkpoint md5s byte-identical, no provenance touched).
+
 ## Round 3 — kimi1 — 2026-09-24 — honesty pass + C1 coevolution
 
 ### Played versions: v2 (this branch) vs v1+Round-2 stack (PR #1 #2 #3 open at press time)

@@ -181,17 +181,25 @@
       get evaluated() { return i; },
     };
   }
-  // === Round 3: LLM seam pacing ============================================
+  // === Round 3: LLM seam pacing (Round 4: + timeout) =======================
   // Round 2 found the seam fired one fetch per animation frame and applied
   // responses in arrival-burst order. makeSeam enforces the doc'd contract:
   // fire on death/interval (never per frame), ONE request in flight, stale
   // responses dropped by sequence number. Drops are counted, not hidden.
+  // Round 4 (queued by Round 3): a hung transport no longer stalls the seam —
+  // timeoutMs races the transport; on timeout the seam frees itself, counts
+  // the death in dropped.timedOut, and reports an error through onResult.
+  // Default timeoutMs=0 keeps the pinned Round-3 behavior (no timer) —
+  // opt-in, not a silent semantic change.
   function makeSeam(opts) {
     const transport = opts.transport, minIntervalMs = opts.minIntervalMs || 0;
+    const timeoutMs = opts.timeoutMs || 0;
+    const schedule = opts.schedule || ((fn, ms) => setTimeout(fn, ms));
+    const cancel = opts.cancel || ((h) => clearTimeout(h));
     const now = opts.now || (() => Date.now());
     const onResult = opts.onResult || (() => {});
     let inFlight = false, lastFire = -Infinity, seq = 0;
-    const dropped = { inFlight: 0, paced: 0, stale: 0 };
+    const dropped = { inFlight: 0, paced: 0, stale: 0, timedOut: 0 };
     // Stale-drop fence: while fire() refuses during in-flight, a delivered
     // response is always the latest seq — but if a future caller loosens
     // pacing, out-of-order arrivals die here, silently-safe. Fences outrank
@@ -202,9 +210,25 @@
         if (inFlight) { dropped.inFlight++; return null; }
         if (t - lastFire < minIntervalMs) { dropped.paced++; return null; }
         const mySeq = ++seq; lastFire = t; inFlight = true;
+        let settled = false, timer = null;
+        // Exactly-once settlement shared by the timeout race and the transport:
+        // whichever lands first owns the result; the late arrival dies on the
+        // `settled` fence. (A post-timeout transport arrival does NOT count
+        // stale — the timeout already owned and counted that request.)
+        const settle = (res, err) => {
+          if (settled) return; settled = true;
+          if (timer !== null) { cancel(timer); timer = null; }
+          inFlight = false;
+          if (mySeq !== seq) { dropped.stale++; return; }
+          onResult(res, mySeq, err);
+        };
+        if (timeoutMs > 0) timer = schedule(() => {
+          dropped.timedOut++;
+          settle(null, new Error("seam timeout after " + timeoutMs + "ms"));
+        }, timeoutMs);
         Promise.resolve().then(() => transport(payload)).then(
-          (res) => { inFlight = false; if (mySeq !== seq) { dropped.stale++; return; } onResult(res, mySeq); },
-          (err) => { inFlight = false; if (mySeq !== seq) { dropped.stale++; return; } onResult(null, mySeq, err); });
+          (res) => settle(res),
+          (err) => settle(null, err));
         return mySeq;
       },
       get inFlight() { return inFlight; },
@@ -364,7 +388,7 @@
     { id: "swan-seeded", claim: "black swans draw from the passed rng — seeded runs are bit-reproducible", proofTest: "tests/honesty.test.js" },
     { id: "stats-badge", claim: "the stats line shows hits and flags 0-hit luck champions", proofTest: "tests/honesty.test.js" },
     { id: "jepa-features", claim: "micro-JEPA learns and infers on the same sense() representation", proofTest: "tests/jepa.test.js" },
-    { id: "llm-pacing", claim: "LLM advice fires on death/interval, one in flight, stale dropped", proofTest: "tests/seam.test.js" },
+    { id: "llm-pacing", claim: "LLM advice fires on death/interval, one in flight, stale dropped, hung requests time out (Round 4)", proofTest: "tests/seam.test.js" },
     { id: "coev-rules", claim: "C1 coevolution: ender blocks return the ball downward; only the survivor's line can die", proofTest: "tests/coev.test.js" },
     { id: "coev-determinism", claim: "C1 coevolution is seeded-deterministic — same seed, same champions and ledger", proofTest: "tests/coev.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
