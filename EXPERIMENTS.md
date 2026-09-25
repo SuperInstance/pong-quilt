@@ -54,6 +54,12 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
 - **Numbers verified by running.** Every fitness figure, every timing, every
   "converges" claim gets a command that produces it.
 - **BRANCH + PR, never main.** Commit identity: the acting agent.
+- **Merge gate.** A sibling PR may not merge without either one play-test
+  round run against it, or the page-parse pin (`node --test tests/*.test.js`,
+  canary: the page-parse glue) running green on its tip. Rationale: the R7→R8
+  P0 (a merge that bypassed the loop shipped a dead `draw()`) existed only
+  because a merge bypassed the loop; a pin that never runs is decoration, so
+  this rule is the text half and the CI workflow is the enforcement half.
 - **The process is the product.** A beautiful demo with a dead loop is a
   cathedral; a humble demo with a living experiment chain is a shed that
   breeds. We build sheds that breed.
