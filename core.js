@@ -401,6 +401,7 @@
     { id: "qarefusal-glue", claim: "the qa tile admits exhaustion honestly — a silent channel (empty pot under the sim's shots floor, or a real QPAM backend's underflow) receipts a QA-REFUSAL row instead of dropping silently (Round 12)", proofTest: "tests/qarefusal-glue.test.js" },
     { id: "qapot-glue", claim: "the exhaustion seam is playable in-page — the shots/bin pot control depletes the QPAM stand-in below its floor, the tile renders the silent channel (POT EMPTY), and the ledger receipts QA-REFUSAL (Round 13)", proofTest: "tests/qapot-glue.test.js" },
     { id: "coev-panel-glue", claim: "the C1 panel is honest — MOTH receipts and the C1 ledger render as two labeled sections of one panel, each keeping its own eviction accounting; no writer clobbers the other chain (Round 14)", proofTest: "tests/coev-panel-glue.test.js" },
+    { id: "confidence-strip-glue", claim: "the tile's 64x12 strip plots the confidence-vs-pot envelope from the cached measured grid — null below the floor, rising to the sim-cap asymptote, trend pinned at module+glue level (Round 15)", proofTest: "tests/confidence-strip-glue.test.js" },
     { id: "testcmd-docs", claim: "EXPERIMENTS.md names the canonical suite command (glob form) and flags the bare directory form's opaque failure on Node 22 (Round 15)", proofTest: "tests/testcmd-docs.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];

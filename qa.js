@@ -115,5 +115,34 @@
     return { move, confidence: +(Math.min(SIM_MAX_CONF, 0.5 * agree).toFixed(3)), source: "qa-sim" };
   }
 
-  return { N, SIM_MAX_CONF, DEAD_ZCR, SIM_POT_FLOOR, sonify, channel, estimateX, zeroCrossingRate, suggest };
+  // --- 5. confidence-vs-pot envelope (R15 spec item 3): the shape the tile
+  // plots. Computed ONCE over a fixed state grid (seeded, deterministic) and
+  // cached — the strip is a measurement, not a live re-roll per frame.
+  // Each row: {spb, meanConf, nullFrac} over the grid; meanConf is the mean
+  // over ADVISED states only (below the floor every state refuses — nullFrac
+  // says that, meanConf stays 0 rather than laundering refusals into data).
+  // A caller-supplied seed does NOT re-roll the grid: the cache is the spec.
+  let _envelope = null;
+  function confidenceEnvelope() {
+    if (_envelope) return _envelope;
+    const grid = [];
+    for (let bx = 1; bx <= 9; bx++) {
+      for (let px = 1; px <= 9; px++) {
+        grid.push({ ballX: bx / 10, paddleX: px / 10, speed: 1.2 });
+      }
+    }
+    const rows = [];
+    for (let spb = 0; spb <= 64; spb++) { // dense over the page slider's range
+      let advised = 0, confSum = 0;
+      for (let i = 0; i < grid.length; i++) {
+        const r = suggest(grid[i], (0x51eed + i * 2654435761) >>> 0, spb);
+        if (r) { advised++; confSum += r.confidence; }
+      }
+      rows.push({ spb, meanConf: advised ? +(confSum / advised).toFixed(4) : 0, nullFrac: +(1 - advised / grid.length).toFixed(4) });
+    }
+    _envelope = rows;
+    return _envelope;
+  }
+
+  return { N, SIM_MAX_CONF, DEAD_ZCR, SIM_POT_FLOOR, sonify, channel, estimateX, zeroCrossingRate, suggest, confidenceEnvelope };
 });
