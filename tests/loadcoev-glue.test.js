@@ -51,6 +51,19 @@ function makeDemo() {
     (...a) => receiptLog.push(a), PQ.rng(20260924), els);
 }
 
+// R11 item 6 — glue extraction: loadCoev() must construct exactly ONE ledger.
+// The pre-extraction page built a throwaway ledger inside Object.assign
+// (`{... ledger:PQ.makeLedger(300) ...}`) and then rebuilt coev.ledger on the
+// very next line — dead glue, and a trap: a reader sees two makeLedger(300)
+// calls and cannot tell which chain is displayed. Against the pre-fix page
+// this test FAILS (two constructions); after extraction it PASSES (one).
+test("glue extraction: exactly one ledger is constructed (no throwaway chain)", () => {
+  const src = extractLoadCoev();
+  const constructions = src.split("PQ.makeLedger(300)").length - 1;
+  assert.equal(constructions, 1,
+    `loadCoev() constructs ${constructions} ledgers — the Object.assign literal must not build a chain the next line throws away`);
+});
+
 test("extraction integrity: loadCoev() is present, line-anchored, re-chains the tail", () => {
   const src = extractLoadCoev();
   assert.ok(src.includes("PQ.makeLedger(300)"), "must build the displayed ledger");

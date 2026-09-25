@@ -277,7 +277,7 @@ function loadLevel(l){const cp=window.PONG_QUILT_CHECKPOINTS&&window.PONG_QUILT_
  receipt("LOAD/"+l.toUpperCase(),0,1);}
 function loadCoev(){const cp=window.PONG_QUILT_COEV;
  if(!cp){alert("checkpoints/coev.js not loaded — serve over http");return;}
- coev=Object.assign(coev||{},{sChamp:{net:cp.sChamp.net},eChamp:{net:cp.eChamp.net},last:null,genC:cp.gens,ledger:PQ.makeLedger(300),evalS:null,evalE:null});
+ coev=Object.assign(coev||{},{sChamp:{net:cp.sChamp.net},eChamp:{net:cp.eChamp.net},last:null,genC:cp.gens,evalS:null,evalE:null});
  coev.ledger=PQ.makeLedger(300);(cp.ledger||[]).slice(-12).forEach(r=>coev.ledger.write(r));
  champNet=cp.sChamp.net;champGame=PQ.newAdvGame(randPQ);gameId++;
  $("mode").value="coev";
