@@ -7,8 +7,11 @@
  * No qiskit/AerSimulator can run inside a zero-dependency browser page. The
  * channel below is a DETERMINISTIC STAND-IN for the QPAM lossy round-trip
  * (low-pass smoothing + seeded shot noise, same LCG family as core.js). Every
- * surface says so: source tag "qa-sim", UI label, receipts. A real QPAM backend
- * belongs at the marked seam (bring-your-own endpoint, like the LLM seam).
+ * surface says so: source tag "qa-sim", UI label, receipts. The
+ * suggestByo seam below (Round 16) is the bring-your-own door opened: POST
+ * base64 shot bins to your endpoint, take a JEV-validated suggestion back,
+ * and any failure receipts byo-qpam-fallback and degrades to this labeled
+ * sim — the page ships with no endpoint configured, so the stand-in runs.
  * Confidence is capped at SIM_MAX_CONF — a stand-in never claims full trust.
  *
  * Verified envelope of the real thing (research/2026-09-24-quantum-audio-L2.md):
@@ -144,5 +147,76 @@
     return _envelope;
   }
 
-  return { N, SIM_MAX_CONF, DEAD_ZCR, SIM_POT_FLOOR, sonify, channel, estimateX, zeroCrossingRate, suggest, confidenceEnvelope };
+  // --- 6. BYO real-QPAM endpoint seam (R16 spec item 4, carried since R12).
+  // The marked "a real QPAM backend belongs here" door, opened: hand the state
+  // to YOUR endpoint (a real QPAM rig, per research/2026-09-24-quantum-audio-L2.md)
+  // and take its MoveSuggestion back. Honesty contract, per fleet doctrine:
+  //   - wire = the sonified frame as 64 8-bit shot bins (base64) + shotsPerBin +
+  //     seed; the backend performs its own encode/measure/decode on those bins.
+  //   - the response is JEV-validated (move in {-1,0,1}, confidence in [0,1]) —
+  //     an invalid payload NEVER reaches the paddle.
+  //   - ANY failure (no endpoint, fetch error, non-ok status, bad payload)
+  //     receipts a byo-qpam-fallback and degrades to the labeled sim stand-in
+  //     with the SAME seed/pot. Never silent, never a fake that pretends.
+  //   - a real backend's confidence is NOT sim-capped — SIM_MAX_CONF binds the
+  //     stand-in only (the cap is about the stand-in's honesty, not yours).
+  const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  function toB64(bytes) { // zero-dep base64 (browser btoa and node Buffer both fine, this is neither)
+    let out = "";
+    for (let i = 0; i < bytes.length; i += 3) {
+      const a = bytes[i];
+      const b = i + 1 < bytes.length ? bytes[i + 1] : null;
+      const c = i + 2 < bytes.length ? bytes[i + 2] : null;
+      out += B64[a >> 2] + B64[((a & 3) << 4) | (b === null ? 0 : b >> 4)] +
+             (b === null ? "=" : B64[((b & 15) << 2) | (c === null ? 0 : c >> 6)]) +
+             (c === null ? "=" : B64[c & 63]);
+    }
+    return out;
+  }
+  function shotBins(w) { // waveform -> 8-bit bins (the bytes the backend images)
+    const bins = new Array(w.length);
+    for (let i = 0; i < w.length; i++) bins[i] = Math.max(0, Math.min(255, Math.round((w[i] + 1) * 127.5)));
+    return bins;
+  }
+  function isJevValid(j) {
+    return !!j && typeof j === "object" &&
+      (j.move === -1 || j.move === 0 || j.move === 1) &&
+      typeof j.confidence === "number" && j.confidence >= 0 && j.confidence <= 1 &&
+      Number.isFinite(j.confidence);
+  }
+  async function suggestByo(s, seed, shotsPerBin, opts) {
+    opts = opts || {};
+    const url = opts.url;
+    const fetchImpl = opts.fetch || (typeof fetch !== "undefined" ? fetch : null);
+    const refuse = (reason) => ({ // the honest degrade: labeled sim, same seed/pot, receipt named
+      suggestion: suggest(s, seed, shotsPerBin),
+      kind: "byo-qpam-fallback", reason, degraded: true,
+    });
+    if (!url || !fetchImpl) return refuse("no-endpoint"); // seam ships closed by default
+    let res;
+    try {
+      res = await fetchImpl(url, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          binsB64: toB64(shotBins(sonify(s))),
+          shotsPerBin: shotsPerBin === undefined ? null : shotsPerBin,
+          seed: seed === undefined ? null : seed,
+        }),
+      });
+    } catch (e) {
+      return refuse("fetch-failure");
+    }
+    if (!res || !res.ok) return refuse("fetch-failure");
+    let j = null;
+    try { j = await res.json(); } catch (e) { return refuse("jev-invalid"); }
+    if (!isJevValid(j)) return refuse("jev-invalid");
+    return {
+      suggestion: { move: j.move, confidence: j.confidence,
+                    source: typeof j.source === "string" && j.source ? j.source : "byo-qpam" },
+      kind: "byo-qpam", reason: null, degraded: false,
+    };
+  }
+
+  return { N, SIM_MAX_CONF, DEAD_ZCR, SIM_POT_FLOOR, sonify, channel, estimateX, zeroCrossingRate, suggest, suggestByo, confidenceEnvelope };
 });
