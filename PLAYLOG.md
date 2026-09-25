@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R16 | 2026-09-26 | r15-confidence-pot-strip (#19) · r16-readme-honesty-sweep (#20) · r16-advisor-diet-tool (#21) · r16-byo-qpam-seam (#22) | canonical — four branches, one spec |
 | R15 | 2026-09-26 | playtest-round-15 (vs main 3e4e497, post-PR#17) | canonical (this file, newest first) |
 | R14 | 2026-09-26 | r14-coev-panel-honesty (vs R13 tip 7488cfa) | canonical |
 | R13 | 2026-09-26 | playtest-round-13 (vs R12 tip 88b488f) | canonical |
@@ -22,6 +23,28 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 16 — k2d8 — 2026-09-26 — mode: BUILDER (R15 spec item 4: REAL_QPAM BYO endpoint seam, FAIL-first pinned) — vs main 9822b6a (post-PR#19)
+
+### Played versions: main (9822b6a, this round's base)
+
+Suite at base 89/89 + qa 8/8; at tip 91/91 + 8/8. `node tools/prerun.js` after the edits: same five md5s (coev 946e639a…, curve ba1c919a…, L0 8a49b0f6…, L1 aa4d7c4b…, L2 63b7fdd5…) — the touched files (qa.js, core.js claim row, new test) are outside the training path, proven by the frozen hashes. d(learning)/d(version) = 0 — 15th straight frozen round; d(coverage) 89→91, VERIFIED_CLAIMS 22→23.
+
+### Builder receipt (R15 spec item 4 — the REAL_QPAM BYO endpoint seam, carried since R12/R13)
+- **what:** qa.js `suggestByo(state, seed, shotsPerBin, {url, fetch})` — the "a real QPAM backend belongs at the marked seam" door, opened. Wire contract: POST JSON `{binsB64, shotsPerBin, seed}` where bins are the sonified frame quantized to 64 8-bit bytes, base64 (zero-dep encoder, no Buffer/btoa dependency). The response is JEV-validated (move ∈ {-1,0,1}, confidence ∈ [0,1] finite) before it can reach the paddle. New `tests/byo-seam.test.js` (5 pins, all with STUBBED fetch — no live network in CI): success passes through UN-capped (a real backend is not bound by the stand-in's SIM_MAX_CONF — the cap is the stand-in's honesty, not yours); move=5 payload → byo-qpam-fallback; fetch throw AND non-ok status → fetch-failure; no endpoint → fetch never called; fallback advice byte-identical to plain `suggest()` at the same seed/pot. VERIFIED_CLAIMS gained the `byo-qpam-seam` row (22→23).
+- **why:** three rounds (R12 medium, R13 medium, R15 medium-carried) kept this door marked but shut. The honesty contract already promised "name the seam, don't fake it" — this names the wire format and the failure semantics.
+- **verify (FAIL-first, then green):** against pristine main the pin fails 5/5 (`QA.suggestByo is not a function`). After the fix: 91/91 all green.
+
+### Lies hunted
+- **[P3, verified by reading, NOT fixed — page-side wiring absent]** the seam is module+test level only: index.html has no endpoint input and `suggestByo` is not called from the page yet — the demo still runs the pure stand-in, which is honest (nothing claims BYO exists in the UI). Flagged so the next builder doesn't believe the BYO story is user-reachable.
+- **(nothing found in: the wire contract)** the base64 encoder was checked against node's Buffer on all 64 bin values round-trip inside the pin (decode via Buffer.from(b64, "base64") in the test).
+
+### Next version spec (competitive improvements)
+- [small, fresh] page-side BYO wiring: an endpoint text field in the qa tile (persisted to localStorage like the LLM seam's), `suggestByo` behind it with fallback receipts rendered as their own receipt kind in the ledger. Verify: glue pin stubbing fetch on the page path.
+- [epic, carried] C1 scaling study (R12/R13/R15 epic) — still the only nonzero d(learning)/d(version) path.
+- [epic, carried] advice-aware GA (R15 fresh alternative) — thread a measured diet into playOne so advice changes the EVOLVED champion.
+
+MERGEABLE (R15 spec item 4 closed FAIL-first; suite 91/91 + qa 8/8; prerun byte-identical; the BYO seam degrades honestly on every failure mode, never silent).
 
 ## Round 15 — k2d8 — 2026-09-26 — mode: BUILDER (one small: R13 spec item 1 — the canonical test command in EXPERIMENTS.md, FAIL-first pinned) + play-tester — vs main 3e4e497 (R14 merged via PR #17)
 
