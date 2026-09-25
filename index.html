@@ -149,7 +149,7 @@ async function l2Suggest(g){const m=$("l2").value,w=$("w").value/100;if(m==="non
  if(m!=="llm"){const bad=MoveSuggestion.validate(s);
   if(bad){receipt("REFUSAL/v1",0,0);$("l2stat").textContent="JEV refused: "+bad;$("l2stat").className="bad";return null;}
   $("l2stat").textContent=`${src} suggests move=${s.move} conf=${s.confidence}`;$("l2stat").className="ok";
-  receipt(s.source||src==="none"?"L2":s.source||src,s.move,s.confidence*w);}
+  receipt(s.source||(src==="none"?"L2":src),s.move,s.confidence*w);} // Round 11: precedence fix — the ledger names the advisor, not a bare "L2"
  if(Math.random()<s.confidence*w)return s;return null;}
 function blend(act,sug){return sug?sug.move:act;}
 // === classic L1 loop (edge-ml streaming eval) ================================
