@@ -27,7 +27,7 @@ function extractL2Suggest() {
 }
 
 function makeDemo(mode) {
-  const els = { l2: { value: mode }, w: { value: "100" }, ep: { value: "" }, key: { value: "" }, l2stat: { textContent: "", className: "" } };
+  const els = { l2: { value: mode }, w: { value: "100" }, ep: { value: "" }, key: { value: "" }, qapot: { value: "32" }, l2stat: { textContent: "", className: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const receipts = [];
   const MoveSuggestion = {

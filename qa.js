@@ -26,6 +26,11 @@
   const N = 64;                 // samples per state-imaging frame
   const SIM_MAX_CONF = 0.5;     // stand-in confidence cap (honesty contract)
   const DEAD_ZCR = 0.02;        // below this the channel returned silence -> no advice (pot-bound)
+  const SIM_POT_FLOOR = 2;      // shots/sample floor: below this the pot is EMPTY — QPAM returns no image
+                                // at all (shot underflow: measured pearson ~0.02 at 2000 shots/882 samples).
+                                // The channel then emits pure silence and the DEAD_ZCR guard does the job
+                                // it was built for; under the default budget the oscillatory tone always
+                                // clears the threshold (Round 12: min ZCR 0.125 over a full state sweep).
 
   // --- 1. sonify: game state -> waveform (echovision idiom: emit, hear it back)
   // stateOf() units: ballX, paddleX in [0,1] (g.x / g.px) — this module lives
@@ -48,7 +53,10 @@
   // Stand-in = 3-tap low-pass (the smoothing QPAM decode exhibits) + shot noise
   // from a seeded LCG, amplitude ~ 1/sqrt(shotsPerBin) like real sampling noise.
   function channel(w, seed, shotsPerBin) {
-    const spb = shotsPerBin || 32; // sized so noise is present but the image survives
+    // Round 13: `??` not `||` — a 0 budget is the EMPTY POT (slider at zero),
+    // not a request for the default. `|| 32` silently re-armed an emptied pot.
+    const spb = shotsPerBin ?? 32; // sized so noise is present but the image survives
+    if (spb < SIM_POT_FLOOR) return new Array(w.length).fill(0); // empty pot: no measurement returns
     const rand = PQ.rng((seed == null ? 0x51eed : seed) >>> 0);
     const noiseAmp = 1.6 / Math.sqrt(spb);
     const lp = new Array(w.length);
@@ -92,9 +100,11 @@
   // Confidence = self-consistency of the imaging: drift between the position
   // imaged from the decoded waveform and the position imaged from the clean one.
   // A lossier channel -> more drift -> honestly lower confidence. Sim cap last.
-  function suggest(s, seed) {
+  // Round 13: shotsPerBin is threaded in (default 32) so the page's pot control
+  // can deplete the budget below SIM_POT_FLOOR — the documented exhaustion seam.
+  function suggest(s, seed, shotsPerBin) {
     const clean = sonify(s);
-    const decoded = channel(clean, seed);
+    const decoded = channel(clean, seed, shotsPerBin);
     if (zeroCrossingRate(decoded) < DEAD_ZCR) return null; // pot-bound: no echo, no advice
     const xClean = estimateX(clean), xHat = estimateX(decoded);
     const drift = Math.abs(xHat - xClean);
@@ -105,5 +115,5 @@
     return { move, confidence: +(Math.min(SIM_MAX_CONF, 0.5 * agree).toFixed(3)), source: "qa-sim" };
   }
 
-  return { N, SIM_MAX_CONF, DEAD_ZCR, sonify, channel, estimateX, zeroCrossingRate, suggest };
+  return { N, SIM_MAX_CONF, DEAD_ZCR, SIM_POT_FLOOR, sonify, channel, estimateX, zeroCrossingRate, suggest };
 });
