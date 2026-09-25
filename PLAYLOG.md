@@ -6,7 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R12 | 2026-09-25 | playtest-round-12 (vs R11 stack tip c9424f7) | canonical (this file, newest first) |
+| R13 | 2026-09-26 | playtest-round-13 (vs R12 tip 88b488f) | canonical (this file, newest first) |
+| R12 | 2026-09-25 | playtest-round-12 (vs R11 stack tip c9424f7) | canonical |
 | R11 | 2026-09-25 | playtest-round-11 (vs r10 tip 287824d) | canonical — code carried on PR #14 tip; docs on PR #12; CI on PR #13 |
 | R10 | 2026-09-25 | r10-pop-slider-parity (vs main 1f5943c) | canonical — receipt written post-hoc by R11 |
 | R9 | 2026-09-25 | playtest-round-9 (vs main cda9eab) | canonical |
@@ -19,6 +20,42 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 13 — kimi1 — 2026-09-26 — mode: BUILDER (one small: R12 spec item 1 — the qa exhaustion seam, made playable in-page) + play-tester — vs R12 tip 88b488f (playtest-round-12)
+
+### Played versions: v1 (e98cf66) → v2 (0722670) → main (1f5943c) → PR#12 tip (44840be) → PR#13 tip (cdf51f4) → PR#14 tip (c9424f7) → PR#15 / R12 tip (88b488f, this round's base)
+
+All seven refs parse-check clean. Suite by ref: v1 none (pre-tests) → v2 39/39 → main 60/60 → PR#12 68/68 → PR#13 68/68 → PR#14 69/69 → R12 tip 74/74. `node tools/prerun.js` at v2 and every later ref: byte-identical checkpoints (coev.js `946e639a…`, curve.json `ba1c919a…`, L0 `8a49b0f6…`, L1 `aa4d7c4b…`, L2 `63b7fdd5…`), tree clean after the run. v1 still moves (its numbers are unseeded — this run's L2 champion: 589 frames, **0 hits**, crowned at gen 260 — the pre-honesty world where luck tops skill) and still dirties its tree on prerun. All four open-PR tips are exactly where R12 recorded them; nothing moved upstream.
+
+### Builder receipt (the one small — R12 spec item 1: the pot control)
+- **what:** (1) `qa.js` `suggest(s, seed, shotsPerBin)` threads the pot through to `channel` (omitted → 32, unchanged). (2) The page ships a pot slider (`#qapot`, 0–64, default 32) toggled visible exactly when the qa module is selected; the shipped qa branch reads it and threads it into BOTH the advisor call and the tile visualization. Below the floor the page receipts `QA-REFUSAL` with the numbers in the stat line (`"qa-sim: channel silent (pot 0/bin below floor 2) — advice refused, receipted"`), and the tile draws the TRUE silent channel — a flatline plus a "POT EMPTY — channel silent" overlay — instead of the healthy default waveform the old code would have rendered. The tile label now carries the live shots/bin readout during normal play too. (3) New `tests/qapot-glue.test.js`: MODULE (the public seam exhausts at spb 1 AND spb 0) + GLUE-integrity (the shipped branch must read `#qapot` and thread it into `suggest`) + GLUE-exhausted (pot 0 → QA-REFUSAL row + numbers in the stat line + `qaVis.decoded` all zeros + `qaVis.spb===0`) + GLUE-healthy (pot 32 → `qa-sim` row, live channel drawn) + MARKUP (slider ships, toggled with the qa module). Existing mocks in `qarefusal-glue`/`receiptkind-glue` pin the pot at 32 so those files keep testing their own seams. VERIFIED_CLAIMS gained the `qapot-glue` row (19→20).
+- **why:** R12 made exhaustion receiptable but, under shipped page wiring, still unreachable — the page called `suggest(s0, qseed)` at the default 32 shots/bin, far above `SIM_POT_FLOOR=2`. R12's own entry flagged it ("currently the seam exists but is invisible without reading qa.js"). The verify clause ("crank the pot below floor in the page → tile shows silence + panel shows QA-REFUSAL") needed a pot to crank.
+- **verify (FAIL-first, then green):** against the pristine R12 tip the new pin fails 4/4 (MODULE: `suggest` ignored the third arg and advised on a 1-shot pot; GLUE-integrity: the shipped branch never read `#qapot`; GLUE-exhausted: no QA-REFUSAL; MARKUP: no slider). After the fix: suite 74→78 all green, `node tools/test-qa.js` 8/8, `node tools/prerun.js` md5s byte-identical, checkpoints clean (qa.js/index.html/core.js are outside the training path, proven by the frozen hashes), page-parse pin green on the edited inline block.
+
+### Found while building — a fresh instance of the hunted lie class (P2, fixed same-round)
+The new GLUE-exhausted test caught the page advising with the slider at **0**. Cause: R12's floor used `const spb = shotsPerBin || 32` — a 0 budget silently re-armed the full pot. The emptied state was unreachable even WITH a control: a "helpful default" swallowing the exact state the seam exists to model. Fixed to `shotsPerBin ?? 32`; the 0 case is now pinned in the MODULE test. Minimal repro (pre-fix): `QA.suggest({ballX:0.5,…,hits:1}, 7, 0)` → advice, should be null.
+
+### Deltas observed (shapes of change)
+- **d(learning)/d(version) = 0 — the 12th straight frozen round.** v2 through R12 tip regenerate byte-identical; the learning signal has been shape-stable since the honesty pass while coverage compounds around it (suite 39→60→68→69→74→78). v1 is the only mover, and it moves only because its numbers are unseeded fiction.
+- **Failure-mode migration map, exhaustion edition:** R11 booked it (silent null, no receipt) → R12 module level (floor made real; receipted) → R13 glue level (page seam unreachable even after R12 — made playable) → found again at module level (`|| 32` falsy trap) → remaining: P3 coev panel clobber (below) and the BYO real-QPAM endpoint (carried). The seam keeps re-hiding one level up; each fix that adds a "convenience default" risks re-arming it.
+- **Process finding (P3, runner hygiene, self-booked):** my first version-sweep script didn't verify the tree between checkouts; prerun-dirtied checkpoints silently blocked every checkout after v1, so five of seven "refs" were replayed against v1's tree — numbers that looked like a sweep and weren't. Caught by the redo, which forced checkouts and asserted `tree-dirty` per ref. Shape: a runner that doesn't check its own state between steps produces fiction at industrial scale; `git status` is part of the protocol, not a nicety.
+
+### Lies booked this round
+1. **P2 (FIXED):** `channel`'s `|| 32` fallback made pot=0 read as pot=32 — the empty pot was unreachable with the control at zero. Caught by the new pin, not by reading. (index.html `qapot` wiring + qa.js one-liner.)
+2. **P3 (OPEN):** in C1 mode `continueGenC` (index.html:215) overwrites the receipt panel with `coev.ledger.tail(8)` directly, bypassing `receipt()` — while `live()` (257–260) keeps writing MOTH rows (`DEATH`, `QA-REFUSAL`, …) into the hash chain that the panel never durably shows, and the "[N shown / M evicted]" admission vanishes after each generation. Two honest chains, one clobbered panel. Spec item 2 below.
+
+### Spec for Round 14 (6 items — carried marked)
+1. **[small, carried R12#2] Canonical test command in EXPERIMENTS.md.** `node --test tests` (directory form, Node 22) fails opaquely (`EISDIR`); the suite form is `node --test tests/*.test.js` (and `node --test tools/test-qa.js`). What: one line in EXPERIMENTS.md doctrine. Why: three rounds have re-derived this by hand. Verify: text pin in the suite.
+2. **[small, fresh P3] COEV panel honesty.** What: in C1 mode, render the MOTH receipt tail and the C1 ledger tail as two labeled sections of one panel (or one chain with a separator), each keeping its own eviction accounting. Why: the panel is called the honesty centerpiece; right now the chain the user can audit depends on which writer ran last. Verify: extraction pin driving `continueGenC` + `receipt()` in the same frame asserts both chains render and the evicted counter survives.
+3. **[small, fresh] Confidence-vs-pot strip.** What: the tile already carries the live pot readout; add a 64×12 strip plotting measured advisor-confidence across pot values (computed once at load over a state grid, cached — the envelope the MODULE tests already prove). Why: "more shots → more consistent imaging" is currently test-visible only; it is the QPAM story's most demo-able shape. Verify: pin that the strip's monotonic trend holds on the cached grid; visual = browser-only amber claim.
+4. **[medium, carried R2/R12#3] Advisor-diet comparison.** What/why/verify: as specced in R12 — jepa vs moth vs qa-sim vs none, champion-affecting A/B in `tools/` with a pin, so the weight slider (the demo's core interaction) has one measured number behind it.
+5. **[medium, carried R12#4] REAL_QPAM BYO endpoint seam.** What: a url field for a real quantumaudio-QPAM service returning base64 shot bins; on fetch failure or JEV-invalid shape, receipt a FALLBACK row and degrade to the sim — never silent. Why: closes the last contractual-only half of the L2 story. Verify: glue pin with a stubbed fetch, FAIL-first against the shipped page.
+6. **[epic, carried R12#5] C1 scaling study.** What/why/verify: as specced in R12 — population/generation scaling curves, does the ender ever re-cap after the gen-110 flip-flop, ledger-head reproducibility at 2× scale.
+
+### Siblings studied this round
+SuperInstance/quilt-edge-ml (the ring/evaluator patterns still holding twelve rounds later); SuperInstance/jeviter (JEV validate seam the whole L2 stack rides on); SuperInstance/quilt (the 2026-09-24 quantumaudio L2 spec in `research/`, still the reference for the BYO item). No new sibling code was needed — this round was internal seam work.
+
+---
 
 ## Round 12 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R11 spec item 4, REFUSAL half — the qa exhaustion seam, made reachable) + play-tester — vs R11 stack tip c9424f7 (r11-loadcoev-glue-extraction)
 

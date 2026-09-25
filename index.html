@@ -74,6 +74,7 @@
 return { name:"my-loop", suggest(s){ return {move: s.ballX < s.paddleX ? -1 : 1, confidence:0.7}; } };</textarea>
  <button id="attach">Attach</button>
  <span id="llmkey" style="display:none">endpoint <input id="ep" placeholder="https://api.groq.com/..." size="30"> key <input id="key" type="password" size="12"> <small>stays in page memory only; seam paces calls (death/interval, one in flight — drops counted)</small></span>
+ <span id="qapotwrap" style="display:none">pot (shots/bin) <input id="qapot" type="range" min="0" max="64" value="32"> <small>below the floor the QPAM stand-in returns silence → QA-REFUSAL, receipted</small></span>
 </div>
 <script src="core.js"></script>
 <script src="qa.js"></script>
@@ -142,9 +143,9 @@ async function l2Suggest(g){const m=$("l2").value,w=$("w").value/100;if(m==="non
  if(m==="jepa"){s=jepa.suggest(PQ.sense(g));src="jepa";} // same sense() representation as learn()
  else if(m==="moth"){s={move:g.vy>0?(g.x<g.px+D.paddleW/2?-1:1):0,confidence:0.8,source:"moth"};}
  else if(m==="custom"){s=l2Mod&&l2Mod.suggest?l2Mod.suggest(stateOf(g)):null;src=l2Mod?l2Mod.name:"custom";}
- else if(m==="qa"){const s0=stateOf(g),qseed=gen*997+g.frames;s=QuantumAudioL2.suggest(s0,qseed);src="qa-sim";
-  const cl=QuantumAudioL2.sonify(s0);qaVis={clean:cl,decoded:QuantumAudioL2.channel(cl,qseed)};
-  if(!s){receipt("QA-REFUSAL",0,0);$("l2stat").textContent="qa-sim: channel silent (pot-bound) — advice refused, receipted";$("l2stat").className="warn";return null;}} // Round 12: exhaustion is receipted, never dropped silently
+ else if(m==="qa"){const s0=stateOf(g),qseed=gen*997+g.frames,qapot=+$("qapot").value;s=QuantumAudioL2.suggest(s0,qseed,qapot);src="qa-sim";
+  const cl=QuantumAudioL2.sonify(s0);qaVis={clean:cl,decoded:QuantumAudioL2.channel(cl,qseed,qapot),spb:qapot};
+  if(!s){receipt("QA-REFUSAL",0,0);$("l2stat").textContent="qa-sim: channel silent (pot "+qapot+"/bin below floor "+QuantumAudioL2.SIM_POT_FLOOR+") — advice refused, receipted";$("l2stat").className="warn";return null;}} // R12: exhaustion is receipted, never dropped silently; R13: the pot is playable in-page
  else if(m==="llm"){maybeFireSeam(g);s=takeAdvice();if(s){$("l2stat").textContent=`llm suggests move=${s.move} conf=${s.confidence}`;$("l2stat").className="ok";}}
  if(!s)return null;
  if(m!=="llm"){const bad=MoveSuggestion.validate(s);
@@ -231,7 +232,8 @@ function draw(){const c=$("game").getContext("2d"),W=360;c.fillStyle="#05070b";c
   cc.fillStyle="#f85149";const cd=(D.decisionInterval-champGame.frames%D.decisionInterval)/D.decisionInterval;
   cc.fillRect(8+6*58,110-cd*100,16,cd*100);cc.fillStyle="#8b949e";cc.fillText("decision",8+6*58,118);}
  if(qaVis){const qa=$("qa").getContext("2d"),W2=180;qa.fillStyle="#05070b";qa.fillRect(0,0,W2,60);
-  qa.fillStyle="#8b949e";qa.fillText("waveform-imaging (sim QPAM): clean vs decoded",4,10);
+  qa.fillStyle="#8b949e";qa.fillText("waveform-imaging (sim QPAM): clean vs decoded · pot "+qaVis.spb+"/bin",4,10);
+  if(qaVis.decoded.every(v=>v===0)){qa.fillStyle="#d29922";qa.fillText("POT EMPTY — channel silent (below floor)",4,32);}
   const plot=(arr,col,y0)=>{qa.strokeStyle=col;qa.beginPath();
    for(let i=0;i<arr.length;i++){const x=4+i*(W2-8)/(arr.length-1),y=y0-arr[i]*18;i?qa.lineTo(x,y):qa.moveTo(x,y);}qa.stroke();};
   plot(qaVis.clean,"#bc8cff",22);plot(qaVis.decoded,"#d29922",46);}
@@ -285,6 +287,7 @@ function loadCoev(){const cp=window.PONG_QUILT_COEV;
  $("stats").textContent=`C1 artifact: seed ${cp.seed}, ${cp.gens} gens × ${cp.pop}+${cp.pop} nets · sChamp ${cp.sChamp.netId} (${cp.sChamp.fitness|0}) · eChamp ${cp.eChamp.netId} (${cp.eChamp.fitness|0}) · ledger ${coev.ledger.head} (re-anchored at genesis; artifact ${cp.ledgerHead}) · md5-verified`;
  receipt("LOAD/COEV",0,1);}
 $("l2").onchange=()=>{$("llmkey").style.display=$("l2").value==="llm"?"inline":"none";
+ $("qapotwrap").style.display=$("l2").value==="qa"?"inline":"none";
  if($("l2").value==="moth")receipt("MOTH-ON",0,1);};
 $("attach").onclick=()=>{try{const f=new Function($("scratch").value);const m=f();
  if(MoveSuggestion.validate(m.suggest(stateOf(PQ.newGame(Math.random)))))throw new Error("suggest() failed JEV validation on probe");

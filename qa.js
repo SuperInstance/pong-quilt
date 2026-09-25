@@ -53,7 +53,9 @@
   // Stand-in = 3-tap low-pass (the smoothing QPAM decode exhibits) + shot noise
   // from a seeded LCG, amplitude ~ 1/sqrt(shotsPerBin) like real sampling noise.
   function channel(w, seed, shotsPerBin) {
-    const spb = shotsPerBin || 32; // sized so noise is present but the image survives
+    // Round 13: `??` not `||` — a 0 budget is the EMPTY POT (slider at zero),
+    // not a request for the default. `|| 32` silently re-armed an emptied pot.
+    const spb = shotsPerBin ?? 32; // sized so noise is present but the image survives
     if (spb < SIM_POT_FLOOR) return new Array(w.length).fill(0); // empty pot: no measurement returns
     const rand = PQ.rng((seed == null ? 0x51eed : seed) >>> 0);
     const noiseAmp = 1.6 / Math.sqrt(spb);
@@ -98,9 +100,11 @@
   // Confidence = self-consistency of the imaging: drift between the position
   // imaged from the decoded waveform and the position imaged from the clean one.
   // A lossier channel -> more drift -> honestly lower confidence. Sim cap last.
-  function suggest(s, seed) {
+  // Round 13: shotsPerBin is threaded in (default 32) so the page's pot control
+  // can deplete the budget below SIM_POT_FLOOR — the documented exhaustion seam.
+  function suggest(s, seed, shotsPerBin) {
     const clean = sonify(s);
-    const decoded = channel(clean, seed);
+    const decoded = channel(clean, seed, shotsPerBin);
     if (zeroCrossingRate(decoded) < DEAD_ZCR) return null; // pot-bound: no echo, no advice
     const xClean = estimateX(clean), xHat = estimateX(decoded);
     const drift = Math.abs(xHat - xClean);

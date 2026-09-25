@@ -1,4 +1,7 @@
 // Round 12 pin — qa exhaustion honesty (R11 spec item 4, REFUSAL half).
+// (Round 13: the page grew a pot control; these mocks pin it at the default 32
+// so this file keeps testing BACKEND silence, not pot depletion — that's
+// tests/qapot-glue.test.js.)
 // Found this round by running: the shipped sim's pot-bound guard
 // (zeroCrossingRate(decoded) < DEAD_ZCR -> suggest returns null) is UNREACHABLE
 // — a 61x61x6 state sweep found min ZCR 0.125, 6x the 0.02 threshold; 8,820
@@ -58,7 +61,7 @@ function extractL2Suggest() {
 }
 
 function makeDemo() {
-  const els = { l2: { value: "qa" }, w: { value: "100" }, l2stat: { textContent: "", className: "" } };
+  const els = { l2: { value: "qa" }, w: { value: "100" }, qapot: { value: "32" }, l2stat: { textContent: "", className: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const receipts = [];
   // the documented seam: a backend (real QPAM or a depleted pot) that returns
@@ -91,7 +94,7 @@ test("GLUE: an exhausted qa backend receipts 'QA-REFUSAL' — never a silent dro
 });
 
 test("GLUE: a live qa backend still advises and is receipted 'qa-sim' (no regression)", async () => {
-  const els = { l2: { value: "qa" }, w: { value: "100" }, l2stat: { textContent: "", className: "" } };
+  const els = { l2: { value: "qa" }, w: { value: "100" }, qapot: { value: "32" }, l2stat: { textContent: "", className: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const receipts = [];
   const MoveSuggestion = { validate: () => null };
