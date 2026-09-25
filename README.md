@@ -6,7 +6,8 @@ uploads. **Not a simulation — the training is real computation in your browser
 
 **Version: v2** (Round 3). All Round-2 small+medium items are now shipped and
 node-pinned; the deltas are listed per claim in the wristband section below.
-(The repo carries no git tags; the version is a claim, not a release.)
+(git tag shows `v1`; the v2 claim in the header has no tag — the version
+is a claim, not a release.)
 
 ## Level 1 — real learning, visible cells
 
@@ -76,9 +77,9 @@ The demo renders a wristband panel from a single registry in `core.js`
 (`PQ.VERIFIED_CLAIMS`). Green = the claim has a node-pinned proof; amber =
 browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
-claim. To re-verify: `node tests/honesty.test.js && node tests/ring.test.js &&
-node tests/streaming.test.js && node tests/seam.test.js &&
-node tests/jepa.test.js && node tests/coev.test.js && node tests/coev-glue.test.js` (45 tests total).
+claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
+(94 tests total: 86 in `tests/` + 8 in `tools/test-qa.js` — counts as of
+Round 16; the canonical command itself is pinned in EXPERIMENTS.md).
 
 | Claim | Proof | Verify by |
 |-------|-------|-----------|
