@@ -6,7 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R14 | 2026-09-26 | r14-coev-panel-honesty (vs R13 tip 7488cfa) | canonical (this file, newest first) |
+| R15 | 2026-09-26 | playtest-round-15 (vs main 3e4e497, post-PR#17) | canonical (this file, newest first) |
+| R14 | 2026-09-26 | r14-coev-panel-honesty (vs R13 tip 7488cfa) | canonical |
 | R13 | 2026-09-26 | playtest-round-13 (vs R12 tip 88b488f) | canonical |
 | R12 | 2026-09-25 | playtest-round-12 (vs R11 stack tip c9424f7) | canonical |
 | R11 | 2026-09-25 | playtest-round-11 (vs r10 tip 287824d) | canonical — code carried on PR #14 tip; docs on PR #12; CI on PR #13 |
@@ -21,6 +22,46 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 15 — k2d8 — 2026-09-26 — mode: BUILDER (one small: R13 spec item 1 — the canonical test command in EXPERIMENTS.md, FAIL-first pinned) + play-tester — vs main 3e4e497 (R14 merged via PR #17)
+
+### Played versions: v1 (e98cf66) → v2 (0722670) → main (3e4e497, this round's base)
+
+Version sweep run in scratch worktrees (the R13 lesson — never sweep in the main tree; trees asserted between refs). v1 moves (L0 2,935 / L1 1,691 / L2 4,766 — unseeded fiction, still the only mover, still its own proof of why the honesty pass exists). v2 regenerates the canonical frozen set byte-identically (`coev.js 946e639a…`, `curve.json ba1c919a…`, L0 `8a49b0f6…`, L1 `aa4d7c4b…`, L2 `63b7fdd5…`); main matches v2 exactly. `node tools/prerun.js` at this round's tip after the edits: same five md5s, tree clean — the touched files (EXPERIMENTS.md, core.js, new test) are outside the training path, proven by the frozen hashes. Suite at base 82/82 + `tools/test-qa.js` 8/8; at tip 84/84 + 8/8.
+
+### Builder receipt (the one small — R13 spec item 1: the canonical test command, carried since R12)
+- **what:** (1) EXPERIMENTS.md protocol step 1 now names the canonical suite command — `node --test tests/*.test.js` (glob form) plus `node --test tools/test-qa.js` — and flags the bare directory form: on Node 22 `node --test tests` fails opaquely (one failing subtest named `tests`, error "test failed", no culprit named). (2) New `tests/testcmd-docs.test.js` (Round 15 pin): the glob command must appear as a literal in EXPERIMENTS.md AND the bare form's mention must be a warning, not a recommendation (regex-anchored). VERIFIED_CLAIMS gained the `testcmd-docs` row (21→22).
+- **why:** three rounds (R12 process finding, R13 spec, R14 carried-forward) re-derived this by hand; the R12 entry predicted "a future runner copy-pasting the directory form gets a red wall with no name on it." The doctrine file itself should carry the command it expects to be run.
+- **verify (FAIL-first, then green):** against the pristine main tip the new pin fails 1/2 (glob literal present only in the merge-gate rule; the warning absent). After the fix: 82→84 all green — and the honesty two-way match pin then demanded the new file back a claim, exactly as designed (added the registry row). Prerun byte-identical.
+
+### Deltas observed (shapes of change)
+- **d(learning)/d(version) = 0 — the 14th straight frozen round.** v2 through R14-in-main regenerate byte-identically; only v1 moves, and only because its numbers are unseeded.
+- **d(coverage)/d(version) continues: suite 82→84, VERIFIED_CLAIMS 21→22.** The wristband compounds while the learning curve stays frozen.
+- **NEW measured shape — d(advice)/d(diet) is nonzero, and the ranking is non-obvious.** First headless diet probe (this round, L2 champion, 30 seeded games/diet, shipped apply rule `rand() < conf·w` at w=1, two runs for variance): unaided 3,443f/11.5h — **moth 5,564–5,802f/17.5–18.6h (helps a lot)** — qa-sim 3,841–4,050f/11.3–12.0h (mild help) — **jepa 2,229–2,259f/5.3–5.9h (actively harms at full weight: drags the champion ~35% below its own unaided survival)**. Ordering stable across both runs. Caveats: the apply-coin used unseeded Math.random, and jepa state was shared across runs (trained within its own games anyway) — a probe, not the shipped tool. Shape: the demo's advisor surface has real effect sizes, the ranking inverts the plausible one (the handcoded heuristic beats the learned predictor), and the page gives the user zero visibility into any of it. Strongest evidence yet for the carried advisor-diet item.
+- **qa confidence-vs-pot envelope measured** (75-state grid, the shape R13 spec item 3 wants plotted): mean confidence 0.427 at the floor (spb=2) rising monotonically to a 0.496 asymptote (spb≥128); null fraction 1.00 below the floor, 0.00 at/above it. "More shots → more consistent imaging" is now a measured curve, not a test-visible-only claim.
+
+### Lies hunted
+- **[P3, verified by running/counting] README meta-claims are stale (two instances):** "(45 tests total)" — the suite is 82 at base, 84 at this tip; and "(The repo carries no git tags; the version is a claim, not a release.)" — `git tag` returns `v1`. The demo's own doctrine (never trust the README) is breached by the README about itself. Not fixed this round (builder slot spent on the test-command item; spec item 2 below).
+- **[P3-process, verified by reading] the R14 PLAYLOG entry omits the "Lies hunted" and "Next version spec" sections** the EXPERIMENTS.md format mandates — the R14 builder round closed its P3 but left the chain without a forward spec, so R15 reconstructed the candidate set from R13's carried items. The chain self-heals this round (spec below); noted so the next builder knows R15's item numbering restarts from here.
+- **[P3-process, re-verified by running, FIXED this round]** `node --test tests` (directory form) still fails opaquely on node v22.22.2 (exit 1, one subtest named `tests`, error "test failed", no named culprit). Builder receipt above.
+- **[P3 nit, found by reading] tests/honesty.test.js checkpoint consistency probe** — `fitnessOf(cp.bestHits ? cp.bestFrames : cp.bestFrames, cp.bestHits)`: both ternary branches identical (dead condition). Harmless (the formula is pinned either way) but it is a claim-shaped artifact that reads like a typo. Spec item 2 below.
+- **(nothing found in: the R14 renderReceipts fix itself)** — edge-case probe of the shipped renderer: empty C1 ledger renders zero rows with NO admission line (the `evicted` guard suppresses "N shown / M evicted" until it's true), a 3-row ledger renders 3 rows with no false "8 shown" claim, a fresh classic page renders an empty panel. The new code is honest at the boundaries. Also re-verified green: prerun byte-reproducibility, suite, qa exhaustion seam (pot 0 → null advice, floor 2 → advice), receiptkind attribution, coev rules/determinism, page parse, checkpoints-vs-fitness consistency.
+
+### Next version spec (competitive improvements — 6 items, carried marked)
+- [small, carried R13#3] Confidence-vs-pot strip in the qa tile. Envelope now MEASURED this round: 0.427 @ floor → 0.496 asymptote, nulls below floor. What: the 64×12 strip as specced in R13 (computed once at load over a state grid, cached). Why: the QPAM story's most demo-able shape is now a measured curve the page still doesn't show. Verify: pin the strip's monotonic trend on the cached grid; visual = browser-only amber claim.
+- [small, fresh] README honesty sweep: fix "(45 tests total)" (either correct count or point at the suite glob), fix "carries no git tags" (v1 exists; EXPERIMENTS.md also implies a v2 tag), extend the verify-by list or replace it with the canonical glob command now in EXPERIMENTS.md, and clean the dead ternary in tests/honesty.test.js. Why: this round booked two stale meta-claims — the README is the first surface an outsider audits, and right now it fails its own doctrine on arrival. Verify: grep + suite green.
+- [medium, carried R2/R12#3/R13#4 — NOW WITH EVIDENCE] Advisor-diet comparison tool in `tools/` (prerun-style, seeded): GA champion × {none, jepa, moth, qa-sim} × weight sweep, per-diet survival/hits curves under one seed, FAIL-first pin. This round's probe supplies the expected shape (moth >> none ≈ qa > jepa — jepa at full weight HURTS the champion ~35%). Why: the weight slider is the demo's core interaction and still has no measured number behind it; the first measurement says the ranking is non-obvious. Verify: tool emits per-diet curves; diets differ; jepa-harms result reproduced under the seeded coin.
+- [medium, carried R12#4/R13#5] REAL_QPAM BYO endpoint seam. Unchanged from R13 — url field, base64 shot bins, JEV-invalid/fetch-failure → FALLBACK receipt + degrade to sim, never silent. Verify: glue pin with stubbed fetch, FAIL-first.
+- [epic, carried R12#5/R13#6] C1 scaling study (population × gens sweep with the frozen provenance harness; does the ender ever re-cap after the gen-110 flip-flop; ledger-head reproducibility at 2× scale). Still the only nonzero d(learning)/d(version) path. Verify: a new receipted curve in checkpoints/ with different endpoints.
+- [epic, fresh alternative to the above, from this round's probe] Advice-aware GA: thread the measured advisor into playOne so diet changes the EVOLVED champion, not just live survival — the probe shows advice has effect sizes worth evolving against. Verify: a new receipted curve whose endpoints differ from the frozen five.
+
+### Siblings studied this round
+SuperInstance/quilt-edge-ml (the ring/evaluator patterns — 14 rounds in and still doing their jobs); SuperInstance/jeviter (the JEV validate seam every advisor still passes through); SuperInstance/quilt (`research/2026-09-24-quantum-audio-L2.md`, still the BYO reference). No new sibling code needed — internal seam and measurement work again.
+
+### Verdict
+MERGEABLE (R13 spec item 1 closed FAIL-first; suite 84/84 + qa 8/8; prerun byte-identical; two measured shapes added to the experiment's memory; no P2s found this round).
+
+---
 
 ## Round 14 — k2d8 — 2026-09-26 — mode: BUILDER (R14 spec item 2 — the COEV panel honesty pin, the fresh P3 booked by R13) — vs R13 tip 7488cfa (playtest-round-13)
 

@@ -14,6 +14,10 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
 1. **Run it.** `node tools/prerun.js` (core math, real numbers), read
    `index.html`, `core.js`. Where possible drive the demo headless (jsdom or a
    browser). Never trust the README — verify claims by running.
+   Canonical suite command: **`node --test tests/*.test.js`** (glob form), plus
+   `node --test tools/test-qa.js` for the QPAM stand-in. Do NOT use the bare
+   directory form `node --test tests` — on Node 22 it fails opaquely
+   (one failing subtest named `tests`, error "test failed", no culprit named).
 2. **Play the last few versions.** `git log --oneline` + tags (`v1`, `v2`…).
    Check out or reconstruct the last 2–3 versions; note what each changed.
 3. **Record the delta as SHAPE, not just content.** The point is
