@@ -76,7 +76,7 @@
 return { name:"my-loop", suggest(s){ return {move: s.ballX < s.paddleX ? -1 : 1, confidence:0.7}; } };</textarea>
  <button id="attach">Attach</button>
  <span id="llmkey" style="display:none">endpoint <input id="ep" placeholder="https://api.groq.com/..." size="30"> key <input id="key" type="password" size="12"> <small>stays in page memory only; seam paces calls (death/interval, one in flight — drops counted)</small></span>
- <span id="qapotwrap" style="display:none">pot (shots/bin) <input id="qapot" type="range" min="0" max="64" value="32"> <small>below the floor the QPAM stand-in returns silence → QA-REFUSAL, receipted</small></span>
+ <span id="qapotwrap" style="display:none">pot (shots/bin) <input id="qapot" type="range" min="0" max="64" value="32"> <small>below the floor the QPAM stand-in returns silence → QA-REFUSAL, receipted</small> <label>BYO QPAM endpoint <input id="qabyoep" placeholder="empty = labeled sim" size="30"></label> <small>R16: fill it and the page POSTs the wire (64 8-bit bins + pot) to YOUR backend on the paced seam; any failure receipts byo-qpam-fallback and degrades to the labeled sim — never silent</small></span>
 </div>
 <script src="core.js"></script>
 <script src="qa.js"></script>
@@ -145,19 +145,49 @@ function takeAdvice(){ // consume pendingAdvice only if it belongs to the live g
  if(!pendingAdvice)return null;
  if(pendingAdvice.gameId!==gameId){pendingAdvice=null;return null;} // stale — dropped, never applied
  const a=pendingAdvice.s;pendingAdvice=null;return a;}
+// === qa BYO seam (Round 16 page wiring): the endpoint field feeds suggestByo ===
+// Same pacing discipline as the LLM seam: fires on death OR every ADVICE_EVERY
+// frames, one request in flight, replies tagged with the asking gameId — a
+// reply for a dead game is dropped, not applied. Empty endpoint = the seam
+// ships closed (pure labeled sim, zero network). Failures were already
+// degraded + receipted inside suggestByo; the page receipts the FALLBACK at
+// consumption time so the ledger order matches what the player saw.
+let pendingQaByo=null,qaByoInFlight=false,lastQaByoAt=-1e9;
+function maybeFireQaByo(g,s0,qseed,qapot){const url=($("qabyoep").value||"").trim();
+ if(!url)return; // seam ships closed by default — the labeled sim stands alone
+ const due=deathJustNow||(g.frames-lastQaByoAt>=ADVICE_EVERY);
+ if(!due||qaByoInFlight)return;
+ qaByoInFlight=true;lastQaByoAt=g.frames;deathJustNow=false; // death trigger consumed by a real fire
+ const askGameId=gameId;
+ QuantumAudioL2.suggestByo(s0,qseed,qapot,{url}).then(r=>{qaByoInFlight=false;pendingQaByo={r,gameId:askGameId};})
+ .catch(()=>{qaByoInFlight=false;});} // suggestByo never rejects (refuse paths) — belt+braces
+function takeQaByo(){if(!pendingQaByo)return null;
+ if(pendingQaByo.gameId!==gameId){pendingQaByo=null;return null;} // stale — dropped, never applied
+ const r=pendingQaByo.r;pendingQaByo=null;return r;}
+function qaSuggest(g){ // the qa branch of l2Suggest, extracted whole so node can pin it
+ const s0=stateOf(g),qseed=gen*997+g.frames,qapot=+$("qapot").value;
+ maybeFireQaByo(g,s0,qseed,qapot);
+ const cl=QuantumAudioL2.sonify(s0);qaVis={clean:cl,decoded:QuantumAudioL2.channel(cl,qseed,qapot),spb:qapot};
+ const byo=takeQaByo();
+ if(byo){if(byo.degraded){receipt("byo-qpam-fallback",0,0);
+   if(!byo.suggestion){receipt("QA-REFUSAL",0,0);
+    $("l2stat").textContent="byo-qpam: "+byo.reason+" — degraded, then qa-sim: channel silent (pot "+qapot+"/bin below floor "+QuantumAudioL2.SIM_POT_FLOOR+") — advice refused, receipted";$("l2stat").className="warn";return null;}
+   return {suggestion:byo.suggestion,src:"qa-sim",note:"byo-qpam: "+byo.reason+" — degraded to the labeled sim (receipted)"};} // fallback advice is NAMED for the stand-in, never laundered as byo-qpam
+  return {suggestion:byo.suggestion,src:"byo-qpam"};}
+ const s=QuantumAudioL2.suggest(s0,qseed,qapot);
+ if(!s){receipt("QA-REFUSAL",0,0);$("l2stat").textContent="qa-sim: channel silent (pot "+qapot+"/bin below floor "+QuantumAudioL2.SIM_POT_FLOOR+") — advice refused, receipted";$("l2stat").className="warn";return null;} // R12: exhaustion is receipted, never dropped silently; R13: the pot is playable in-page
+ return {suggestion:s,src:"qa-sim"};}
 async function l2Suggest(g){const m=$("l2").value,w=$("w").value/100;if(m==="none")return null;
- let s=null,src="none";
+ let s=null,src="none",sNote=null;
  if(m==="jepa"){s=jepa.suggest(PQ.sense(g));src="jepa";} // same sense() representation as learn()
  else if(m==="moth"){s={move:g.vy>0?(g.x<g.px+D.paddleW/2?-1:1):0,confidence:0.8,source:"moth"};}
  else if(m==="custom"){s=l2Mod&&l2Mod.suggest?l2Mod.suggest(stateOf(g)):null;src=l2Mod?l2Mod.name:"custom";}
- else if(m==="qa"){const s0=stateOf(g),qseed=gen*997+g.frames,qapot=+$("qapot").value;s=QuantumAudioL2.suggest(s0,qseed,qapot);src="qa-sim";
-  const cl=QuantumAudioL2.sonify(s0);qaVis={clean:cl,decoded:QuantumAudioL2.channel(cl,qseed,qapot),spb:qapot};
-  if(!s){receipt("QA-REFUSAL",0,0);$("l2stat").textContent="qa-sim: channel silent (pot "+qapot+"/bin below floor "+QuantumAudioL2.SIM_POT_FLOOR+") — advice refused, receipted";$("l2stat").className="warn";return null;}} // R12: exhaustion is receipted, never dropped silently; R13: the pot is playable in-page
+ else if(m==="qa"){const r=qaSuggest(g);if(!r)return null;s=r.suggestion;src=r.src;sNote=r.note||null;}
  else if(m==="llm"){maybeFireSeam(g);s=takeAdvice();if(s){$("l2stat").textContent=`llm suggests move=${s.move} conf=${s.confidence}`;$("l2stat").className="ok";}}
  if(!s)return null;
  if(m!=="llm"){const bad=MoveSuggestion.validate(s);
   if(bad){receipt("REFUSAL/v1",0,0);$("l2stat").textContent="JEV refused: "+bad;$("l2stat").className="bad";return null;}
-  $("l2stat").textContent=`${src} suggests move=${s.move} conf=${s.confidence}`;$("l2stat").className="ok";
+  $("l2stat").textContent=(sNote?sNote+" · ":"")+`${src} suggests move=${s.move} conf=${s.confidence}`;$("l2stat").className=sNote?"warn":"ok";
   receipt(s.source||(src==="none"?"L2":src),s.move,s.confidence*w);} // Round 11: precedence fix — the ledger names the advisor, not a bare "L2"
  if(Math.random()<s.confidence*w)return s;return null;}
 function blend(act,sug){return sug?sug.move:act;}

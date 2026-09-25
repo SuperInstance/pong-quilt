@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R17 | 2026-09-26 | r16-byo-page-wiring (vs main post-#22-merge; rebased after the R16 stack landed) | canonical |
 | R16 | 2026-09-26 | r15-confidence-pot-strip (#19) · r16-readme-honesty-sweep (#20) · r16-advisor-diet-tool (#21) · r16-byo-qpam-seam (#22) | canonical — four branches, one spec |
 | R15 | 2026-09-26 | playtest-round-15 (vs main 3e4e497, post-PR#17) | canonical (this file, newest first) |
 | R14 | 2026-09-26 | r14-coev-panel-honesty (vs R13 tip 7488cfa) | canonical |
@@ -23,6 +24,27 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 17 — k2d8 — 2026-09-26 — mode: BUILDER (R16 next-spec small: page-side BYO endpoint field wiring, the P3 R16 booked, FAIL-first pinned) — vs main post-PR#22-merge (the R16 stack landed mid-round; branch rebased)
+
+### Played versions: main (this round's base, post-#22 merge)
+
+Suite at base 96/96 + qa 8/8 (the merged R16 stack carried 96); at tip 99/99 + 8/8. `node tools/prerun.js` after the edits: same five md5s — the touched files (index.html page glue, core.js claim row, new test) are outside the training path, proven by the frozen hashes. d(learning)/d(version) = 0 — 16th straight frozen round; d(coverage) 91→96, VERIFIED_CLAIMS 23→24.
+
+### Builder receipt (the R16-booked P3: the BYO seam, made user-reachable)
+- **what:** (1) the pot row gains a BYO QPAM endpoint input (`qabyoep`, empty = labeled sim — the seam ships closed, zero network by default); (2) `maybeFireQaByo`/`takeQaByo` pace calls exactly like the LLM seam — death OR every ADVICE_EVERY frames, one in flight, replies gameId-tagged at fire so a dead game's reply is dropped, never rebranded (the R4/R5 discipline, qa BYO edition); (3) `qaSuggest()` consumes the reply: a real suggestion is receipted `byo-qpam` and is NOT sim-capped; a degraded one receipts `byo-qpam-fallback` and its advice is NAMED `qa-sim` in the ledger — fallback advice never launders into the byo-qpam kind; the stat line carries the degrade admission alongside the suggestion (`warn`, not clobbered by the shared tail — a real bug the pins caught: the first wiring let the shared `${src} suggests` tail overwrite the admission). (4) New `tests/byo-page-glue.test.js` (5 pins, stubbed `suggestByo`, zero network): markup ships the field; empty endpoint never fires; real reply receipted un-capped; degraded reply dual-named right (fallback receipt + qa-sim advice); stale reply dropped across a gameId bump. VERIFIED_CLAIMS gained `byo-page-glue` (23→24).
+- **why:** R16 shipped the seam module+test level only and booked the P3 in its own receipt: "index.html has no endpoint input and suggestByo is not called from the page yet." The honesty contract's "name the seam, don't fake it" cuts both ways — a seam nobody can reach from the UI is a promised door left shut.
+- **verify (FAIL-first, then green):** against the PR #22 tip the new pin fails 5/5 (no `qabyoep`, no `qaSuggest` — extraction anchors absent). After the fix: 96/96 all green, qa 8/8, prerun byte-identical. Three existing glue files (qapot/qarefusal/receiptkind) were re-anchored to the widened extraction window (qa BYO seam block + l2Suggest) — their behavioral pins pass unchanged, proving the sim path is behavior-identical.
+
+### Lies hunted
+- **[P3, fixed — the clobbered admission]** the first wiring set the degrade text inside qaSuggest, but l2Suggest's shared tail overwrote it with `${src} suggests …` in class `ok`. The degraded-consumption pin caught it ("the stat line must admit the degrade"). Fix: qaSuggest returns a `note` the shared tail prepends in `warn` — one tail, both stories, no overwrite.
+
+### Next version spec (competitive improvements)
+- [small, fresh] persist the BYO endpoint to localStorage like the LLM seam's fields, so a refresh doesn't strand a real backend.
+- [epic, carried] C1 scaling study (R12/R13/R15/R16 epic) — still the only nonzero d(learning)/d(version) path.
+- [epic, carried] advice-aware GA (R15 fresh alternative).
+
+MERGEABLE (R16-booked P3 closed FAIL-first; suite 96/96 + qa 8/8; prerun byte-identical; the BYO door is now user-reachable and degrades honestly on every failure mode).
 
 ## Round 16 — k2d8 — 2026-09-26 — mode: BUILDER (R15 spec item 4: REAL_QPAM BYO endpoint seam, FAIL-first pinned) — vs main 9822b6a (post-PR#19)
 

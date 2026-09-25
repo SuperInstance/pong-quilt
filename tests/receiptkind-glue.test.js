@@ -18,16 +18,18 @@ const QA = require("../qa.js");
 
 function extractL2Suggest() {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
-  const start = html.indexOf("async function l2Suggest(g){");
+  // R16 page wiring: the qa branch delegates to qaSuggest() in the qa BYO
+  // seam block immediately before l2Suggest — the slice must cover both.
+  const start = html.indexOf("// === qa BYO seam");
   const marker = "if(Math.random()<s.confidence*w)return s;return null;}";
   const end = html.indexOf(marker);
-  assert.ok(start > 0, "index.html must contain the l2Suggest glue");
+  assert.ok(start > 0, "index.html must contain the qa BYO seam block + l2Suggest glue");
   assert.ok(end > start, "index.html must contain the l2Suggest tail");
   return html.slice(start, end + marker.length);
 }
 
 function makeDemo(mode) {
-  const els = { l2: { value: mode }, w: { value: "100" }, ep: { value: "" }, key: { value: "" }, qapot: { value: "32" }, l2stat: { textContent: "", className: "" } };
+  const els = { l2: { value: mode }, w: { value: "100" }, ep: { value: "" }, key: { value: "" }, qapot: { value: "32" }, qabyoep: { value: "" }, l2stat: { textContent: "", className: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const receipts = [];
   const MoveSuggestion = {
@@ -43,7 +45,7 @@ function makeDemo(mode) {
   for (let i = 0; i < 200; i++) { const prev = PQ.sense(g); PQ.step(g, 0, Math.random); jepa.learn(prev, PQ.sense(g)); }
   const stateOf = (gm) => ({ ballX: gm.x, ballY: gm.y, paddleX: gm.px });
   const factory = new Function("PQ", "QuantumAudioL2", "MoveSuggestion", "jepa", "$", "stateOf", "receipt", "randPQ", "els",
-    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false;" +
+    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false,gameId=1;const ADVICE_EVERY=150;" +
     "let llmSeam=null,pendingAdvice=null;" +
     "function takeAdvice(){return null;} function maybeFireSeam(){} " +
     extractL2Suggest() +
@@ -86,18 +88,19 @@ test("ATTRIBUTION: a qa-sim suggestion is receipted as kind 'qa-sim', not 'L2'",
 test("FALLBACK: no source anywhere -> kind 'L2' (the documented fallback, still honored)", async () => {
   // a custom module that returns a valid suggestion WITHOUT a source field
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
-  const start = html.indexOf("async function l2Suggest(g){");
+  // same window as extractL2Suggest: qa BYO seam block + l2Suggest verbatim
+  const start = html.indexOf("// === qa BYO seam");
   const marker = "if(Math.random()<s.confidence*w)return s;return null;}";
   const end = html.indexOf(marker);
   const fn = html.slice(start, end + marker.length);
   const l2Mod = { name: "anon", suggest: () => ({ move: 0, confidence: 1 }) }; // no source
-  const els = { l2: { value: "custom" }, w: { value: "100" }, l2stat: { textContent: "", className: "" } };
+  const els = { l2: { value: "custom" }, w: { value: "100" }, qabyoep: { value: "" }, l2stat: { textContent: "", className: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const receipts = [];
   const MoveSuggestion = { validate: () => null };
   const stateOf = (gm) => ({ ballX: gm.x, paddleY: gm.px });
   const factory = new Function("PQ", "QuantumAudioL2", "MoveSuggestion", "l2Mod", "$", "stateOf", "receipt", "randPQ", "jepa",
-    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false;" +
+    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false,gameId=1;const ADVICE_EVERY=150;" +
     "let llmSeam=null,pendingAdvice=null;" +
     "function takeAdvice(){return null;} function maybeFireSeam(){} " +
     fn +
