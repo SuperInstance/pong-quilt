@@ -52,16 +52,18 @@ test("UNCHANGED: the default pot still advises (normal play untouched)", () => {
 // --- glue level: the page receipts exhaustion instead of going silent -------
 function extractL2Suggest() {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
-  const start = html.indexOf("async function l2Suggest(g){");
+  // R16 page wiring: the qa branch delegates to qaSuggest() in the qa BYO
+  // seam block immediately before l2Suggest — the slice must cover both.
+  const start = html.indexOf("// === qa BYO seam");
   const marker = "if(Math.random()<s.confidence*w)return s;return null;}";
   const end = html.indexOf(marker);
-  assert.ok(start > 0, "index.html must contain the l2Suggest glue");
+  assert.ok(start > 0, "index.html must contain the qa BYO seam block + l2Suggest glue");
   assert.ok(end > start, "index.html must contain the l2Suggest tail");
   return html.slice(start, end + marker.length);
 }
 
 function makeDemo() {
-  const els = { l2: { value: "qa" }, w: { value: "100" }, qapot: { value: "32" }, l2stat: { textContent: "", className: "" } };
+  const els = { l2: { value: "qa" }, w: { value: "100" }, qapot: { value: "32" }, qabyoep: { value: "" }, l2stat: { textContent: "", className: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const receipts = [];
   // the documented seam: a backend (real QPAM or a depleted pot) that returns
@@ -70,7 +72,7 @@ function makeDemo() {
   const MoveSuggestion = { validate: () => null };
   const stateOf = (gm) => ({ ballX: gm.x, paddleX: gm.px, speed: 1 });
   const factory = new Function("PQ", "QuantumAudioL2", "MoveSuggestion", "jepa", "$", "stateOf", "receipt", "randPQ",
-    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false;" +
+    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false,gameId=1;const ADVICE_EVERY=150;" +
     "let llmSeam=null,pendingAdvice=null;" +
     "function takeAdvice(){return null;} function maybeFireSeam(){} " +
     extractL2Suggest() +
@@ -94,13 +96,13 @@ test("GLUE: an exhausted qa backend receipts 'QA-REFUSAL' — never a silent dro
 });
 
 test("GLUE: a live qa backend still advises and is receipted 'qa-sim' (no regression)", async () => {
-  const els = { l2: { value: "qa" }, w: { value: "100" }, qapot: { value: "32" }, l2stat: { textContent: "", className: "" } };
+  const els = { l2: { value: "qa" }, w: { value: "100" }, qapot: { value: "32" }, qabyoep: { value: "" }, l2stat: { textContent: "", className: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const receipts = [];
   const MoveSuggestion = { validate: () => null };
   const stateOf = (gm) => ({ ballX: gm.x, paddleX: gm.px, speed: 1 });
   const factory = new Function("PQ", "QuantumAudioL2", "MoveSuggestion", "jepa", "$", "stateOf", "receipt", "randPQ",
-    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false;" +
+    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false,gameId=1;const ADVICE_EVERY=150;" +
     "let llmSeam=null,pendingAdvice=null;" +
     "function takeAdvice(){return null;} function maybeFireSeam(){} " +
     extractL2Suggest() +

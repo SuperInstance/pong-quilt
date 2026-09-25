@@ -34,13 +34,17 @@ test("MODULE: suggest(s, seed, shotsBelowFloor) returns null through the page's 
 // --- glue level: the shipped branch reads the pot and shows the truth -------
 function extractL2Suggest() {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
-  const start = html.indexOf("async function l2Suggest(g){");
+  // R16 page wiring: the qa branch delegates to qaSuggest(), defined in the
+  // qa BYO seam block immediately before l2Suggest — the slice must cover both.
+  const start = html.indexOf("// === qa BYO seam");
   const marker = "if(Math.random()<s.confidence*w)return s;return null;}";
   const end = html.indexOf(marker);
-  assert.ok(start > 0, "index.html must contain the l2Suggest glue");
+  assert.ok(start > 0, "index.html must contain the qa BYO seam block + l2Suggest glue");
   assert.ok(end > start, "index.html must contain the l2Suggest tail");
   const src = html.slice(start, end + marker.length);
-  assert.ok(src.includes('+$("qapot").value'),
+  assert.ok(src.includes("async function l2Suggest(g){"),
+    "the slice must include l2Suggest itself");
+  assert.ok(src.includes('$("qapot").value'),
     "the shipped qa branch must read the pot control — the R12 page had no in-page path to exhaustion");
   assert.ok(src.includes("QuantumAudioL2.suggest(s0,qseed,qapot)"),
     "the pot must reach the advisor call, not just the tile visualization");
@@ -48,13 +52,13 @@ function extractL2Suggest() {
 }
 
 function makeDemo(qapotValue) {
-  const els = { l2: { value: "qa" }, w: { value: "100" }, qapot: { value: String(qapotValue) }, l2stat: { textContent: "", className: "" } };
+  const els = { l2: { value: "qa" }, w: { value: "100" }, qapot: { value: String(qapotValue) }, qabyoep: { value: "" }, l2stat: { textContent: "", className: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const receipts = [];
   const MoveSuggestion = { validate: () => null };
   const stateOf = (gm) => ({ ballX: gm.x, paddleX: gm.px, speed: 1 });
   const factory = new Function("PQ", "QuantumAudioL2", "MoveSuggestion", "jepa", "$", "stateOf", "receipt", "randPQ",
-    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false;" +
+    "const D=PQ.DEFAULTS;let gen=1,games=0,qaVis=null,lastAdviceAt=-1e9,deathJustNow=false,gameId=1;const ADVICE_EVERY=150;" +
     "let llmSeam=null,pendingAdvice=null;" +
     "function takeAdvice(){return null;} function maybeFireSeam(){} " +
     extractL2Suggest() +
