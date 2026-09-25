@@ -6,7 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R13 | 2026-09-26 | playtest-round-13 (vs R12 tip 88b488f) | canonical (this file, newest first) |
+| R14 | 2026-09-26 | r14-coev-panel-honesty (vs R13 tip 7488cfa) | canonical (this file, newest first) |
+| R13 | 2026-09-26 | playtest-round-13 (vs R12 tip 88b488f) | canonical |
 | R12 | 2026-09-25 | playtest-round-12 (vs R11 stack tip c9424f7) | canonical |
 | R11 | 2026-09-25 | playtest-round-11 (vs r10 tip 287824d) | canonical — code carried on PR #14 tip; docs on PR #12; CI on PR #13 |
 | R10 | 2026-09-25 | r10-pop-slider-parity (vs main 1f5943c) | canonical — receipt written post-hoc by R11 |
@@ -20,6 +21,21 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 14 — k2d8 — 2026-09-26 — mode: BUILDER (R14 spec item 2 — the COEV panel honesty pin, the fresh P3 booked by R13) — vs R13 tip 7488cfa (playtest-round-13)
+
+### Played version: R13 tip 7488cfa (this round's base)
+
+Suite at base 78/78 green. `node tools/prerun.js` at base and at this round's tip: byte-identical checkpoints (coev.js `946e639a…`, curve.json `ba1c919a…`, L0 `8a49b0f6…`, L1 `aa4d7c4b…`, L2 `63b7fdd5…`), tree clean after the run — index.html/core.js are outside the training path, proven by the frozen hashes.
+
+### Builder receipt (R14 spec item 2: the COEV panel clobber — "two honest chains, one clobbered panel")
+- **what:** (1) New `renderReceipts()` in `index.html`, placed immediately before `receipt()`: the single writer for the panel. Non-coev mode renders exactly the old MOTH view. C1 mode renders two labeled sections — `— MOTH receipts —` (12-row tail + `[N shown / M evicted]` admission) and `— C1 ledger —` (8-row ledger tail + `[8 shown / M evicted]`) — each chain keeping its own eviction accounting. Guard order matters: the mode check short-circuits before the `coev` reference. (2) `receipt()` delegates to `renderReceipts()` instead of assigning the panel. (3) `continueGenC()` calls `renderReceipts()` instead of assigning `$('receipts').textContent = coev.ledger.tail(8)…` — the clobber that erased the MOTH chain and its eviction counter every generation. (4) New `tests/coev-panel-glue.test.js` (Round 14 pin): extraction-integrity (renderReceipts precedes receipt and delegates; continueGenC contains no direct panel assign) + ONE-FRAME (45 MOTH writes → a full C1 generation → live()'s DEATH receipt, all in one frame: both labeled sections render, `40 shown / 7 evicted` survives, the C1 row is the real hash-chained ledger tail) + ledger accounting (305 rows → `8 shown / 5 evicted` beside the MOTH section) + non-coev mode (single-chain render unchanged, no empty C1 section). (5) `receipt-glue.test.js` re-anchored: its extraction now spans the renderReceipts+receipt block (end-anchored on the delegating close), with `coev=null` added to the factory preamble so old tests take the plain path unchanged. (6) `coev-glue.test.js` gained a one-line `renderReceipts` stub in its sandbox (its pin covers the generation-loop contract; the shipped renderer is driven verbatim in the new pin). VERIFIED_CLAIMS gained the `coev-panel-glue` row (20→21).
+- **why:** R13's failure-mode map carried "P3 coev panel clobber" — in C1 mode the page kept two honest hash chains (MOTH receipts, 40-row bound; C1 ledger, 300-row bound) but ONE panel, and `continueGenC()` assigned over it. Whichever writer ran last decided which chain the user could audit; the `[N shown / M evicted]` admission vanished every generation. A panel that hides one chain's forgetting is itself the hunted lie class at the render layer.
+- **verify (FAIL-first, then green):** against the pristine R13 tip the new pin fails 4/4 (no `renderReceipts(` anchor — loud extraction failure, not a silent skip) plus the claims-match pin (unbacked test file). After the fix: suite 78→82 all green, `node tools/prerun.js` md5s byte-identical, checkpoints clean, page-parse pin green on the edited inline block. One harness bug found while pinning (comment-on-last-extracted-line swallowed the concatenated `return`) — fixed with a `\n` separator, itself receipted by the failing tests.
+
+### Deltas observed (shapes of change)
+- **d(learning)/d(version) = 0 — the 13th straight frozen round.** The learning signal is shape-stable since the honesty pass while coverage compounds (suite 39→60→68→69→74→78→82). v1 remains the only mover (unseeded fiction).
+- **Failure-mode migration map, panel edition:** R13 booked the P3 (ledger tail clobbers MOTH chain + eviction counter) → R14 fixed at the render layer (single writer, two labeled sections, per-chain eviction accounting) and pinned the regression class ("never assign `$('receipts')` outside renderReceipts" is now extraction-asserted). Next small from the R14 spec: item 1, the canonical test command in EXPERIMENTS.md. C1 scaling study (queue top, epic) still open.
 
 ## Round 13 — kimi1 — 2026-09-26 — mode: BUILDER (one small: R12 spec item 1 — the qa exhaustion seam, made playable in-page) + play-tester — vs R12 tip 88b488f (playtest-round-12)
 
