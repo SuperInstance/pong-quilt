@@ -143,7 +143,8 @@ async function l2Suggest(g){const m=$("l2").value,w=$("w").value/100;if(m==="non
  else if(m==="moth"){s={move:g.vy>0?(g.x<g.px+D.paddleW/2?-1:1):0,confidence:0.8,source:"moth"};}
  else if(m==="custom"){s=l2Mod&&l2Mod.suggest?l2Mod.suggest(stateOf(g)):null;src=l2Mod?l2Mod.name:"custom";}
  else if(m==="qa"){const s0=stateOf(g),qseed=gen*997+g.frames;s=QuantumAudioL2.suggest(s0,qseed);src="qa-sim";
-  const cl=QuantumAudioL2.sonify(s0);qaVis={clean:cl,decoded:QuantumAudioL2.channel(cl,qseed)};}
+  const cl=QuantumAudioL2.sonify(s0);qaVis={clean:cl,decoded:QuantumAudioL2.channel(cl,qseed)};
+  if(!s){receipt("QA-REFUSAL",0,0);$("l2stat").textContent="qa-sim: channel silent (pot-bound) — advice refused, receipted";$("l2stat").className="warn";return null;}} // Round 12: exhaustion is receipted, never dropped silently
  else if(m==="llm"){maybeFireSeam(g);s=takeAdvice();if(s){$("l2stat").textContent=`llm suggests move=${s.move} conf=${s.confidence}`;$("l2stat").className="ok";}}
  if(!s)return null;
  if(m!=="llm"){const bad=MoveSuggestion.validate(s);

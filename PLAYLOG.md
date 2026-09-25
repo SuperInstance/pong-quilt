@@ -6,7 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R11 | 2026-09-25 | playtest-round-11 (vs r10 tip 287824d) | canonical (this file, newest first) |
+| R12 | 2026-09-25 | playtest-round-12 (vs R11 stack tip c9424f7) | canonical (this file, newest first) |
+| R11 | 2026-09-25 | playtest-round-11 (vs r10 tip 287824d) | canonical — code carried on PR #14 tip; docs on PR #12; CI on PR #13 |
 | R10 | 2026-09-25 | r10-pop-slider-parity (vs main 1f5943c) | canonical — receipt written post-hoc by R11 |
 | R9 | 2026-09-25 | playtest-round-9 (vs main cda9eab) | canonical |
 | R8 | 2026-09-25 | playtest-round-8 (vs main 54b625a) | canonical |
@@ -18,6 +19,41 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 12 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R11 spec item 4, REFUSAL half — the qa exhaustion seam, made reachable) + play-tester — vs R11 stack tip c9424f7 (r11-loadcoev-glue-extraction)
+
+### Played versions: v1 (e98cf66) → v2 (0722670) → main (1f5943c, post-PR#10) → PR#12 tip (playtest-round-11 @ 44840be) → PR#13 tip (merge-gate-ci @ cdf51f4) → PR#14 tip (c9424f7, this round's base)
+
+### Builder receipt (the one small — R11 spec item 4, REFUSAL half: QA-REFUSAL receipt + reachable exhaustion)
+- **what (two halves, one seam):** (1) `qa.js` gained a real silence floor: a shots-per-bin budget below `SIM_POT_FLOOR` (2) models QPAM shot underflow (measured pearson ~0.02 at 2000 shots/882 samples) — the pot returns NO image at all, `channel()` emits pure silence, and the existing `DEAD_ZCR` guard ("pot-bound: no echo, no advice") finally does the job it was built for. (2) the page's qa branch receipts a `QA-REFUSAL` row + a warn stat line (`"qa-sim: channel silent (pot-bound) — advice refused, receipted"`) on advisor null — through the honesty contract's own documented seam (a real backend returning silence, or the sim below its floor) — instead of the previous `if(!s)return null;` silent drop. `SIM_POT_FLOOR` is exported; default budget (32) is far above the floor so normal play is untouched. New `tests/qarefusal-glue.test.js`: FLOOR ×2 (silence is pure zeros; it trips the guard) + UNCHANGED (default pot still advises, cap holds) + GLUE ×2 (verbatim-extracted shipped `l2Suggest()` driven with a null-returning backend through the documented seam → a `QA-REFUSAL` row lands and the stat line names the exhaustion; live backend still receipts `qa-sim`, no regression). VERIFIED_CLAIMS gained the `qarefusal-glue` row (18→19).
+- **why:** Rounds 2/9/11 carried "the qa tile admits exhaustion silently (null suggestion, no receipt)". This round proved the carried item's verify clause ("forced-exhaustion state receipts a REFUSAL row") was **impossible as written**: the shipped sim's pot-bound branch is dead code (below). The honest build order was therefore: make exhaustion reachable first (sim physics), then receipt it (page glue).
+- **verify (FAIL-first, twice-run, then green):** against the pristine R11 tip the pin fails exactly where expected — `FLOOR` ×2 (no silence floor) and `GLUE: exhausted backend` (silent drop, no QA-REFUSAL row) FAIL, both regression guards PASS. After the fix: 5/5. Suite 69→74 all green; `node tools/test-qa.js` 8/8 (its `spb=4` "noisier channel" case stays above the floor — semantics preserved); `node tools/prerun.js` md5s byte-identical (coev.js `946e639a…`, curve.json `ba1c919a…`, L0/L1/L2) — qa.js is outside the training path, proven by the frozen hashes. checkpoints clean in the working tree after the run; the page-parse pin guards the edited inline block.
+
+### Deltas observed (shapes of change)
+- **d(honesty)/d(version): the lie class gained a new member — the advertised-but-unreachable seam.** Nine rounds closed wrong-label lies (banner vs pane, count vs reality, provenance columns). Round 12 found a quieter cousin: a label that was *right about its contract but had no execution path* — the demo advertised "pot-bound: no echo, no advice" while the state was mathematically unreachable under the shipped sim (min ZCR 0.125 vs threshold 0.02; 8,820 suggest() calls, 0 nulls). Shape: honesty gaps are not only mismatches between claim and behavior; they are also claims whose behavior was never given a way to run. The fix pattern (make the seam executable, then receipt it) generalizes.
+- **d(learning)/d(version) = 0 for the tenth straight round** — L0 5,767 / L1 8,800 / L2 8,700, coev arms race md5 `946e639a…` byte-identical, re-confirmed by running on v2 (0722670), main, and all three open-PR tips. The freeze is provenance; the standing epic items remain the only nonzero paths.
+- **d(coverage)/d(version) continues: suite 69→74, VERIFIED_CLAIMS 18→19.** The wristband compounds while the learning curve stays frozen — the demo is now more specification than experiment on the L1/L2 surface.
+- **d(process)/d(version): the merge gate got its first real exercise.** Three sibling PRs (#12 docs, #13 CI, #14 glue) sat open; this round ran the full play-test protocol against all three tips (suite + prerun, all green, all byte-identical), which satisfies the text half of the R11 merge-gate doctrine for each.
+
+### Lies hunted
+- [P2, found this round by running, FIXED] qa pot-bound branch is dead code — the honesty contract's exhaustion seam had no reachable state under the shipped sim. Repro: fine state sweep (61×61×6) → min ZCR 0.125 at (bx=0, px=0, speed=1), 6× the 0.02 threshold; 8,820 `suggest()` calls, 0 nulls. The page compounded it by dropping advisor nulls silently. Fix + FAIL-first pin shipped (Builder receipt).
+- [P3, found by counting, recorded] VERIFIED_CLAIMS parenthetical drift in the R11 entry ("suite 56→60→68, VERIFIED_CLAIMS 15→17") — actual 16→18 at the R11 tip, 18→19 after this round. The two-way match pin holds; only the prose counts drifted. Not fixed (docs nit, spec below).
+- [P3-process, verified by running, recorded] `node --test tests` (directory form) fails opaquely on node v22.22.2 ("Cannot find module '…/tests'", no failing subtest named); the canonical glob form (`node --test tests/*.test.js`) is green 74/74 and is what CI runs. Sharp edge, not a defect — but a future runner copy-pasting the directory form gets a red wall with no name on it.
+- [P3-process, verified by reading GitHub Actions semantics, recorded] the merge-gate workflow (PR #13) cannot run on any PR until it reaches main (workflows trigger from the base branch) — so the text half of the doctrine is the only gate standing between here and merge, exactly as this round used it.
+- [P3, carried from R11, NOT fixed — R13 spec] the `moth` advisor is still a handcoded heuristic wearing the advisor label; the advisor-diet comparison would expose it as the trivial diet.
+- (nothing found in: fitness weights, ring, evaluator top-K, effective paddle, seeded swans, JEPA representation, seam pacing/timeout/gameId, receipt eviction, receiptkind attribution, loadCoev head + single-ledger construction, pop-slider parity, coev rules/determinism, checkpoint consistency, prerun byte-reproducibility, page parse + headless boot — all pinned and re-verified green this round across all three open-PR tips.)
+
+### Next version spec (competitive improvements)
+- [small] Make the exhaustion seam playable: surface the pot budget in the qa tile (shots-per-bin readout, or an explicit "deplete the pot" control) so a human play-tester can drive the sim below its floor and watch the QA-REFUSAL row land — currently the seam exists but is invisible without reading qa.js. why: the R12 seam is executable but not discoverable; an honesty path nobody can find is halfway back to silent. verify: crank the pot below floor in the page → tile shows silence + panel shows QA-REFUSAL.
+- [small] Docs nit repair: fix the R11 parenthetical counts; add one line to EXPERIMENTS.md naming the canonical test command (`node --test tests/*.test.js`, glob) and noting the directory form's opaque failure on node 22. why: this round's two P3s both cost investigator time. verify: grep.
+- [medium] Advisor-diet comparison: GA alone vs +jepa vs +moth vs +qa-sim — champion fitness over N gens under the SAME seed, receipts as the differ. why: carried since Round 2; now the ONLY carried medium with zero comparative evidence, and it exposes the moth heuristic as the trivial diet. verify: prerun-style tool emits per-diet curves; diets differ.
+- [medium] REAL_QPAM BYO endpoint seam: the silence floor now defines the contract a real backend signals (zeros/underflow → QA-REFUSAL); wire a bring-your-own endpoint like the LLM seam. why: second half of R11 spec item 4, now unblocked. verify: mock backend returning silence → QA-REFUSAL row; live backend → qa-sim rows.
+- [epic] C1 scaling study (population × gens sweep with the frozen provenance harness) OR first/last-mile sense filter with re-evolution — the only paths to nonzero d(learning)/d(version). why: ten rounds at zero learning delta; the honesty instrumentation is mature enough to support a real experiment now. verify: a new receipted curve in checkpoints/ with different endpoints.
+
+### Verdict
+MERGEABLE (P2 fixed with FAIL-first pin, proven twice; suite 74/74; prerun byte-identical; all three open-PR tips independently play-tested green this round, satisfying the merge-gate text half for each).
+
+---
 
 ## Round 11 — kimi1 — 2026-09-25 — mode: BUILDER (one small: receipt-kind attribution, fresh P2, FAIL-first pin) + play-tester — vs r10 branch tip 287824d (pop-slider parity)
 

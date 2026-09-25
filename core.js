@@ -398,6 +398,7 @@
     { id: "loadcoev-glue", claim: "loadCoev banners the chain it actually displays — the stats-line ledger head equals the displayed (re-anchored) ledger's head, with the artifact's true head disclosed beside it (Round 9)", proofTest: "tests/loadcoev-glue.test.js" },
     { id: "popslider-glue", claim: "coev populations honor the games-at-once slider in BOTH directions — a shrink pins popS/popE to n exactly like the classic loop (Round 10)", proofTest: "tests/popslider-glue.test.js" },
     { id: "receiptkind-glue", claim: "the receipt ledger names the advisor that fired — jepa/moth/qa-sim rows carry their own kind, not a bare 'L2' (Round 11)", proofTest: "tests/receiptkind-glue.test.js" },
+    { id: "qarefusal-glue", claim: "the qa tile admits exhaustion honestly — a silent channel (empty pot under the sim's shots floor, or a real QPAM backend's underflow) receipts a QA-REFUSAL row instead of dropping silently (Round 12)", proofTest: "tests/qarefusal-glue.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];
   return { DEFAULTS, rng, makeNet, forward, mutate, step, newGame, sense, playOne,
