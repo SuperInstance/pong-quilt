@@ -403,6 +403,7 @@
     { id: "coev-panel-glue", claim: "the C1 panel is honest — MOTH receipts and the C1 ledger render as two labeled sections of one panel, each keeping its own eviction accounting; no writer clobbers the other chain (Round 14)", proofTest: "tests/coev-panel-glue.test.js" },
     { id: "confidence-strip-glue", claim: "the tile's 64x12 strip plots the confidence-vs-pot envelope from the cached measured grid — null below the floor, rising to the sim-cap asymptote, trend pinned at module+glue level (Round 15)", proofTest: "tests/confidence-strip-glue.test.js" },
     { id: "testcmd-docs", claim: "EXPERIMENTS.md names the canonical suite command (glob form) and flags the bare directory form's opaque failure on Node 22 (Round 15)", proofTest: "tests/testcmd-docs.test.js" },
+    { id: "diet-compare", claim: "the advisor-diet comparison tool pins the page's shipped moth heuristic verbatim and replays each seeded game identically for every diet — differences are the advisor's, not the weather's (Round 16)", proofTest: "tests/diet-compare.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];
   return { DEFAULTS, rng, makeNet, forward, mutate, step, newGame, sense, playOne,
