@@ -155,6 +155,31 @@ R10 code re-verified independently; process debt recorded honestly).
 - **why:** Rounds 9, 10, 11 each re-flagged it; the experiment's memory was
   out of order at exactly the seam future rounds read first.
 
+### Builder receipt (item 6 — loadCoev glue extraction, R11 spec)
+- **what:** removed the throwaway ledger from `loadCoev()`. The page built
+  `coev` via `Object.assign(coev||{}, {… ledger:PQ.makeLedger(300) …})` and
+  then, on the very next line, rebuilt `coev.ledger=PQ.makeLedger(300)` and
+  re-chained the artifact tail onto it. The first chain was constructed and
+  discarded on every C1 load — dead glue, and a reader trap: two
+  `makeLedger(300)` calls in one function with no signal which chain the
+  receipts pane actually shows. Extraction: the Object.assign literal no
+  longer carries `ledger:`; the single explicit construction+re-anchor is
+  the only chain built. Behavior-preserving — every other line verbatim.
+  New FAIL-first pin in `tests/loadcoev-glue.test.js`: the extracted
+  `loadCoev()` source must contain exactly ONE `PQ.makeLedger(300)`
+  construction.
+- **why:** the glue-pair class is honesty-first, but dead construction is
+  the same class's quiet member: two chains where one is displayed invites
+  the next editor to banner the wrong head. Round 9 pinned WHICH head the
+  banner may name; this item removes the second chain so the question
+  cannot recur.
+- **verify (FAIL-first, then green):** against the pre-fix page the new pin
+  FAILS (`loadCoev() constructs 2 ledgers`); after extraction 5/5 in the
+  file, suite 68→69 tests all green; `node tools/prerun.js` md5s
+  byte-identical (coev.js `946e639a…`, curve.json `ba1c919a…`, L0/L1/L2) —
+  provenance untouched; checkpoints clean in the working tree after the run.
+  The page-parse pin guards the edited inline block.
+
 ---
 
 ## Round 10 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R10 spec item 1 — coev pop-slider shrink parity, the five-round P2) + play-tester — vs main 1f5943c (post-PR#10 merge)
