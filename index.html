@@ -279,7 +279,7 @@ function loadCoev(){const cp=window.PONG_QUILT_COEV;
  coev.ledger=PQ.makeLedger(300);(cp.ledger||[]).slice(-12).forEach(r=>coev.ledger.write(r));
  champNet=cp.sChamp.net;champGame=PQ.newAdvGame(randPQ);gameId++;
  $("mode").value="coev";
- $("stats").textContent=`C1 artifact: seed ${cp.seed}, ${cp.gens} gens × ${cp.pop}+${cp.pop} nets · sChamp ${cp.sChamp.netId} (${cp.sChamp.fitness|0}) · eChamp ${cp.eChamp.netId} (${cp.eChamp.fitness|0}) · ledger ${cp.ledgerHead} · md5-verified`;
+ $("stats").textContent=`C1 artifact: seed ${cp.seed}, ${cp.gens} gens × ${cp.pop}+${cp.pop} nets · sChamp ${cp.sChamp.netId} (${cp.sChamp.fitness|0}) · eChamp ${cp.eChamp.netId} (${cp.eChamp.fitness|0}) · ledger ${coev.ledger.head} (re-anchored at genesis; artifact ${cp.ledgerHead}) · md5-verified`;
  receipt("LOAD/COEV",0,1);}
 $("l2").onchange=()=>{$("llmkey").style.display=$("l2").value==="llm"?"inline":"none";
  if($("l2").value==="moth")receipt("MOTH-ON",0,1);};

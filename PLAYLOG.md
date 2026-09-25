@@ -2,6 +2,123 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
+## Round 9 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R9 spec item 1 — loadCoev head honesty, FAIL-first pin) + play-tester — vs main cda9eab (post-PR#9 merge)
+
+### Played versions: v1 (e98cf66) → v2 (0722670) → R4 (e8774a2) → R5 (7882d99) → R6 (d8ec449) → main-merge (1ae696b, was dead) → R7 (54b625a) → R8/main (cda9eab)
+
+### Builder receipt (the one small — Round 9 spec item 1: loadCoev head honesty, the six-round P1)
+- **what:** the shipped `loadCoev()` stats line banners `coev.ledger.head` —
+  the re-anchored chain the receipts pane ACTUALLY displays — with the
+  artifact's true md5-verified head disclosed beside it:
+  `ledger ${coev.ledger.head} (re-anchored at genesis; artifact ${cp.ledgerHead})`.
+  New `tests/loadcoev-glue.test.js`: extracts the VERBATIM shipped loadCoev()
+  from index.html (line-anchored — extraction fails loudly if the page moves)
+  and drives it headlessly against the real committed artifact: (1) extraction
+  integrity; (2) the HONESTY invariant — the bannered ledger head equals the
+  head of the chain actually displayed, with the displayed tail recomputing to
+  it; (3) PROVENANCE — the artifact's true head stays disclosed, not erased by
+  the re-anchor; (4) the no-artifact path alerts and touches nothing. VERIFIED_CLAIMS
+  gained the `loadcoev-glue` row; README's C1 section now admits the re-anchor
+  and names the pin (formerly the lie was nowhere admitted in README).
+- **why:** Rounds 4→8 receipted the lie five consecutive times with
+  byte-identical numbers: banner `8663279a` (the artifact's head) over a pane
+  showing artifact rows re-chained onto fresh genesis, displayed head
+  `83a099d4`, first displayed row re-chained `360e1dfc` vs its artifact hash
+  `6c072f4c`. The banner said "md5-verified" over a chain the pane did not
+  show. Round 8 spec item 1 decided the shape (banner the displayed chain;
+  keep artifact head as provenance); this round ships the decision.
+- **verify (FAIL-first, then green):** against the pre-fix page, exactly one
+  test fails, verbatim: `banner names 8663279a but the pane shows a chain
+  headed 83a099d4 — the receipt pane shows a chain the banner doesn't name`.
+  After the fix: pin 4/4 PASS. Suite 56→60 tests, all green; `node
+  tools/prerun.js` md5s byte-identical (coev.js `946e639a…`, L0/L1/L2,
+  curve) — provenance untouched; checkpoints clean in the working tree after
+  the run. The page-parse pin guards the edited inline block (it is in the
+  suite).
+
+### Deltas observed (shapes of change)
+- **d(lies)/d(version): the carried-P1 class shrank for the first time in six
+  rounds.** The R4→R8 shape was a stable pair of unfixed browser-glue lies
+  re-confirmed with frozen numbers each round (deterministic repros — the
+  failure surface was stable, not noisy). This round closes the older of the
+  two (P1) with a FAIL-first pin; the younger (P2 pop-slider) remains live.
+  Shape: d(honesty)/d(version) is no longer only additive coverage — one
+  long-frozen lie actually died.
+- **The honesty-instrumentation compounding continues.** Suite 56→60,
+  VERIFIED_CLAIMS 14→15 rows; four consecutive builder rounds each closed
+  one deferred honesty gap (R6 seam gameId, R7 receipt eviction, R8 page
+  parse, R9 loadCoev head). Learning numbers remain frozen by provenance for
+  the seventh straight round — L0 5,767 / L1 8,800 / L2 8,700, coev arms race
+  md5 `946e639a…` byte-identical. d(learning)/d(version) = 0 is now a
+  seven-times-receipted fact.
+- **What the freeze IS: provenance, not stagnation — but it is now the
+  experiment's main uncovered shape.** Seven rounds, zero learning-curve
+  movement, because checkpoints are committed receipts. The standing
+  medium/epic items (C1 scaling study; first/last-mile sense filter with
+  re-evolution) are the only paths to a nonzero d(learning)/d(version); both
+  carry again below.
+
+### Lies hunted
+- [P1, confirmed 6th consecutive round by running, FIXED] loadCoev head
+  dishonesty — repro re-ran byte-identical (banner `8663279a` vs displayed
+  `83a099d4`; row re-chain `360e1dfc` vs `6c072f4c`); fix + FAIL-first pin
+  shipped (Builder receipt).
+- [P2, confirmed 5th consecutive round by running, NOT fixed — R10 spec 1]
+  coev "games-at-once" slider only grows (`while(pop<n)push`, never shrinks;
+  classic loop pins both ways, present verbatim at index.html startGen).
+  Repro re-ran: slider 16→8 → pops stay 16/16 while the classic loop pins to
+  8. The label lies after a shrink.
+- [P3-process, still present, NOT fixed — R10 spec 2] PLAYLOG merge disorder:
+  the stale duplicate Round 2 (pre-honesty-pass, PR #1) still sits between
+  Round 7 and Round 6; and the quantum-audio branch's own Round 2 entry means
+  three "Round 2" headings total exist. The repair needs disambiguation, not
+  just deletion (two branch-canonical R2s are real history).
+- [P3-process, verified by reading, NOT fixed — R10 spec 3] merge-gate doctrine
+  still textless: EXPERIMENTS.md carries no rule that a sibling PR needs a
+  play-test round or CI pin, and `.github/workflows/` does not exist. The R8
+  page-parse pin runs only when a runner runs it.
+- (nothing found in: fitness weights, ring, evaluator top-K, effective paddle,
+  seeded swans, JEPA representation, seam pacing/timeout/gameId, receipt
+  eviction, coev rules/determinism, checkpoint consistency, prerun
+  byte-reproducibility, page parse — all reproduce as claimed, twice-run this
+  round.)
+
+### Next version spec (Round 10)
+- [small] Coev pop-slider parity: pin `coev.popS/popE.length = n` on shrink
+  (same as the classic loop's `pop.length=D.popSize`), FAIL-first pin in the
+  coev-glue harness — why: the slider label lies after a shrink (P2, five
+  consecutive rounds) — verify: set pop 16→train→set 8→train, pops are 8.
+- [small] Repair PLAYLOG merge disorder: delete the stale duplicate Round 2
+  (line-anchored, marked) and label the two canonical ones ("Round 2
+  (main)" / "Round 2 (quantum-audio branch)") — why: the memory presents a
+  superseded pre-honesty-pass round as current truth between R7 and R6, and
+  three same-numbered headings make the chain ambiguous — verify: no STALE
+  marker remains, exactly three Round-2 headings each branch-labeled, file
+  reads R10→R1 top to bottom.
+- [small] Merge-gate doctrine, text half: write the rule into EXPERIMENTS.md
+  (a sibling PR may not merge without either one play-test round or the
+  node-parse pin running on it) — why: the R7→R8 P0 existed only because a
+  merge bypassed the loop; the pin exists but the doctrine text does not —
+  verify: EXPERIMENTS.md carries the rule verbatim.
+- [medium] Merge-gate CI: stand up `.github/workflows/` running
+  `node --test tests/*.test.js` on every PR — why: pins only bite when they
+  run uninvoked; the repo has no CI at all — verify: a PR that breaks the page
+  fails the check (the page-parse pin is the canary).
+- [medium] Extract loadCoev into the requireable glue — why: seam, C1, and
+  receipt glue are pinned; loadCoev is pinned as text but not requireable —
+  verify: R10 items tested through it.
+- [medium] C1 scaling study: pop 48+, gens 300+ in prerun-coev — does
+  SURVIVOR-CAP recur? a second regime flip is the next shape (carried from
+  R3–R9 queues) — verify: ledger receipted, md5-stable, arms-race rows cited.
+- [epic] First/last-mile sense filter from gen 0: re-evolve both lineages
+  under the filtered contract, keep BOTH curves, archive old checkpoints with
+  provenance notes (carried from R2–R9 queues).
+
+### Verdict
+MERGEABLE (Round 9 ships the loadCoev head-honesty fix — FAIL-first pinned —
+and re-confirms the pop-slider lie a fifth time; 60/60 tests green, checkpoint
+md5s byte-identical, no provenance touched. The six-round P1 is dead.)
+
 ## Round 8 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R8 spec item 1 — draw() P0 fix, FAIL-first page-parse pin) + play-tester — vs main 54b625a (post-PR#8 merge)
 
 ### Played versions: v1 (e98cf66) → edge-ml-crush (b06d901) → v2 (0722670) → R4 (e8774a2) → R5 (7882d99) → R6 (d8ec449) → main-merge (1ae696b, broken) → R7-merged main (54b625a, still broken)
