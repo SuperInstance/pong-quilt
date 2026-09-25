@@ -2,6 +2,222 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
+## Canonical index (repair R11 item 2)
+
+| Round | Date | Branch / base | Status |
+|---|---|---|---|
+| R11 | 2026-09-25 | playtest-round-11 (vs r10 tip 287824d) | canonical (this file, newest first) |
+| R10 | 2026-09-25 | r10-pop-slider-parity (vs main 1f5943c) | canonical — receipt written post-hoc by R11 |
+| R9 | 2026-09-25 | playtest-round-9 (vs main cda9eab) | canonical |
+| R8 | 2026-09-25 | playtest-round-8 (vs main 54b625a) | canonical |
+| R7 | 2026-09-25 | playtest-round-7 (vs main 1ae696b) | canonical |
+| R6 | 2026-09-25 | round-6 (vs round-5 tip 7882d99) | canonical |
+| R5 | 2026-09-24 | round-5 (vs round-4 tip e8774a2) | canonical |
+| R4 | 2026-09-24 | round-3-builder (PR #4) | canonical |
+| R3 | 2026-09-24 | honesty pass + C1 coevolution | canonical |
+| R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
+| R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
+| R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 11 — kimi1 — 2026-09-25 — mode: BUILDER (one small: receipt-kind attribution, fresh P2, FAIL-first pin) + play-tester — vs r10 branch tip 287824d (pop-slider parity)
+
+### Played versions: v1 (e98cf66) → v2 (0722670) → R4→R9 chain → main (1f5943c, post-PR#10) → r10-pop-slider-parity (287824d)
+
+### Builder receipt (the one small — receipt-kind attribution, found this round by running)
+- **what:** the shipped receipt call in `l2Suggest()` read
+  `receipt(s.source||src==="none"?"L2":s.source||src, …)` — which parses as
+  `(s.source || (src==="none")) ? "L2" : (s.source || src)`. Every advisor that
+  sets `.source` (jepa `"jepa"`, moth `"moth"`, qa `"qa-sim"`) was written
+  into the hash-chained ledger with kind `"L2"`. The stat line above the
+  panel said `jepa suggests move=…` while the ledger — the demo's honesty
+  centerpiece — recorded `"L2"`. Fixed to
+  `receipt(s.source||(src==="none"?"L2":src), …)`: the ledger now names the
+  advisor; `"L2"` remains the dead fallback. New
+  `tests/receiptkind-glue.test.js` extracts the VERBATIM shipped l2Suggest()
+  and fires each advisor headlessly (jepa trained first so its suggestion is
+  shape-valid): three ATTRIBUTION tests + one FALLBACK test. VERIFIED_CLAIMS
+  gained the `receiptkind-glue` row (17 rows).
+- **why:** Rounds 3–10 pinned every claim about the ledger's *bounds* and
+  *chain integrity* (cap-40 eviction R7, hash chain R5) — but never the
+  *attribution column*. The provenance lie sat one operator-precedence level
+  below every previous read. This is the ninth round of the glue-pair class
+  (browser glue shipped unexamined until run).
+- **verify (FAIL-first, then green):** against the pre-fix page, exactly the
+  three ATTRIBUTION tests fail (`ledger kind is "L2" — the stat line says
+  "jepa suggests" but the hash-chained ledger records "L2"`, likewise moth,
+  qa-sim); FALLBACK passes both before and after (it pins the fallback, not
+  the bug). After the fix: 4/4 PASS. Suite 64→68 tests, all green;
+  `node tools/prerun.js` md5s byte-identical (coev.js `946e639a…`,
+  L0/L1/L2, curve.json `ba1c919a…`) — provenance untouched; checkpoints
+  clean in the working tree after the run. The page-parse pin guards the
+  edited inline block.
+
+### Process debt settled (the missing Round 10 receipt)
+- The r10-pop-slider-parity branch (287824d) shipped the R10 builder item —
+  coev pop-slider shrink parity, the P2 carried since Round 5 — and pushed,
+  but its run died before the PLAYLOG entry and the PR. The code was real:
+  this round re-verified it independently (suite 64/64 green on the branch
+  tip; my own headless repro of the shipped startGenC: 16→8 shrink pins
+  popS/popE to 8, 8→32 regrow restores 32/32; prerun md5s byte-identical).
+  The Round 10 entry below is written post-hoc from that verification, and
+  this branch's PR now carries both rounds. Recorded as a process finding:
+  **a pushed branch without a PLAYLOG entry is an unshipped round** — the
+  receipt is the ship.
+
+### Deltas observed (shapes of change)
+- **d(honesty)/d(version): the glue-pair class closed its ninth member, and
+  the class itself is now the measurable signal.** Nine consecutive rounds,
+  each closing exactly one browser-glue honesty gap (R3 weights/paddle, R6
+  seam gameId, R7 receipt eviction, R8 page parse, R9 loadCoev head, R10
+  pop-slider, R11 receipt attribution). Shape: the lies are not random —
+  they cluster in the seam between the pinned core and the unpinned page.
+  d(lies)/d(version) is decaying (one per round, each smaller: from a lying
+  banner, to a lying population count, to a lying provenance column) — the
+  class is being mined out.
+- **d(learning)/d(version) = 0 for the ninth straight round** — L0 5,767 /
+  L1 8,800 / L2 8,700, coev arms race md5 `946e639a…` byte-identical. The
+  freeze is provenance (committed checkpoints), confirmed again by running.
+  The standing epic items (C1 scaling study; first/last-mile sense filter
+  with re-evolution) remain the only paths to a nonzero learning delta.
+- **d(coverage)/d(version) continues: suite 56→60→68, VERIFIED_CLAIMS
+  15→17.** The wristband is compounding faster than the learning curve is
+  frozen — the demo is becoming a specification of itself.
+
+### Lies hunted
+- [P2, found this round by running, FIXED] receipt-kind attribution —
+  jepa/moth/qa-sim advice receipted as `"L2"` in the hash-chained ledger due
+  to operator precedence (`s.source||src==="none"?"L2":…`). Repro: headless
+  l2Suggest ×3 advisors, all kinds `"L2"` pre-fix. Fix + FAIL-first pin
+  shipped (Builder receipt).
+- [P2, confirmed fixed by independent re-run] coev pop-slider shrink parity
+  (the R10 item) — my repro of the shipped startGenC: shrink pins both pools,
+  regrow restores. The r10 pin (tests/popslider-glue.test.js) also passes.
+- [P3-process, still present, NOT fixed — R12 spec 1] PLAYLOG merge disorder:
+  the stale duplicate Round 2 still sits between Round 7 and Round 6;
+  three "Round 2" headings total (two branch-canonical). Repair needs
+  disambiguation, not deletion.
+- [P3-process, verified by reading, NOT fixed — R12 spec 2] no CI:
+  `.github/workflows/` does not exist; the page-parse and other pins run
+  only when a runner runs them. A merge that breaks the page has no gate.
+- [P3, observed, NOT fixed — R12 spec 3] the `moth` advisor is a handcoded
+  heuristic (`vy>0 ? chase : 0`, confidence pinned at 0.8) wearing the
+  "receipted advice ledger" label — the label names the system, not the
+  advice source. Honest but confusing; the advisor-diet comparison would
+  expose it as the trivial diet.
+- (nothing found in: fitness weights, ring, evaluator top-K, effective
+  paddle, black-swan seeding, loadCoev head, pop-slider parity — all pinned
+  and re-verified green this round.)
+
+### Next version spec (competitive improvements)
+- [small] PLAYLOG merge-disorder repair — disambiguate the three "Round 2"
+  headings (retitle the stale duplicate as a named historical artifact, add
+  a canonical index at top). why: Rounds 9, 10, 11 each re-flagged it; the
+  memory the loop eats from is out of order. verify: exactly one "Round 2"
+  heading; top index lists rounds 1–11 in order.
+- [small] CI gate: `.github/workflows/test.yml` running `node --test
+  tests/*.test.js` on PR + push to main. why: R8/R10/R11 pins are only as
+  real as the runner that executes them; the R8 dead-merge incident would
+  have been caught. verify: a PR that breaks a pin goes red.
+- [medium] Advisor-diet comparison: GA alone vs +jepa vs +moth vs +qa-sim —
+  champion fitness over N gens under the SAME seed, receipts as the differ.
+  why: carried since Round 2; the L2 seam is the demo's differentiation and
+  has zero comparative evidence. Also exposes the moth heuristic as trivial.
+  verify: a prerun-style tool emits per-diet curves; diets differ.
+- [medium] REAL_QPAM seam + QA-REFUSAL receipt row when the sim labels
+  itself exhausted (pot-bound). why: carried since Round 2/9; the qa tile
+  currently admits exhaustion silently (null suggestion, no receipt).
+  verify: forced-exhaustion state receipts a REFUSAL row.
+- [epic] C1 scaling study (population × gens sweep with the frozen
+  provenance harness) OR first/last-mile sense filter with re-evolution —
+  the only paths to nonzero d(learning)/d(version). why: nine rounds at
+  zero learning delta; the honesty instrumentation is mature enough to
+  support a real experiment now. verify: a new receipted curve in
+  checkpoints/ with different endpoints.
+
+### Verdict
+MERGEABLE (P2 fixed with FAIL-first pin; suite 68/68; prerun byte-identical;
+R10 code re-verified independently; process debt recorded honestly).
+
+### Builder receipt (item 2 — PLAYLOG merge-disorder repair, R11 spec small)
+- **what:** disambiguated the three `## Round 2` headings and gave the log
+  a canonical index. (1) Stale duplicate (pre-honesty pass, merged via PR #1)
+  retitled `## Artifact A — stale duplicate of Round 2…` — kept as a named
+  historical artifact per doctrine (disambiguation, not deletion; the memory
+  the loop eats from is now in order). (2) The two canonical branch Round 2s
+  got branch labels: `Round 2 (branch quilt-edge-ml-survey)` and
+  `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes.
+  (3) A canonical index table (R11→R1 + artifact row, with branch/base and
+  status) now sits at the top of the log.
+- **verify:** `grep '^## Round 2'` returns exactly the two uniquely-labeled
+  canonical branch entries (zero stale duplicates); the top index lists
+  every round 1–11 in order plus the artifact row. Docs-only change — no
+  shipped code touched; suite re-run 68/68 green as a sanity check.
+- **why:** Rounds 9, 10, 11 each re-flagged it; the experiment's memory was
+  out of order at exactly the seam future rounds read first.
+
+---
+
+## Round 10 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R10 spec item 1 — coev pop-slider shrink parity, the five-round P2) + play-tester — vs main 1f5943c (post-PR#10 merge)
+
+> Receipt note: this entry was written post-hoc by Round 11. The branch
+> shipped and pushed at 15:07 +0800 but its run ended before the PLAYLOG
+> entry and the PR; Round 11 re-verified the code independently and
+> completes the receipt here. The numbers below are Round 11's re-runs.
+
+### Played versions: v1 (e98cf66) → v2 (0722670) → R4→R9 chain → main (1f5943c)
+
+### Builder receipt (the one small — Round 10 spec item 1: coev pop-slider shrink parity)
+- **what:** the coev loop's population resize only GREW
+  (`while(pop<n)push`, never shrinks) while the classic loop pins both ways
+  (`if(pop.length>D.popSize)pop.length=D.popSize;`). After dragging the
+  games-at-once slider down, the label lied: slider 8, 16 pops still
+  playing. Fix: two lines in startGenC pinning popS/popE to the slider on
+  shrink, verbatim-commented as classic-loop parity. New
+  `tests/popslider-glue.test.js`: extracts the VERBATIM shipped startGenC()
+  and drives 16→8 (both pools must be 8), 8→16 regrow, and a truncation
+  ghost check (every survivor after shrink is a real net). VERIFIED_CLAIMS
+  gained the `popslider-glue` row.
+- **why:** Rounds 5→9 receipted this lie five consecutive times with frozen
+  numbers; Round 9 spec item 1 decided the shape (pin like the classic
+  loop). This round ships the decision.
+- **verify (re-run by Round 11):** popslider-glue 4/4 PASS on the branch tip;
+  independent repro of the shipped startGenC (extraction-anchored, same
+  technique as the pin): grow to 16 → shrink 16→8 pins popS=8/popE=8 →
+  regrow 8→32 restores 32/32. Suite 64/64 green at the branch tip;
+  `node tools/prerun.js` md5s byte-identical (coev.js `946e639a…`,
+  L0/L1/L2, curve.json). Round 11's FAIL-first confirmation of the bug's
+  pre-fix existence is preserved in the R9 entry (five consecutive
+  byte-identical repros, R5→R9).
+
+### Deltas observed (shapes of change)
+- **d(lies)/d(version): the carried-P1/P2 class shrank again.** Round 9
+  closed the loadCoev head lie; this round closes the pop-slider lie — the
+  browser-glue pair both died within two rounds, each with a FAIL-first
+  pin. (R11 later adds: the class had a ninth member — receipt attribution —
+  also since Round 3. The class is the seam, not any single lie.)
+- **d(learning)/d(version) = 0, eighth straight round** — L0 5,767 /
+  L1 8,800 / L2 8,700, coev md5 `946e639a…` byte-identical. Provenance
+  freeze, re-confirmed by running.
+
+### Lies hunted (as re-verified by Round 11)
+- [P2, carried 5 rounds, FIXED] coev pop-slider shrink parity —
+  popslider-glue 4/4 PASS; independent repro confirms shrink pins both
+  pools and regrow restores.
+- [P3-process, recorded by R9, deferred here] merge disorder + no-CI —
+  carried to R11 spec, still open at R11.
+
+### Next version spec (competitive improvements) — as specified by R9, executed this round
+- [small→SHIPPED] pop-slider parity (above).
+- [small, STILL OPEN — R11 spec] merge-gate doctrine + CI workflow.
+- [small, STILL OPEN — R11 spec] PLAYLOG merge-disorder repair.
+
+### Verdict
+MERGEABLE (the code, re-verified by Round 11: 64/64 green at branch tip,
+prerun byte-identical, independent repro PASS. The missing receipt + PR are
+the process debt Round 11 settles).
+
+---
+
 ## Round 9 — kimi1 — 2026-09-25 — mode: BUILDER (one small: R9 spec item 1 — loadCoev head honesty, FAIL-first pin) + play-tester — vs main cda9eab (post-PR#9 merge)
 
 ### Played versions: v1 (e98cf66) → v2 (0722670) → R4 (e8774a2) → R5 (7882d99) → R6 (d8ec449) → main-merge (1ae696b, was dead) → R7 (54b625a) → R8/main (cda9eab)
@@ -366,7 +582,7 @@ stays dark until R8 spec item 1.)
 > hitbox, seam pacing, receipt cap). The canonical chain is R7→R6→R5→R4→
 > R3→R2→R1 below. Repair specced as R8 item 4.
 
-## Round 2 — kimi1 — 2026-09-24 — vs v1 (e98cf66) [STALE DUPLICATE — superseded by the canonical Round 2 entry below; see merge-disorder note above]
+## Artifact A (R11 item 2) — stale duplicate of Round 2, pre-honesty pass — kimi1 — 2026-09-24 — vs v1 (e98cf66) [STALE DUPLICATE — superseded by the canonical Round 2 entries below; see merge-disorder note above]. Kept as a historical artifact, not a round.
 
 ### Played versions: v1 only (Round 1's next-version spec unimplemented; this round delivers its [medium] 'first adversarial play-test' item)
 
@@ -844,7 +1060,7 @@ checkpoint md5s byte-identical, no provenance touched).
 MERGEABLE (Round 3 ships the honesty pass, the wristband, the paced seam,
 the true paddle, and a coevolution mode whose arms race is receipted).
 
-## Round 2 — kimi1 — 2026-09-24 — vs quilt-edge-ml (sibling) + v1
+## Round 2 (branch quilt-edge-ml-survey) — kimi1 — 2026-09-24 — vs quilt-edge-ml (sibling) + v1
 
 ### Played versions: v1 (e98cf66 baseline) + sibling survey (quilt-edge-ml @9605a24)
 
@@ -903,7 +1119,7 @@ the true paddle, and a coevolution mode whose arms race is receipted).
 ### Verdict
 MERGEABLE (Round 2 ships the two ports, the strip, the curve artifact, and
 reproducible numbers; sibling keeps the substrate zoo crown).
-## Round 2 — kimi1 — 2026-09-24 — quantum-audio L2 module (branch quantum-audio-L2)
+## Round 2 (branch quantum-audio-L2) — kimi1 — 2026-09-24 — quantum-audio L2 module (branch quantum-audio-L2)
 
 ### Deltas observed
 - New L2 module family: `qa.js` (sonify → labeled-sim QPAM channel →
