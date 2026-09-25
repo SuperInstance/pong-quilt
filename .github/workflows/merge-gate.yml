@@ -1,0 +1,38 @@
+# Merge gate — enforcement half of the EXPERIMENTS.md merge-gate doctrine.
+# Text half: "A sibling PR may not merge without either one play-test round run
+# against it, or the page-parse pin running green on its tip."
+# This workflow makes the pin run on every PR tip: node --test over the suite,
+# with the page-parse canary (R7->R8 P0 class: a merge that unbalances ANY
+# inline <script> in index.html ships a dead page) as a named first step so a
+# failure names the gate, not just the suite.
+name: merge-gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  page-parse-pin:
+    name: page-parse canary (R7->R8 P0 class)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: every inline script block in index.html parses
+        run: node --test tests/page-parse.test.js
+
+  suite:
+    name: full test suite
+    needs: page-parse-pin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: node --test tests/*.test.js
+        run: node --test tests/*.test.js
