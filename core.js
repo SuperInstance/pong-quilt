@@ -396,6 +396,7 @@
     { id: "receipt-glue", claim: "the receipt panel counts its evictions like makeLedger — 'N shown / M evicted' after the 40-row bound (Round 7)", proofTest: "tests/receipt-glue.test.js" },
     { id: "page-parse", claim: "every inline <script> block in index.html parses and is brace-balanced — a merge that breaks the page trips this pin (Round 8)", proofTest: "tests/page-parse.test.js" },
     { id: "loadcoev-glue", claim: "loadCoev banners the chain it actually displays — the stats-line ledger head equals the displayed (re-anchored) ledger's head, with the artifact's true head disclosed beside it (Round 9)", proofTest: "tests/loadcoev-glue.test.js" },
+    { id: "popslider-glue", claim: "coev populations honor the games-at-once slider in BOTH directions — a shrink pins popS/popE to n exactly like the classic loop (Round 10)", proofTest: "tests/popslider-glue.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];
   return { DEFAULTS, rng, makeNet, forward, mutate, step, newGame, sense, playOne,

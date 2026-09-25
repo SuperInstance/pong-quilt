@@ -184,6 +184,8 @@ function startGenC(){if(!coev){const n=+$("pop").value;coev={popS:Array.from({le
   popE:Array.from({length:n},()=>PQ.makeNet(randPQ)),sChamp:null,eChamp:null,genC:0,last:null,
   ledger:PQ.makeLedger(300),evalS:null,evalE:null};}
  const n=+$("pop").value;
+ if(coev.popS.length>n)coev.popS.length=n; // Round 10: pin to slider on shrink (classic-loop parity)
+ if(coev.popE.length>n)coev.popE.length=n; // Round 10: pin to slider on shrink (classic-loop parity)
  while(coev.popS.length<n)coev.popS.push(PQ.makeNet(randPQ));
  while(coev.popE.length<n)coev.popE.push(PQ.makeNet(randPQ));
  coev.evalS=PQ.makeEvaluator(coev.popS,(net)=>{const r=PQ.playAdv(net,coev.popE[Math.floor(randPQ()*coev.popE.length)],randPQ);
