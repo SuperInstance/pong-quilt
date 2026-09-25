@@ -132,7 +132,12 @@ evolve — Round 5: this browser path is node-pinned by `tests/coev-glue.test.js
 which drives the exact shipped glue expressions headlessly; the survivor's paddle
 is blue, the ender's violet, both drawn at their
 effective widths). The **C1 · coevolved pair** chip loads the artifact's
-champions read-only; training onward from them is real.
+champions read-only; training onward from them is real. The receipt tail it
+displays is re-chained onto a fresh genesis (the page cannot import another
+process's hash chain), so the stats line banners the **displayed** chain's
+head and discloses the artifact's true md5-verified head beside it — pinned
+by `tests/loadcoev-glue.test.js` (Round 9; formerly a known lie, receipted
+in Rounds 4–8).
 
 ## Edge-ML patterns (Round 2 — crushed in from quilt-edge-ml)
 
