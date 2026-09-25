@@ -236,7 +236,7 @@ function draw(){const c=$("game").getContext("2d"),W=360;c.fillStyle="#05070b";c
  const pts=champRing.tail(120);
  if(pts.length>1){const fs=pts.map(p=>p.fitness),lo=Math.min(...fs),hi=Math.max(...fs),rg=Math.max(1,hi-lo);
   cv.strokeStyle="#3fb950";cv.lineWidth=1.5;cv.beginPath();
-  pts.forEach((p,i)=>{const x=4+i*(352/Math.max(1,pts.length-1)),y=52-((p.fitness-lo)/rg)*44;i?cv.lineTo(x,y):qa.moveTo(x,y);}).stroke();}
+  pts.forEach((p,i)=>{const x=4+i*(352/Math.max(1,pts.length-1)),y=52-((p.fitness-lo)/rg)*44;i?cv.lineTo(x,y):cv.moveTo(x,y);});cv.stroke();
   cv.fillStyle="#8b949e";cv.font="10px monospace";
   cv.fillText(`champion ${lo|0}→${hi|0} · last ${pts.length} gens · ring ${champRing.size}/${champRing.capacity}`,4,10);}}
 // === live champion play ======================================================
