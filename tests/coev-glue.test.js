@@ -38,6 +38,11 @@ function makeDemo() {
     "const D=PQ.DEFAULTS;" +
     "let games=0,gen=0,champNet=null,champGame=null,gameId=0;" +
     "let champRing=PQ.makeRing(240);let coev=null;" +
+    // Round 14: continueGenC delegates panel rendering to the page-level
+    // renderReceipts() (single writer — the P3 clobber fix). This pin covers
+    // the generation-loop contract, so the panel writer is stubbed here; the
+    // SHIPPED renderReceipts() is driven verbatim in tests/coev-panel-glue.test.js.
+    "function renderReceipts(){els.receipts.textContent='[panel rendered]';}" +
     extractGlue() +
     "return {startGenC,continueGenC,get coev(){return coev},get gen(){return gen}," +
     "get games(){return games},get champNet(){return champNet},get champGame(){return champGame}," +

@@ -92,11 +92,16 @@ let coev=null;          // C1 state, lazily built by startGenC()
 let gameId=0;           // identity token: stale advice from a dead game is dropped
 const $=id=>document.getElementById(id);
 function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h.toString(16).padStart(8,"0");}
+function renderReceipts(){const ev=receiptEvicted?`\n[${receipts.length} shown / ${receiptEvicted} evicted]`:"";
+ const moth=receipts.slice(-12).map(r=>`${r.kind} move=${r.move} w=${r.conf} ${r.hash}←${r.prev.slice(0,8)}`).join("\n");
+ if($("mode").value!=="coev"||!coev||!coev.ledger){$("receipts").textContent=moth+ev;return;}
+ const lev=coev.ledger.evicted?`\n[8 shown / ${coev.ledger.evicted} evicted]`:"";
+ $("receipts").textContent=`— MOTH receipts —\n${moth}${ev}\n— C1 ledger —\n${coev.ledger.tail(8).map(r=>
+  `COEV g${r.gen} ${r.sId} vs ${r.eId} -> ${r.outcome} ${r.frames}f loser=${r.loserId||"—"} ${r.hash}←${r.prev.slice(0,8)}`).join("\n")}${lev}`;}
 function receipt(kind,move,conf){const row={i:receipts.length,kind,move,conf:+conf.toFixed(2),gen,prev:receiptHead};
  receiptHead=hash(JSON.stringify(row));row.hash=receiptHead;receipts.push(row);
  if(receipts.length>40){receipts.shift();receiptEvicted++;} // counted, like makeLedger — a bounded panel that admits it forgets
- $("receipts").textContent=receipts.slice(-12).map(r=>`${r.kind} move=${r.move} w=${r.conf} ${r.hash}←${r.prev.slice(0,8)}`).join("\n")
-  +(receiptEvicted?`\n[${receipts.length} shown / ${receiptEvicted} evicted]`:"");}
+ renderReceipts();} // Round 14: single panel writer — never assign $("receipts") elsewhere (the P3 clobber)
 // wristband: render VERIFIED_CLAIMS. green = node-pinned, amber = browser-only.
 function renderWristband(){$("wristband").innerHTML=PQ.VERIFIED_CLAIMS.map(c=>
  `<span class="badge ${c.proofTest?"ok":"warn"}" title="${c.proofTest||"browser-only"}">✓ ${c.claim}</span>`).join("");}
@@ -212,8 +217,7 @@ function continueGenC(){
   champRing.write({gen:coev.genC,fitness:h2h.sFitness});
   $("stats").textContent=`COEV gen ${coev.genC} · games ${games} · h2h ${h2h.outcome} in ${h2h.frames}f · sChamp ${h2h.sFitness|0} (${h2h.hits}h) · eChamp ${h2h.eFitness|0} (${h2h.enderHits}b) · loser ${bred.loserId||"—"}${coev.ledger.evicted?` · ledger evicted ${coev.ledger.evicted}`:""}`;
   receipt(`COEV g${coev.genC} ${h2h.outcome} ${h2h.frames}f`,0,0);
-  $("receipts").textContent=coev.ledger.tail(8).map(r=>
-   `COEV g${r.gen} ${r.sId} vs ${r.eId} -> ${r.outcome} ${r.frames}f loser=${r.loserId||"—"} ${r.hash}←${r.prev.slice(0,8)}`).join("\n");
+  renderReceipts(); // Round 14: delegate to the single panel writer — the old direct assign clobbered the MOTH chain (P3)
   coev.evalS=null;coev.evalE=null;}}
 // === drawing =================================================================
 function draw(){const c=$("game").getContext("2d"),W=360;c.fillStyle="#05070b";c.fillRect(0,0,W,W);

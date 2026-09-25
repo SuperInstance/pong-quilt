@@ -13,23 +13,19 @@ const fs = require("fs");
 const path = require("path");
 const PQ = require("../core.js");
 
-// Extract the verbatim receipt(): line-anchored — if the page is restructured
-// so either anchor vanishes, the extraction fails LOUDLY (not silently).
+// Extract the verbatim receipt panel block: renderReceipts() (the combined
+// two-chain renderer, Round 14) immediately followed by receipt(), which must
+// delegate to it. Line-anchored — if the page is restructured so either
+// anchor vanishes, the extraction fails LOUDLY (not silently).
 function extractReceipt() {
   const lines = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8").split("\n");
-  const startIdx = lines.findIndex((l) => l.startsWith("function receipt("));
-  assert.ok(startIdx >= 0, "index.html must define receipt()");
-  // receipt() is 4 lines: header, hash+push, eviction, panel render (possibly
-  // wrapped across two lines for the suffix). Anchor on the panel assignment.
-  let endIdx = startIdx;
-  while (endIdx < lines.length && !lines[endIdx].includes('join("\\n")')) endIdx++;
-  assert.ok(endIdx > startIdx && endIdx - startIdx <= 5, "receipt() body must end near the panel render");
-  // the panel expression may wrap one more line (the suffix) — include it if
-  // the function's braces have not closed by the join line.
-  const throughJoin = lines.slice(startIdx, endIdx + 1).join("\n");
-  const open = (throughJoin.match(/[{}()]/g) || []).reduce((d, c) =>
-    d + (c === "{" ? 1 : c === "}" ? -1 : 0), 0);
-  if (open > 0) endIdx++;
+  const startIdx = lines.findIndex((l) => l.startsWith("function renderReceipts("));
+  assert.ok(startIdx >= 0, "index.html must define renderReceipts()");
+  let endIdx = -1;
+  for (let i = startIdx + 1; i < Math.min(startIdx + 20, lines.length); i++) {
+    if (lines[i].trim().startsWith("renderReceipts();}")) { endIdx = i; break; }
+  }
+  assert.ok(endIdx > startIdx, "receipt() must immediately follow renderReceipts() and delegate to it");
   return lines.slice(startIdx, endIdx + 1).join("\n");
 }
 
@@ -37,16 +33,17 @@ function makeDemo() {
   const els = { receipts: { textContent: "" } };
   const $ = (id) => els[id] || (els[id] = { textContent: "", value: "0" });
   const factory = new Function("PQ", "$", "hash", "els",
-    "let receipts=[],receiptHead='0'.repeat(64),receiptEvicted=0,gen=0;" +
-    extractReceipt() +
+    "let receipts=[],receiptHead='0'.repeat(64),receiptEvicted=0,gen=0,coev=null;" +
+    extractReceipt() + "\n" +
     "return {receipt,get receipts(){return receipts},get receiptEvicted(){return receiptEvicted},els};");
   return factory(PQ, $, PQ.hash8, els);
 }
 
-test("extraction integrity: receipt() is present and line-anchored", () => {
+test("extraction integrity: the receipt panel block is present and line-anchored", () => {
   const src = extractReceipt();
   assert.ok(src.includes("receipts.push(row)"), "must push the row");
   assert.ok(src.includes('join("\\n")'), "must render the panel");
+  assert.ok(src.includes("renderReceipts();}"), "receipt() must delegate to the single panel writer");
 });
 
 test("45 writes: panel holds 40 and the eviction count SURFACES", () => {

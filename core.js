@@ -400,6 +400,7 @@
     { id: "receiptkind-glue", claim: "the receipt ledger names the advisor that fired — jepa/moth/qa-sim rows carry their own kind, not a bare 'L2' (Round 11)", proofTest: "tests/receiptkind-glue.test.js" },
     { id: "qarefusal-glue", claim: "the qa tile admits exhaustion honestly — a silent channel (empty pot under the sim's shots floor, or a real QPAM backend's underflow) receipts a QA-REFUSAL row instead of dropping silently (Round 12)", proofTest: "tests/qarefusal-glue.test.js" },
     { id: "qapot-glue", claim: "the exhaustion seam is playable in-page — the shots/bin pot control depletes the QPAM stand-in below its floor, the tile renders the silent channel (POT EMPTY), and the ledger receipts QA-REFUSAL (Round 13)", proofTest: "tests/qapot-glue.test.js" },
+    { id: "coev-panel-glue", claim: "the C1 panel is honest — MOTH receipts and the C1 ledger render as two labeled sections of one panel, each keeping its own eviction accounting; no writer clobbers the other chain (Round 14)", proofTest: "tests/coev-panel-glue.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];
   return { DEFAULTS, rng, makeNet, forward, mutate, step, newGame, sense, playOne,
