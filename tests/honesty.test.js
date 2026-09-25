@@ -78,7 +78,7 @@ test("checkpoints are internally consistent with the CURRENT fitness formula", (
   for (const lvl of ["level0", "level1", "level2"]) {
     const text = fs.readFileSync(path.join(__dirname, "..", "checkpoints", `${lvl}.js`), "utf8");
     const cp = JSON.parse(text.split("]=")[1].replace(/;\s*$/, ""));
-    assert.equal(cp.bestFitness, PQ.fitnessOf(cp.bestHits ? cp.bestFrames : cp.bestFrames, cp.bestHits),
+    assert.equal(cp.bestFitness, PQ.fitnessOf(cp.bestFrames, cp.bestHits),
       `${lvl}: bestFitness must equal frames + hits*100`);
     assert.ok(cp.bestHits > 0, `${lvl}: a 0-hit champion must never be committed (honesty pass)`);
   }
