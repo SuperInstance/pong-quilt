@@ -2,6 +2,23 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
+## Canonical index (repair R11 item 2)
+
+| Round | Date | Branch / base | Status |
+|---|---|---|---|
+| R11 | 2026-09-25 | playtest-round-11 (vs r10 tip 287824d) | canonical (this file, newest first) |
+| R10 | 2026-09-25 | r10-pop-slider-parity (vs main 1f5943c) | canonical — receipt written post-hoc by R11 |
+| R9 | 2026-09-25 | playtest-round-9 (vs main cda9eab) | canonical |
+| R8 | 2026-09-25 | playtest-round-8 (vs main 54b625a) | canonical |
+| R7 | 2026-09-25 | playtest-round-7 (vs main 1ae696b) | canonical |
+| R6 | 2026-09-25 | round-6 (vs round-5 tip 7882d99) | canonical |
+| R5 | 2026-09-24 | round-5 (vs round-4 tip e8774a2) | canonical |
+| R4 | 2026-09-24 | round-3-builder (PR #4) | canonical |
+| R3 | 2026-09-24 | honesty pass + C1 coevolution | canonical |
+| R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
+| R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
+| R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
 ## Round 11 — kimi1 — 2026-09-25 — mode: BUILDER (one small: receipt-kind attribution, fresh P2, FAIL-first pin) + play-tester — vs r10 branch tip 287824d (pop-slider parity)
 
 ### Played versions: v1 (e98cf66) → v2 (0722670) → R4→R9 chain → main (1f5943c, post-PR#10) → r10-pop-slider-parity (287824d)
@@ -120,6 +137,23 @@ Every round is a receipted observation in the loop. Newest first.
 ### Verdict
 MERGEABLE (P2 fixed with FAIL-first pin; suite 68/68; prerun byte-identical;
 R10 code re-verified independently; process debt recorded honestly).
+
+### Builder receipt (item 2 — PLAYLOG merge-disorder repair, R11 spec small)
+- **what:** disambiguated the three `## Round 2` headings and gave the log
+  a canonical index. (1) Stale duplicate (pre-honesty pass, merged via PR #1)
+  retitled `## Artifact A — stale duplicate of Round 2…` — kept as a named
+  historical artifact per doctrine (disambiguation, not deletion; the memory
+  the loop eats from is now in order). (2) The two canonical branch Round 2s
+  got branch labels: `Round 2 (branch quilt-edge-ml-survey)` and
+  `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes.
+  (3) A canonical index table (R11→R1 + artifact row, with branch/base and
+  status) now sits at the top of the log.
+- **verify:** `grep '^## Round 2'` returns exactly the two uniquely-labeled
+  canonical branch entries (zero stale duplicates); the top index lists
+  every round 1–11 in order plus the artifact row. Docs-only change — no
+  shipped code touched; suite re-run 68/68 green as a sanity check.
+- **why:** Rounds 9, 10, 11 each re-flagged it; the experiment's memory was
+  out of order at exactly the seam future rounds read first.
 
 ---
 
@@ -548,7 +582,7 @@ stays dark until R8 spec item 1.)
 > hitbox, seam pacing, receipt cap). The canonical chain is R7→R6→R5→R4→
 > R3→R2→R1 below. Repair specced as R8 item 4.
 
-## Round 2 — kimi1 — 2026-09-24 — vs v1 (e98cf66) [STALE DUPLICATE — superseded by the canonical Round 2 entry below; see merge-disorder note above]
+## Artifact A (R11 item 2) — stale duplicate of Round 2, pre-honesty pass — kimi1 — 2026-09-24 — vs v1 (e98cf66) [STALE DUPLICATE — superseded by the canonical Round 2 entries below; see merge-disorder note above]. Kept as a historical artifact, not a round.
 
 ### Played versions: v1 only (Round 1's next-version spec unimplemented; this round delivers its [medium] 'first adversarial play-test' item)
 
@@ -1026,7 +1060,7 @@ checkpoint md5s byte-identical, no provenance touched).
 MERGEABLE (Round 3 ships the honesty pass, the wristband, the paced seam,
 the true paddle, and a coevolution mode whose arms race is receipted).
 
-## Round 2 — kimi1 — 2026-09-24 — vs quilt-edge-ml (sibling) + v1
+## Round 2 (branch quilt-edge-ml-survey) — kimi1 — 2026-09-24 — vs quilt-edge-ml (sibling) + v1
 
 ### Played versions: v1 (e98cf66 baseline) + sibling survey (quilt-edge-ml @9605a24)
 
@@ -1085,7 +1119,7 @@ the true paddle, and a coevolution mode whose arms race is receipted).
 ### Verdict
 MERGEABLE (Round 2 ships the two ports, the strip, the curve artifact, and
 reproducible numbers; sibling keeps the substrate zoo crown).
-## Round 2 — kimi1 — 2026-09-24 — quantum-audio L2 module (branch quantum-audio-L2)
+## Round 2 (branch quantum-audio-L2) — kimi1 — 2026-09-24 — quantum-audio L2 module (branch quantum-audio-L2)
 
 ### Deltas observed
 - New L2 module family: `qa.js` (sonify → labeled-sim QPAM channel →
