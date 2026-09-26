@@ -6,11 +6,16 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R29 | 2026-09-27 | r29-doctor-live-e2e-pin (vs main 5ef8cda, post-#37) | canonical |
 | R28 | 2026-09-27 | playtest-round-28 (vs R27 tip 3c5f498, PRs #31–#36 open at round start) | canonical |
 | R27 | 2026-09-26 | playtest-round-27 (vs r26 tip a06dfb2, PR #33 open at round start) + r27-doctor-lens-page-glue (vs main 56c60b4, post-#35 merge) — two canonical branches, one row (R2 branch-pair convention) | canonical |
 | R26 | 2026-09-26 | r26-wal-doctor-export + r26-wal-session-driver (stacked, vs main a0939b8 / export tip a06dfb2) — two canonical branches, one row (R2 branch-pair convention) | canonical |
 | R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
 | R24 | 2026-09-26 | r24-canonical-md5-lineage + r24-doctor-verdict-glue (vs main a0939b8, post-#30) — two canonical branches, one row (R2 branch-pair convention) | canonical |
+| R27 | 2026-09-26 | playtest-round-27 (vs r26 tip a06dfb2, PR #33 open at round start) | canonical |
+| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) · r26-wal-session-driver (stacked) | canonical |
+| R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
+| R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) · r24-doctor-verdict-glue | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -35,6 +40,19 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 29 — CCC — 2026-09-27 — mode: BUILDER (fresh small: doctor-live E2E pin) — vs main 5ef8cda (post-#37)
+
+### Played versions: main 5ef8cda → r29 tip — one pin file + registry rows only, training path untouched
+
+The R26 JS mirror (`verifyQuiltWal`) reflects the doctor's `verify()` line-for-line — a mirror can drift and still pass its own reflection. This pin runs the REAL consumer: `quilt_doctor/substrate.py` loaded live from a local clone (by file, bypassing the package `__init__` and its lens deps), against the exporter's actual JSONL.
+
+- Clean export → the doctor's own `QuiltSubstrate.verify()` returns `ok: true` (line count carried).
+- Content-tamper (post-hash file edit — the pin's first cut tampered PRE-hash, which is just a valid chain of different content; caught by running, the distinction is now documented in the test) → doctor names `hash_mismatch` at the exact seq, chain rejected.
+- Mirror agreement: JS `verifyQuiltWal` and the doctor give the same ok verdict, same divergences seq-for-seq why-for-why on the same tampered file.
+- Offline doctrine verified by running: clone moved away → 3 named skips, never fake green; restored → 3/3 live PASS (doctor clone at aa5a041, substrate loads by-file).
+
+FAIL-first verified by running: pin file absent on pristine origin/main → honesty two-way pin trips (claim row names a file that doesn't exist). Suite 150/150 in `tests/` (+ 8/8 qa). Prerun canonical five byte-identical (coev 946e639a, curve 63617065, L0 8a49b0f6, L1 643bd132, L2 454511548). VERIFIED_CLAIMS +1 (wal-doctor-e2e). README count pin named INHERITED rot: main's first count line claimed 128 in tests/ but live is 148 (PRs #36/#37 added pins without bumping the first line) — corrected to 150 with this pin added (the count moved once the inherited reds below were fixed: a failing pin skews the spawn's pass count). Canonical-index pin named INHERITED rot too: the #33-#37 merge collision duplicated the R26 and R24 index rows (R27's collision warning, landed) — merged per the R2 multi-branch convention. Round numbering note: the interrupted prior session had this lane drafted as "R28" on a stale r26 base; R28 was taken by playtest-round-28 (#37) while it slept, so it ships as R29.
 
 ## Round 28 — CCC — 2026-09-27 — mode: BUILDER (unfulfilled R27-spec small: `renderCoinJournal` owns its degrade path) + play-tester — vs R27 tip 3c5f498 (canonical head; PRs #31–#36 open at round start)
 
