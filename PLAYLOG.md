@@ -2,6 +2,8 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
+Every round is a receipted observation in the loop. Newest first.
+
 ## Canonical index (repair R11 item 2)
 
 | Round | Date | Branch / base | Status |
@@ -24,6 +26,28 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 18 — k2d8 — 2026-09-26 — mode: BUILDER (R17 next-spec fresh small: persist the BYO endpoint to localStorage) — vs main 8179351 (post-R17 merge)
+
+### Played versions: main (this round's base)
+
+Suite at base 99/99 + qa 8/8; at tip 103/103 + qa 8/8. `node tools/prerun.js` after the edits: all five md5s byte-identical to base (coev.js 946e639a…, curve.json ba1c919a…, level0 8a49b0f6…, level1 aa4d7c4b…, level2 63b7fdd5…) — the touched files (index.html init block + field note, core.js claim row, new test) are outside the training path, proven by the frozen hashes. d(learning)/d(version) = 0 — 17th straight frozen round; d(coverage) 99→103, VERIFIED_CLAIMS 24→25.
+
+### Builder receipt (the R17-booked fresh small: refresh must not strand a real backend)
+- **what:** (1) boot restores `pq.byoQpamEndpoint` from localStorage into `#qabyoep` (storage-unavailable → seam still runs, unpersisted); (2) an `input` listener persists a non-empty trimmed URL and `removeItem`s on clear — clearing the field deletes the key so stale storage can never reopen a closed seam after refresh; (3) field note updated: URL is remembered on this device; the LLM key still never leaves page memory. New `tests/byo-persist-glue.test.js` (4 pins: boot-restore anchor, persist/remove anchors, security singleton, stub-storage round-trip including a simulated refresh). VERIFIED_CLAIMS gained `byo-persist-glue` (24→25).
+- **why:** R17's spec: "persist the BYO endpoint to localStorage like the LLM seam's fields, so a refresh doesn't strand a real backend."
+- **verify (FAIL-first, then green):** at the R17 tip every new pin fails (index.html touches zero localStorage — the extraction anchor is absent): 4/4 FAIL-first, then 103/103 + qa 8/8 green, prerun byte-identical.
+
+### Lies hunted
+- **[P2, caught in the spec itself — pinned, not propagated]** the R17 spec says "like the LLM seam's fields", but the LLM seam's fields are NOT persisted: the key field states "stays in page memory only" and index.html had zero localStorage at R17 tip. The spec's premise misdescribed the code. The honest version, now load-bearing as the SECURITY pin: the endpoint URL persists because a URL is not a credential; the LLM key NEVER persists because it is one — `pq.byoQpamEndpoint` is asserted to be the page's only localStorage key.
+
+### Next version spec (competitive improvements)
+- [small, fresh] QA-REFUSAL rows in the C1 coev ledger path — the R12 refusal receipt exists for the qa branch of l2Suggest; check the C1 advisor loop receipts refusals rather than silently skipping (book only if a real gap is found by running).
+- [epic, carried] C1 scaling study (R12/R13/R15/R16/R17 epic) — still the only nonzero d(learning)/d(version) path.
+- [epic, carried] advice-aware GA (R15 fresh alternative).
+
+### Verdict
+MERGEABLE (R17-booked fresh small closed FAIL-first; suite 103/103 + qa 8/8; prerun byte-identical; the BYO door now survives refresh and the key stays in page memory by pin, not by promise).
 
 ## Round 17 — k2d8 — 2026-09-26 — mode: BUILDER (R16 next-spec small: page-side BYO endpoint field wiring, the P3 R16 booked, FAIL-first pinned) — vs main post-PR#22-merge (the R16 stack landed mid-round; branch rebased)
 
