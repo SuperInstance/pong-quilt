@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
 | R20 | 2026-09-26 | r20-coev-qarefusal-glue (vs main post-#26 merge) | canonical |
 | R19 | 2026-09-26 | playtest-round-19 (vs main 6e163f6, post-#24-merge) | canonical |
@@ -28,6 +29,41 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 22 — CCC — 2026-09-26 — mode: BUILDER (fresh P2 found by running: the R21 coin journal was tails-only — 93 of 182 flips unrecorded) + play-tester — vs r21 tip 3508a75 (PR #28, open at round start)
+
+### Played versions: main ac9b4c1 (R20, post-#27) → r21 tip 3508a75 (this round's base) — swept in scratch trees per the R13 lesson
+
+Suite at base 115/115 + qa 8/8; at tip 116/116 + qa 8/8. `node tools/prerun.js` at base (scratch worktree): the frozen five regenerate byte-identically (coev.js `946e639a…`, curve.json `ba1c919a…`, L0 `8a49b0f6…`, L1 `aa4d7c4b…`, L2 `63b7fdd5…`) — L1 gen60 8800, L2 gen260 8700. At the r21 tip the same command burns **182 coin flips (93 H + 89 T)** and produces DIFFERENT artifacts: curve.json `edbe606d…`, L1 `643bd132…`, L2 `454511548…`, L1 gen60 8700, L2 gen260 8800 — first nonzero d(artifact)/d(version) in 21 rounds (mechanism below).
+
+### Builder receipt (the one small — receipt symmetry for the quantum coin)
+- **what:** `tools/prerun.js` `quantumCoinTiebreak` now journals EVERY flip: heads keeps land as `{coin:'H', swap:false}` beside the tails swaps `{coin:'T', swap:true}`; the console line reports `182 quantum-coin flip(s), 89 swap(s)` instead of the misleading `89 tiebreak(s)`. New pin 5 in `tests/quantum-tiebreak-glue.test.js`: extracts the VERBATIM shipped tiebreak function and drives it with a controlled rand — forced heads MUST produce a receipt (R21: none) and keep the incumbent; forced tails MUST produce a swap receipt and crown the challenger; one stream burn per flip either way.
+- **why:** R21's journal was asymmetric — `if (heads) return false;` before the push dropped every keep. An instrumented copy of the R21 code (patch counts flips, same seeded stream) proves the real run flipped **182 times but receipted only 89**: R21's "burned 89 coin flips" undercounted the stream by half, and the receipt set could not be audited for keeps — the exact hunted class (a receipt that hides half the events) sitting in the demo's honesty centerpiece. The R21 PLAYLOG entry and the prerun header comment both claimed "every flip lands in checkpoints/curve.json"; the code cashed only tails.
+- **verify (FAIL-first, then green):** pin 5 against the pristine R21 prerun.js is RED with `heads flip must be journaled (R21 silently dropped it)`; after the fix 5/5 in the file. Regenerated curve.json now carries 182 receipts (93 H / 89 T, `swap` boolean, `live:false` throughout); level0/1/2 md5s UNCHANGED (`8a49b0f6…`/`643bd132…`/`454511548…`) and coev.js unchanged (`946e639a…`) — the journal-only fix provably did not touch the training path. README count 123→124 (named by the readme-count pin, as designed). VERIFIED_CLAIMS row `quantum-tiebreak` reworded to claim the symmetric journal explicitly.
+
+### Deltas observed (shapes of change)
+- **d(learning)/d(version) at the fitness-band level = 0 for the 21st straight round** — ceiling still 8800, L0 still 5767. BUT **d(artifact)/d(version) ≠ 0 for the first time since v1**: wiring ANY stream-consuming tiebreak reshuffles the walk (the coin's rand draws diverge every subsequent mutation), so the gen-60/gen-260 endpoints swapped (8800/8700 → 8700/8800) and the path reshuffled (old curve dipped to 8003 at gen78; new one holds 8700–8800 from gen65). Shape: the change is a re-rolled random walk, not an improvement — the honest credit is "different artifacts, same attractor," and R21 recorded neither the new canonical hashes nor the endpoint swap. The R22 canonical set (this entry) supersedes the frozen five for the r21-and-later line; main (pre-R21) still regenerates the old five.
+- **d(coverage)/d(version): suite 115→116**; d(receipt-completeness): 89/182 events → 182/182.
+
+### Lies hunted
+- **[P2, found by running, FIXED]** the R21 coin journal recorded only challenger-takes events (89 of 182 flips; 93 incumbent-keeps burned the seeded stream but left no receipt). Repro: instrumented run of R21 prerun.js → `TOTAL_FLIPS 182 HEADS 93 TAILS 89` vs 89 receipts in curve.json. The "89 coin flips" claim in the R21 entry undercounted by half; "every flip lands in checkpoints/curve.json" was false as written.
+- **[P3-process, found by diffing runs, recorded]** R21 changed the training path (L1/L2 weights, curve endpoints) but left the experiment's memory holding the 20-round-old "frozen five" md5s — every future round copy-pasting those hashes from older entries would mismatch against the r21 line. Corrected by this entry (canonical set above) going forward; historical entries stay untouched (receipts are memory).
+- **[P3-process, verified by reading]** R21 shipped with no "Next version spec" section (same gap class R15 flagged in R14) — this round reconstructs the candidate set below.
+- **(nothing found in: byte-reproducibility — triple-confirmed: R21 committed checkpoints == my clean rerun == my instrumented rerun, md5-identical; suite pins; qa stand-in; checkpoint-consistency probe — all green at base and tip.)**
+
+### Next version spec (competitive improvements)
+- [small, fresh] canonical-md5 lineage note in EXPERIMENTS.md — the "frozen five" hashes appear in ~15 entries but regenerate ONLY on the pre-R21 line; one doctrine line ("post-R21 canonical: curve edbe606d/63617065-ward, L1 643bd132, L2 454511548 — verify by running, not by copying hashes") would kill the mismatch class the P3 above demonstrated. Verify: text pin.
+- [small, fresh] plot the tiebreak journal — the curve page could render H/T flips as a swap marker strip under the fitness curve (89 swaps over 261 gens is a visible mutation-rate signal). Why: the demo now owns a real experiment instrument it doesn't show. Verify: glue pin on the render seam; visual amber.
+- [medium, carried R15/R20] advice-aware GA — thread a measured diet into playOne so advice changes the EVOLVED champion (still the only path to honest d(learning)/d(version) ≠ 0).
+- [epic, carried R12→R20] C1 scaling study — unchanged, still the only other nonzero-learning path.
+
+### Siblings studied this round
+SuperInstance/quilt-quant (the cited coin-toss-v1 engine — its mock-flag doctrine is the honesty model the R22 journal fix follows: label every stand-in, never launder). Internal seam work otherwise; no new sibling code needed.
+
+### Verdict
+MERGEABLE (fresh P2 fixed FAIL-first; suite 116/116 + qa 8/8; level/co-ev md5s frozen prove the journal-only touch; the experiment's first honest accounting of its own coin — 182 flips, all of them receipted).
+
+---
 
 ## Round 21 — k2d8 — 2026-09-26 — mode: BUILDER (synergy candidate from the 11:11 pulse: quantum-coin CI tiebreaker) — vs main ac9b4c1
 

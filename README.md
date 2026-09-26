@@ -78,7 +78,7 @@ The demo renders a wristband panel from a single registry in `core.js`
 browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
-(123 tests total: 115 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(124 tests total: 116 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
 is pinned in EXPERIMENTS.md).
 

@@ -31,17 +31,23 @@ const rand = PQ.rng(D.seed);
 const TOTAL_GENS = 260, CURVE_SAMPLES = 20;
 let pop = Array.from({ length: D.popSize }, () => PQ.makeNet(rand));
 const champRing = PQ.makeRing(TOTAL_GENS + 1); // one slot per generation, bounded
-const tieReceipts = []; // every coin flip, curve.json-bound
+const tieReceipts = []; // every coin flip (keeps AND swaps), curve.json-bound
 let curGen = 0;
 // The quantum-coin tiebreak (seeded mock of quilt-quant coin-toss-v1):
 // on equal fitness, incumbent keeps on heads, challenger takes on tails.
+// R22 honesty fix: EVERY flip is journaled — a heads burn that keeps the
+// incumbent leaves a receipt just like a tails swap. The R21 journal was
+// asymmetric (tails-only): 51% of coin events (93 of 182 flips in the
+// seeded run) were unrecorded, so "89 flips" undercounted the real stream
+// and the receipt could not be audited for keeps. Repro: instrumented run
+// of the R21 code counts 182 flips vs 89 receipts.
 function quantumCoinTiebreak(rec, incumbent) {
-  const heads = rand() < 0.5;
-  if (heads) return false;
+  const heads = rand() < 0.5; // one burn of the shared seeded stream either way
   tieReceipts.push({ gen: curGen, incumbent: incumbent.index, challenger: rec.index,
-                     coin: 'T', engine: 'coin-toss-v1', live: false,
+                     coin: heads ? 'H' : 'T', swap: !heads,
+                     engine: 'coin-toss-v1', live: false,
                      citation: 'SuperInstance/quilt-quant lab/play.mjs coin-toss-v1' });
-  return true;
+  return !heads; // H: incumbent keeps (false); T: challenger takes (true)
 }
 let scored = null;
 function evaluate() { // stream the population; retain elites only (flat memory)
@@ -73,8 +79,9 @@ function emitCurve() {
   fs.writeFileSync(path.join(__dirname, "..", "checkpoints", "curve.json"),
     JSON.stringify({ seed: D.seed, gens: TOTAL_GENS, ringWrites: champRing.writes,
                      tiebreaks: tieReceipts, samples }, null, 1));
+  const swaps = tieReceipts.filter(t => t.swap).length;
   console.log(`curve: ${champRing.writes} generations sampled to ${samples.length} points -> checkpoints/curve.json` +
-    (tieReceipts.length ? `; ${tieReceipts.length} quantum-coin tiebreak(s)` : "; no champion ties"));
+    (tieReceipts.length ? `; ${tieReceipts.length} quantum-coin flip(s), ${swaps} swap(s)` : "; no champion ties"));
 }
 fs.mkdirSync(path.join(__dirname, "..", "checkpoints"), { recursive: true });
 scored = evaluate();
