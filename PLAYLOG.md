@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R33 | 2026-09-27 | r33-wal-session-cli-usage-guard (vs main 0a29cdb, post-#42) | canonical |
 | R32 | 2026-09-27 | playtest-round-32 (vs main 07dc9ae, post-#41) | canonical |
 | R31 | 2026-09-27 | r31-index-dedup-count-fix (vs main 7649f4c, post-#40) | canonical |
 | R30 | 2026-09-27 | r30-wal-page-glue (vs main 5ef8cda, post-#37) | canonical |
@@ -39,6 +40,31 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 33 — r33-wal-session-cli-usage-guard — 2026-09-27 — mode: BUILDER (R33 spec item 1 — wal-session CLI usage guard, the R32-booked P4) — vs main 0a29cdb (post-#42)
+
+### Played versions: main 0a29cdb (R32 merge) → r33 tip
+
+### Deltas observed (shapes of change)
+- **Misuse now fails loudly instead of silently defaulting.** Pre-R33, `node tools/wal-session.js 99 bogus` exited 0 with 75KB of JSONL and the bad arg ignored — a user error became a debugging detour (R32's own P4, found by running). Post-R33 the same command exits 2 with `usage: node tools/wal-session.js [seed] [--out PATH] — unrecognized argument: bogus` on stderr.
+- **The TypeError path is closed.** Pre-R33, a trailing `--out` with no value threw a raw `fs.writeFileSync(undefined)` TypeError from node internals. Post-R33 it is the same usage error, exit 2, no stack leak.
+- **Training path untouched:** zero changes to core.js simulation, qa.js advisor, or the WAL exporter; the guard lives entirely in the CLI seam of tools/wal-session.js.
+
+### Lies hunted
+- [P4, FIXED, builder receipt] wal-session CLI silently ignored unrecognized positional args and threw a raw TypeError on valueless --out (R32-booked). Both reproduced on main 0a29cdb by running before the fix.
+
+### Builder receipt: parseCliArgs + spawn-driven pins
+- **what:** `parseCliArgs(argv)` (exported, unit-pinned) classifies args — one optional positional seed, one `--out PATH`, anything else a usage error. The CLI block consumes it: `error → usage on stderr + exit 2`. Valid invocations are byte-for-byte the pre-R33 behavior (seed default 20260926, `--out` anywhere).
+- **why:** R32's spec item 1 — "silence turned a user error into a debugging detour; the missing-value path throws a raw TypeError."
+- **verify (FAIL-first, by running):** new `tests/wal-session-cli.test.js`, 5 pins — 3 spawn the REAL CLI (bogus positional → non-zero + usage names the arg; valueless --out → non-zero + usage, no TypeError; unknown flag → non-zero + usage), 1 unit-pins parseCliArgs valid/misuse forms, 1 pins the happy path end-to-end (exit 0, JSONL lines on stdout). All 5 RED on main 0a29cdb (exit 0 / TypeError / parseCliArgs undefined), all 5 green on tip.
+
+### Next version spec (competitive improvements)
+- [small] **one amber-admission source** (R28 item 3, still unfulfilled): `renderCoinJournal`'s degrade branch, the page's `coinJournalUnavailable`, and the coev-ledger degrade share ONE exported constant for the admission stem (parenthetical stays per-cause). why: R32's P4 — three copies, already drifted. verify: pin asserts byte-equality of the rendered stems across all three sites.
+- [medium] **open-the-lens CI step**: the pulse harness keeps a quilt-doctor clone at /tmp/quilt-doctor; add a workflow job that runs the doctor-verdict live pin with `QUILT_DOCTOR_PATH` set and FAILS if the seam does not open. why: the R32 fix proved the live-open claim is the load-bearing one. verify: job logs the lens line; a canonical-stats shape drift trips it at PR time.
+- carried: [epic, R12→R33] C1 scaling study. [medium, R22→R33] advice-aware GA. [medium, R27→R33] canonical-md5 lineage for the WAL session export.
+
+### Verdict
+MERGEABLE (stacks on main 0a29cdb; suite 164/164 + qa 8/8; prerun canonical five frozen; R32 entry read; no open sibling PRs at round start).
 
 ## Round 32 — kimi1 — 2026-09-27 — mode: BUILDER (R28 spec item 1 — doctor-verdict perms shape-check, the booked P2) + play-tester — vs main 07dc9ae (post-#41)
 
