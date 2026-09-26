@@ -2,6 +2,809 @@
  "seed": 20260924,
  "gens": 260,
  "ringWrites": 261,
+ "tiebreaks": [
+  {
+   "gen": 24,
+   "incumbent": 27,
+   "challenger": 35,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 39,
+   "incumbent": 20,
+   "challenger": 32,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 42,
+   "incumbent": 5,
+   "challenger": 29,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 47,
+   "incumbent": 10,
+   "challenger": 28,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 51,
+   "incumbent": 8,
+   "challenger": 45,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 52,
+   "incumbent": 1,
+   "challenger": 28,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 54,
+   "incumbent": 1,
+   "challenger": 7,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 65,
+   "incumbent": 8,
+   "challenger": 27,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 73,
+   "incumbent": 22,
+   "challenger": 44,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 78,
+   "incumbent": 3,
+   "challenger": 29,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 88,
+   "incumbent": 2,
+   "challenger": 21,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 88,
+   "incumbent": 27,
+   "challenger": 39,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 92,
+   "incumbent": 11,
+   "challenger": 14,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 93,
+   "incumbent": 3,
+   "challenger": 8,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 93,
+   "incumbent": 8,
+   "challenger": 24,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 95,
+   "incumbent": 1,
+   "challenger": 2,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 97,
+   "incumbent": 33,
+   "challenger": 40,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 99,
+   "incumbent": 15,
+   "challenger": 39,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 106,
+   "incumbent": 1,
+   "challenger": 11,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 108,
+   "incumbent": 28,
+   "challenger": 34,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 112,
+   "incumbent": 2,
+   "challenger": 8,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 113,
+   "incumbent": 2,
+   "challenger": 3,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 114,
+   "incumbent": 30,
+   "challenger": 32,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 118,
+   "incumbent": 8,
+   "challenger": 15,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 118,
+   "incumbent": 15,
+   "challenger": 17,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 121,
+   "incumbent": 2,
+   "challenger": 4,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 131,
+   "incumbent": 2,
+   "challenger": 9,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 133,
+   "incumbent": 1,
+   "challenger": 19,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 134,
+   "incumbent": 1,
+   "challenger": 7,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 135,
+   "incumbent": 2,
+   "challenger": 4,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 135,
+   "incumbent": 5,
+   "challenger": 34,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 137,
+   "incumbent": 13,
+   "challenger": 20,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 138,
+   "incumbent": 0,
+   "challenger": 14,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 145,
+   "incumbent": 7,
+   "challenger": 9,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 145,
+   "incumbent": 19,
+   "challenger": 45,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 152,
+   "incumbent": 30,
+   "challenger": 47,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 154,
+   "incumbent": 8,
+   "challenger": 17,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 154,
+   "incumbent": 38,
+   "challenger": 39,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 155,
+   "incumbent": 27,
+   "challenger": 38,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 160,
+   "incumbent": 10,
+   "challenger": 11,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 160,
+   "incumbent": 11,
+   "challenger": 16,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 163,
+   "incumbent": 8,
+   "challenger": 17,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 166,
+   "incumbent": 20,
+   "challenger": 25,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 167,
+   "incumbent": 22,
+   "challenger": 24,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 170,
+   "incumbent": 14,
+   "challenger": 22,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 171,
+   "incumbent": 12,
+   "challenger": 15,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 172,
+   "incumbent": 43,
+   "challenger": 46,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 181,
+   "incumbent": 5,
+   "challenger": 31,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 183,
+   "incumbent": 32,
+   "challenger": 40,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 185,
+   "incumbent": 1,
+   "challenger": 5,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 185,
+   "incumbent": 5,
+   "challenger": 22,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 186,
+   "incumbent": 16,
+   "challenger": 42,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 190,
+   "incumbent": 15,
+   "challenger": 43,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 193,
+   "incumbent": 12,
+   "challenger": 18,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 194,
+   "incumbent": 11,
+   "challenger": 42,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 195,
+   "incumbent": 4,
+   "challenger": 14,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 197,
+   "incumbent": 22,
+   "challenger": 28,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 200,
+   "incumbent": 7,
+   "challenger": 47,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 202,
+   "incumbent": 2,
+   "challenger": 32,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 202,
+   "incumbent": 32,
+   "challenger": 37,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 206,
+   "incumbent": 0,
+   "challenger": 3,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 208,
+   "incumbent": 8,
+   "challenger": 11,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 213,
+   "incumbent": 10,
+   "challenger": 34,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 215,
+   "incumbent": 12,
+   "challenger": 15,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 215,
+   "incumbent": 17,
+   "challenger": 29,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 219,
+   "incumbent": 2,
+   "challenger": 15,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 220,
+   "incumbent": 0,
+   "challenger": 6,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 220,
+   "incumbent": 10,
+   "challenger": 22,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 220,
+   "incumbent": 22,
+   "challenger": 34,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 230,
+   "incumbent": 26,
+   "challenger": 44,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 231,
+   "incumbent": 19,
+   "challenger": 39,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 232,
+   "incumbent": 6,
+   "challenger": 12,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 234,
+   "incumbent": 2,
+   "challenger": 4,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 235,
+   "incumbent": 0,
+   "challenger": 32,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 237,
+   "incumbent": 21,
+   "challenger": 26,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 238,
+   "incumbent": 12,
+   "challenger": 46,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 243,
+   "incumbent": 1,
+   "challenger": 22,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 245,
+   "incumbent": 5,
+   "challenger": 6,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 245,
+   "incumbent": 9,
+   "challenger": 15,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 245,
+   "incumbent": 15,
+   "challenger": 29,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 250,
+   "incumbent": 1,
+   "challenger": 18,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 251,
+   "incumbent": 9,
+   "challenger": 16,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 252,
+   "incumbent": 13,
+   "challenger": 40,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 253,
+   "incumbent": 0,
+   "challenger": 1,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 253,
+   "incumbent": 7,
+   "challenger": 23,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 256,
+   "incumbent": 2,
+   "challenger": 9,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 256,
+   "incumbent": 9,
+   "challenger": 17,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 257,
+   "incumbent": 0,
+   "challenger": 5,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 259,
+   "incumbent": 11,
+   "challenger": 34,
+   "coin": "T",
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  }
+ ],
  "samples": [
   {
    "gen": 0,
@@ -13,7 +816,7 @@
   },
   {
    "gen": 26,
-   "fitness": 6900
+   "fitness": 6700
   },
   {
    "gen": 39,
@@ -29,11 +832,11 @@
   },
   {
    "gen": 78,
-   "fitness": 8003
+   "fitness": 8700
   },
   {
    "gen": 91,
-   "fitness": 8700
+   "fitness": 8800
   },
   {
    "gen": 104,
@@ -45,15 +848,15 @@
   },
   {
    "gen": 130,
-   "fitness": 8700
+   "fitness": 8800
   },
   {
    "gen": 143,
-   "fitness": 8600
+   "fitness": 8700
   },
   {
    "gen": 156,
-   "fitness": 8700
+   "fitness": 8800
   },
   {
    "gen": 169,
@@ -61,23 +864,23 @@
   },
   {
    "gen": 182,
-   "fitness": 8700
+   "fitness": 8800
   },
   {
    "gen": 195,
-   "fitness": 8800
+   "fitness": 8700
   },
   {
    "gen": 208,
-   "fitness": 8700
-  },
-  {
-   "gen": 221,
    "fitness": 8800
   },
   {
-   "gen": 234,
+   "gen": 221,
    "fitness": 8700
+  },
+  {
+   "gen": 234,
+   "fitness": 8800
   },
   {
    "gen": 247,
@@ -85,7 +888,7 @@
   },
   {
    "gen": 260,
-   "fitness": 8700
+   "fitness": 8800
   }
  ]
 }

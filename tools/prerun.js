@@ -14,6 +14,15 @@
 // so a 0-hit luck champion can never top a hitter (honesty pass). Checkpoints
 // regenerated under the new weights; md5 of every emitted file is printed so
 // provenance is a checksum, not a promise.
+// Round 21 (branch r21-quantum-coin-tiebreak): equal-fitness champion ties are
+//  broken by a RECEIPTED QUANTUM COIN, citing SuperInstance/quilt-quant's
+//  coin-toss-v1 (live moth-quantum API, lab/play.mjs — job-id journaled, mock
+//  flag explicit). CI has no network: the coin is the SEEDED MOCK stand-in,
+//  drawn from the same `rand` stream that makes this script byte-reproducible,
+//  and every flip lands in checkpoints/curve.json as {gen, incumbent, challenger,
+//  coin, engine: 'coin-toss-v1', live: false}. Honesty: mock is labeled, never
+//  laundered as live quantum entropy. Weight law: a merged PR here citing
+//  quilt-quant's coin = candidate VERIFIED referral edge qt-quant -> pong-quilt.
 const PQ = require("../core.js");
 const fs = require("fs"), path = require("path");
 const crypto = require("crypto");
@@ -22,9 +31,22 @@ const rand = PQ.rng(D.seed);
 const TOTAL_GENS = 260, CURVE_SAMPLES = 20;
 let pop = Array.from({ length: D.popSize }, () => PQ.makeNet(rand));
 const champRing = PQ.makeRing(TOTAL_GENS + 1); // one slot per generation, bounded
+const tieReceipts = []; // every coin flip, curve.json-bound
+let curGen = 0;
+// The quantum-coin tiebreak (seeded mock of quilt-quant coin-toss-v1):
+// on equal fitness, incumbent keeps on heads, challenger takes on tails.
+function quantumCoinTiebreak(rec, incumbent) {
+  const heads = rand() < 0.5;
+  if (heads) return false;
+  tieReceipts.push({ gen: curGen, incumbent: incumbent.index, challenger: rec.index,
+                     coin: 'T', engine: 'coin-toss-v1', live: false,
+                     citation: 'SuperInstance/quilt-quant lab/play.mjs coin-toss-v1' });
+  return true;
+}
 let scored = null;
 function evaluate() { // stream the population; retain elites only (flat memory)
-  const ev = PQ.makeEvaluator(pop, (net) => PQ.playOne(net, rand), { eliteK: D.elites });
+  const ev = PQ.makeEvaluator(pop, (net) => PQ.playOne(net, rand),
+                              { eliteK: D.elites, onTie: quantumCoinTiebreak });
   let snap; // each step() returns a snapshot; the last one is the generation result
   while (!ev.done) snap = ev.step(8); // batch size is a scheduling detail, not semantics
   return snap;
@@ -50,20 +72,23 @@ function emitCurve() {
     .map(({ gen, fitness }) => ({ gen, fitness }));
   fs.writeFileSync(path.join(__dirname, "..", "checkpoints", "curve.json"),
     JSON.stringify({ seed: D.seed, gens: TOTAL_GENS, ringWrites: champRing.writes,
-                     samples }, null, 1));
-  console.log(`curve: ${champRing.writes} generations sampled to ${samples.length} points -> checkpoints/curve.json`);
+                     tiebreaks: tieReceipts, samples }, null, 1));
+  console.log(`curve: ${champRing.writes} generations sampled to ${samples.length} points -> checkpoints/curve.json` +
+    (tieReceipts.length ? `; ${tieReceipts.length} quantum-coin tiebreak(s)` : "; no champion ties"));
 }
 fs.mkdirSync(path.join(__dirname, "..", "checkpoints"), { recursive: true });
 scored = evaluate();
 recordChamp(0);
 emit("level0", 0);
 for (let g = 1; g <= 60; g++) {
+  curGen = g;
   pop = PQ.runGeneration(pop, scored.elites, rand, D.sigma);
   scored = evaluate();
   recordChamp(g);
 }
 emit("level1", 60);
 for (let g = 61; g <= TOTAL_GENS; g++) {
+  curGen = g;
   pop = PQ.runGeneration(pop, scored.elites, rand, D.sigma);
   scored = evaluate();
   recordChamp(g);

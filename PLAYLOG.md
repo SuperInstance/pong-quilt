@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
 | R20 | 2026-09-26 | r20-coev-qarefusal-glue (vs main post-#26 merge) | canonical |
 | R19 | 2026-09-26 | playtest-round-19 (vs main 6e163f6, post-#24-merge) | canonical |
 | R18 | 2026-09-26 | r18-byo-endpoint-persist (#24) | canonical — index row restored by R19 (the R18 entry shipped without one) |
@@ -27,6 +28,18 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 21 — k2d8 — 2026-09-26 — mode: BUILDER (synergy candidate from the 11:11 pulse: quantum-coin CI tiebreaker) — vs main ac9b4c1
+
+### Builder receipt: champion ties are broken by a receipted quantum coin, not index order
+- **what:** `core.js` `makeEvaluator` gains an `opts.onTie(rec, incumbent)` seam — default OFF (strict `>` keeps the incumbent, byte-identical behavior everywhere the evaluator already runs). `tools/prerun.js` wires the seam to a receipted coin: on equal fitness, one draw from the same seeded `rand` stream; tails = challenger takes, and the flip is journaled to `checkpoints/curve.json` under `tiebreaks` with `{gen, incumbent, challenger, coin, engine: 'coin-toss-v1', live: false}` plus a citation to SuperInstance/quilt-quant `lab/play.mjs` (the live moth-quantum engine).
+- **why:** the old rule was silent index-order bias — the first equal-fitness candidate always won, undocumented. LIVE, not theoretical: the regenerated 261-generation prerun burned **89 coin flips**. The bias class was running every prerun.
+- **honesty:** CI has no network, so the coin is the SEEDED MOCK stand-in, `live: false` explicit in every receipt — never laundered as live quantum entropy (quilt-quant's own mock-flag doctrine). Byte-reproducibility preserved: two prerun runs produce md5-identical checkpoints (verified).
+- **verify (FAIL-first):** `tests/quantum-tiebreak-glue.test.js` pins trip 2/4 on main (seam absent, wiring absent); at tip suite 115/115 + qa 8/8. VERIFIED_CLAIMS 27→28 (`quantum-tiebreak`). readme-count pin named my own addition (111→115).
+- **Referral edge:** a merged PR here citing quilt-quant's coin-toss-v1 = candidate VERIFIED edge qt-quant → pong-quilt (weight law: VERIFIED only on merge).
+
+### Lies hunted
+- **[found + fixed]** the index-order tiebreak was invisible in docs and code; now it is an explicit, receipted, cited coin — and the receipts prove the class was live (89 flips in one prerun).
 
 ## Round 20 — k2d8 — 2026-09-26 — mode: BUILDER (R19 spec item: promote the C1-refusal probe into the suite) — vs main c5a6f1a (post-#26 merge)
 
