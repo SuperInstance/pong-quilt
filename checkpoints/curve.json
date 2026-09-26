@@ -8,6 +8,17 @@
    "incumbent": 27,
    "challenger": 35,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 38,
+   "incumbent": 15,
+   "challenger": 21,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -17,6 +28,7 @@
    "incumbent": 20,
    "challenger": 32,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -26,6 +38,7 @@
    "incumbent": 5,
    "challenger": 29,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -35,6 +48,27 @@
    "incumbent": 10,
    "challenger": 28,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 48,
+   "incumbent": 0,
+   "challenger": 6,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 51,
+   "incumbent": 8,
+   "challenger": 19,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -44,6 +78,7 @@
    "incumbent": 8,
    "challenger": 45,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -53,6 +88,7 @@
    "incumbent": 1,
    "challenger": 28,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -62,6 +98,7 @@
    "incumbent": 1,
    "challenger": 7,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -71,6 +108,17 @@
    "incumbent": 8,
    "challenger": 27,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 73,
+   "incumbent": 2,
+   "challenger": 9,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -80,6 +128,17 @@
    "incumbent": 22,
    "challenger": 44,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 74,
+   "incumbent": 24,
+   "challenger": 42,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -89,6 +148,27 @@
    "incumbent": 3,
    "challenger": 29,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 80,
+   "incumbent": 6,
+   "challenger": 22,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 85,
+   "incumbent": 0,
+   "challenger": 1,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -98,6 +178,17 @@
    "incumbent": 2,
    "challenger": 21,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 88,
+   "incumbent": 27,
+   "challenger": 36,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -107,6 +198,17 @@
    "incumbent": 27,
    "challenger": 39,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 90,
+   "incumbent": 29,
+   "challenger": 45,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -116,6 +218,17 @@
    "incumbent": 11,
    "challenger": 14,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 92,
+   "incumbent": 14,
+   "challenger": 35,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -125,6 +238,7 @@
    "incumbent": 3,
    "challenger": 8,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -134,6 +248,17 @@
    "incumbent": 8,
    "challenger": 24,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 93,
+   "incumbent": 24,
+   "challenger": 30,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -143,6 +268,7 @@
    "incumbent": 1,
    "challenger": 2,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -152,6 +278,17 @@
    "incumbent": 33,
    "challenger": 40,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 99,
+   "incumbent": 15,
+   "challenger": 20,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -161,6 +298,7 @@
    "incumbent": 15,
    "challenger": 39,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -170,6 +308,7 @@
    "incumbent": 1,
    "challenger": 11,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -179,6 +318,17 @@
    "incumbent": 28,
    "challenger": 34,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 108,
+   "incumbent": 34,
+   "challenger": 45,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -188,6 +338,7 @@
    "incumbent": 2,
    "challenger": 8,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -197,6 +348,7 @@
    "incumbent": 2,
    "challenger": 3,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -206,6 +358,37 @@
    "incumbent": 30,
    "challenger": 32,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 115,
+   "incumbent": 10,
+   "challenger": 13,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 116,
+   "incumbent": 1,
+   "challenger": 18,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 117,
+   "incumbent": 3,
+   "challenger": 8,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -215,6 +398,7 @@
    "incumbent": 8,
    "challenger": 15,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -224,6 +408,7 @@
    "incumbent": 15,
    "challenger": 17,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -233,6 +418,77 @@
    "incumbent": 2,
    "challenger": 4,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 122,
+   "incumbent": 10,
+   "challenger": 22,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 123,
+   "incumbent": 41,
+   "challenger": 44,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 125,
+   "incumbent": 5,
+   "challenger": 8,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 125,
+   "incumbent": 5,
+   "challenger": 24,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 125,
+   "incumbent": 5,
+   "challenger": 31,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 127,
+   "incumbent": 17,
+   "challenger": 38,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 129,
+   "incumbent": 3,
+   "challenger": 7,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -242,6 +498,27 @@
    "incumbent": 2,
    "challenger": 9,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 131,
+   "incumbent": 21,
+   "challenger": 29,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 132,
+   "incumbent": 31,
+   "challenger": 45,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -251,6 +528,17 @@
    "incumbent": 1,
    "challenger": 19,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 133,
+   "incumbent": 21,
+   "challenger": 41,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -260,6 +548,7 @@
    "incumbent": 1,
    "challenger": 7,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -269,6 +558,7 @@
    "incumbent": 2,
    "challenger": 4,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -278,6 +568,27 @@
    "incumbent": 5,
    "challenger": 34,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 136,
+   "incumbent": 4,
+   "challenger": 28,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 137,
+   "incumbent": 0,
+   "challenger": 1,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -287,6 +598,17 @@
    "incumbent": 13,
    "challenger": 20,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 137,
+   "incumbent": 20,
+   "challenger": 32,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -296,6 +618,47 @@
    "incumbent": 0,
    "challenger": 14,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 140,
+   "incumbent": 0,
+   "challenger": 2,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 141,
+   "incumbent": 16,
+   "challenger": 24,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 141,
+   "incumbent": 16,
+   "challenger": 46,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 144,
+   "incumbent": 2,
+   "challenger": 34,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -305,6 +668,7 @@
    "incumbent": 7,
    "challenger": 9,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -314,6 +678,37 @@
    "incumbent": 19,
    "challenger": 45,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 146,
+   "incumbent": 32,
+   "challenger": 36,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 148,
+   "incumbent": 29,
+   "challenger": 41,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 151,
+   "incumbent": 10,
+   "challenger": 21,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -323,6 +718,7 @@
    "incumbent": 30,
    "challenger": 47,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -332,6 +728,7 @@
    "incumbent": 8,
    "challenger": 17,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -341,6 +738,7 @@
    "incumbent": 38,
    "challenger": 39,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -350,6 +748,37 @@
    "incumbent": 27,
    "challenger": 38,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 156,
+   "incumbent": 1,
+   "challenger": 35,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 158,
+   "incumbent": 2,
+   "challenger": 10,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 159,
+   "incumbent": 5,
+   "challenger": 20,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -359,6 +788,7 @@
    "incumbent": 10,
    "challenger": 11,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -368,6 +798,27 @@
    "incumbent": 11,
    "challenger": 16,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 161,
+   "incumbent": 2,
+   "challenger": 24,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 162,
+   "incumbent": 5,
+   "challenger": 12,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -377,6 +828,17 @@
    "incumbent": 8,
    "challenger": 17,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 165,
+   "incumbent": 11,
+   "challenger": 21,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -386,6 +848,27 @@
    "incumbent": 20,
    "challenger": 25,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 166,
+   "incumbent": 25,
+   "challenger": 27,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 167,
+   "incumbent": 9,
+   "challenger": 21,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -395,6 +878,17 @@
    "incumbent": 22,
    "challenger": 24,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 168,
+   "incumbent": 22,
+   "challenger": 41,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -404,6 +898,27 @@
    "incumbent": 14,
    "challenger": 22,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 170,
+   "incumbent": 22,
+   "challenger": 29,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 170,
+   "incumbent": 22,
+   "challenger": 47,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -413,6 +928,7 @@
    "incumbent": 12,
    "challenger": 15,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -422,6 +938,7 @@
    "incumbent": 43,
    "challenger": 46,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -431,6 +948,17 @@
    "incumbent": 5,
    "challenger": 31,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 182,
+   "incumbent": 0,
+   "challenger": 11,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -440,6 +968,17 @@
    "incumbent": 32,
    "challenger": 40,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 184,
+   "incumbent": 6,
+   "challenger": 30,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -449,6 +988,7 @@
    "incumbent": 1,
    "challenger": 5,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -458,6 +998,7 @@
    "incumbent": 5,
    "challenger": 22,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -467,6 +1008,7 @@
    "incumbent": 16,
    "challenger": 42,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -476,6 +1018,7 @@
    "incumbent": 15,
    "challenger": 43,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -485,6 +1028,7 @@
    "incumbent": 12,
    "challenger": 18,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -494,6 +1038,7 @@
    "incumbent": 11,
    "challenger": 42,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -503,6 +1048,27 @@
    "incumbent": 4,
    "challenger": 14,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 195,
+   "incumbent": 14,
+   "challenger": 22,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 196,
+   "incumbent": 16,
+   "challenger": 19,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -512,6 +1078,27 @@
    "incumbent": 22,
    "challenger": 28,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 199,
+   "incumbent": 24,
+   "challenger": 30,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 200,
+   "incumbent": 7,
+   "challenger": 44,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -521,6 +1108,7 @@
    "incumbent": 7,
    "challenger": 47,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -530,6 +1118,7 @@
    "incumbent": 2,
    "challenger": 32,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -539,6 +1128,27 @@
    "incumbent": 32,
    "challenger": 37,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 203,
+   "incumbent": 24,
+   "challenger": 25,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 204,
+   "incumbent": 6,
+   "challenger": 12,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -548,6 +1158,17 @@
    "incumbent": 0,
    "challenger": 3,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 207,
+   "incumbent": 7,
+   "challenger": 42,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -557,6 +1178,57 @@
    "incumbent": 8,
    "challenger": 11,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 209,
+   "incumbent": 9,
+   "challenger": 12,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 209,
+   "incumbent": 9,
+   "challenger": 27,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 210,
+   "incumbent": 17,
+   "challenger": 22,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 211,
+   "incumbent": 2,
+   "challenger": 30,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 212,
+   "incumbent": 20,
+   "challenger": 31,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -566,6 +1238,17 @@
    "incumbent": 10,
    "challenger": 34,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 213,
+   "incumbent": 34,
+   "challenger": 39,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -575,6 +1258,7 @@
    "incumbent": 12,
    "challenger": 15,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -584,6 +1268,37 @@
    "incumbent": 17,
    "challenger": 29,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 218,
+   "incumbent": 11,
+   "challenger": 14,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 218,
+   "incumbent": 11,
+   "challenger": 26,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 219,
+   "incumbent": 2,
+   "challenger": 4,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -593,6 +1308,7 @@
    "incumbent": 2,
    "challenger": 15,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -602,6 +1318,7 @@
    "incumbent": 0,
    "challenger": 6,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -611,6 +1328,7 @@
    "incumbent": 10,
    "challenger": 22,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -620,6 +1338,27 @@
    "incumbent": 22,
    "challenger": 34,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 226,
+   "incumbent": 9,
+   "challenger": 34,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 230,
+   "incumbent": 0,
+   "challenger": 1,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -629,6 +1368,7 @@
    "incumbent": 26,
    "challenger": 44,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -638,6 +1378,17 @@
    "incumbent": 19,
    "challenger": 39,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 231,
+   "incumbent": 45,
+   "challenger": 47,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -647,6 +1398,17 @@
    "incumbent": 6,
    "challenger": 12,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 232,
+   "incumbent": 12,
+   "challenger": 45,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -656,6 +1418,37 @@
    "incumbent": 2,
    "challenger": 4,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 234,
+   "incumbent": 4,
+   "challenger": 14,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 234,
+   "incumbent": 4,
+   "challenger": 15,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 234,
+   "incumbent": 4,
+   "challenger": 36,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -665,6 +1458,27 @@
    "incumbent": 0,
    "challenger": 32,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 236,
+   "incumbent": 11,
+   "challenger": 33,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 236,
+   "incumbent": 11,
+   "challenger": 41,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -674,6 +1488,7 @@
    "incumbent": 21,
    "challenger": 26,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -683,6 +1498,27 @@
    "incumbent": 12,
    "challenger": 46,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 241,
+   "incumbent": 36,
+   "challenger": 37,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 242,
+   "incumbent": 6,
+   "challenger": 7,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -692,6 +1528,37 @@
    "incumbent": 1,
    "challenger": 22,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 244,
+   "incumbent": 21,
+   "challenger": 25,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 244,
+   "incumbent": 21,
+   "challenger": 31,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 244,
+   "incumbent": 21,
+   "challenger": 35,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -701,6 +1568,17 @@
    "incumbent": 5,
    "challenger": 6,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 245,
+   "incumbent": 9,
+   "challenger": 11,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -710,6 +1588,7 @@
    "incumbent": 9,
    "challenger": 15,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -719,6 +1598,27 @@
    "incumbent": 15,
    "challenger": 29,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 245,
+   "incumbent": 29,
+   "challenger": 43,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 246,
+   "incumbent": 19,
+   "challenger": 28,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -728,6 +1628,27 @@
    "incumbent": 1,
    "challenger": 18,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 250,
+   "incumbent": 21,
+   "challenger": 32,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 250,
+   "incumbent": 21,
+   "challenger": 46,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -737,6 +1658,37 @@
    "incumbent": 9,
    "challenger": 16,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 251,
+   "incumbent": 16,
+   "challenger": 17,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 251,
+   "incumbent": 16,
+   "challenger": 39,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 252,
+   "incumbent": 13,
+   "challenger": 38,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -746,6 +1698,7 @@
    "incumbent": 13,
    "challenger": 40,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -755,6 +1708,7 @@
    "incumbent": 0,
    "challenger": 1,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -764,6 +1718,47 @@
    "incumbent": 7,
    "challenger": 23,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 253,
+   "incumbent": 23,
+   "challenger": 26,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 254,
+   "incumbent": 3,
+   "challenger": 13,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 254,
+   "incumbent": 21,
+   "challenger": 27,
+   "coin": "H",
+   "swap": false,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 255,
+   "incumbent": 12,
+   "challenger": 16,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -773,6 +1768,7 @@
    "incumbent": 2,
    "challenger": 9,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -782,6 +1778,17 @@
    "incumbent": 9,
    "challenger": 17,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 256,
+   "incumbent": 17,
+   "challenger": 21,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -791,6 +1798,17 @@
    "incumbent": 0,
    "challenger": 5,
    "coin": "T",
+   "swap": true,
+   "engine": "coin-toss-v1",
+   "live": false,
+   "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
+  },
+  {
+   "gen": 258,
+   "incumbent": 1,
+   "challenger": 3,
+   "coin": "H",
+   "swap": false,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
@@ -800,6 +1818,7 @@
    "incumbent": 11,
    "challenger": 34,
    "coin": "T",
+   "swap": true,
    "engine": "coin-toss-v1",
    "live": false,
    "citation": "SuperInstance/quilt-quant lab/play.mjs coin-toss-v1"
