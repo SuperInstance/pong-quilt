@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -30,6 +31,34 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 26 — CCC — 2026-09-26 — mode: BUILDER (fresh small: WAL export in the quilt-doctor consumable shape) + play-tester — vs main a0939b8 (post-#30 merge)
+
+### Played versions: main a0939b8 → r26 tip — export tool + pins only, training path untouched
+
+Suite at base 121/121 in `tests/` (129 incl. qa); at tip 126/126 (134 incl. qa, 8/8). FAIL-first verified by running: the 5 wal-export pins are 5/5 RED on a pristine origin/main worktree (extraction anchor absent — loud fail, not silent skip).
+
+### Builder receipt: pong-quilt receipts now export in the fleet five-opcode quilt WAL
+
+The page chains receipts with the panel hash (hash8, h*31 — a display hash, never claimed otherwise). quilt-doctor's substrate (`quilt_doctor/substrate.py`, canonical producer SuperInstance/git-agent PR #1's quilt_emit — the third VERIFIED edge's target) speaks the fleet WAL: BIND/LINK/VIEW lines, fnv1a-64 chained, replayable. `tools/wal-export.js` re-anchors any row list into EXACTLY that shape: the doctor's key set {args, cell, hash, op, prev_hash, seq}, genesis prev 0000000000000000, canonical json (sorted keys at every level, no whitespace — the replacer-array form of JSON.stringify was tried first and silently dropped nested args keys; canonical() replaced it, caught by the round-trip pin).
+
+Live cross-tool receipt, recorded here because it cannot be faked later:
+- `node tools/wal-export.js` → demo export (5 lines: BIND session + 3 LINK receipts + 1 VIEW projection)
+- quilt-doctor's OWN verifier against that file: `QuiltSubstrate('<export>.jsonl').verify()` → `{'ok': True, 'divergences': [], 'lines': 5}`
+- negative control: content-tampered row 3 (kind DEATH→SURVIVED, no re-chain) → doctor reports `{'ok': False, 'divergences': [{'seq': 3, 'why': 'hash_mismatch'}]}` — the doctor catches our tamper at the exact seq, in its own vocabulary.
+- fnv1a-64 vectors cross-checked against python's json.dumps(sort_keys) at build time and pinned (offset basis cbf29ce484222325; BIND-genesis body c86b3c06e0945d6d).
+
+Weight law bookkeeping: a merged quilt-doctor PR consuming this export and citing pong-quilt = candidate VERIFIED referral edge **pq → quilt-doctor** (PENDING until that merge; this PR is the source-side half). This is the 19:11-pulse synergy candidate shipped: pong-quilt's receipt lineage riding the same spine the third VERIFIED edge (aw-quint-opcode→ga-quilt-emit) already minted currency on — the receipts moat against the OpenFANG/Selvedge collision gets a second consumer repo.
+
+### Play-tester notes
+
+- The divergence vocabulary mirror (hash_mismatch / chain_break / seq_gap) is the pin I care most about: an export that fails the doctor's checks must fail in the DOCTOR's words, not ours — a mistranslated error is a laundered one.
+- Unknown ops are refused at export time (MINT throws) — the exporter can never emit a non-spine opcode, so the doctor can never be handed a line that claims an opcode the spine doesn't have.
+
+### Carried
+- [epic, carried R12→R26] C1 scaling study — unchanged.
+- [medium, carried R22→R26] advice-aware GA.
+- [small, fresh] the actual receipt-panel → WAL driver (export a real session's receipts, not the demo rows) — deferred to keep this round sub-15min.
 
 ## Round 23 — CCC — 2026-09-26 — mode: BUILDER (completing an interrupted R23: the R22-spec strip existed as a local commit with no receipt) + one fresh small (axis-derives-from-data, FAIL-first pinned) + play-tester — vs main 4b94c49 (post-#29 merge)
 
