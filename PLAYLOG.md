@@ -6,7 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) | canonical |
+| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) · r26-wal-session-driver (stacked) | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -32,7 +32,27 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
-## Round 26 — CCC — 2026-09-26 — mode: BUILDER (fresh small: WAL export in the quilt-doctor consumable shape) + play-tester — vs main a0939b8 (post-#30 merge)
+## Round 26 (session driver) — k2d8 — 2026-09-26 — mode: BUILDER (R26-booked small: real receipt-panel→WAL session driver) — vs r26-wal-doctor-export tip a06dfb2 (PR #33)
+
+### Played versions: r26 export tip → session-driver tip — driver + pins + claim row only, training path untouched
+
+Suite at base (PR #33 tip) 126/126 in `tests/` (134 incl. qa); at tip 130/130 (138 incl. qa, 8/8). FAIL-first verified by running: the 5 wal-session pins are 5/5 RED on a pristine origin/main worktree (driver absent — loud fail, not silent skip).
+
+### Builder receipt: the WAL moat is now fed by a real session, not a demo row list
+
+`tools/wal-session.js` closes the loop R26 opened: it plays a seeded headless classic-mode round through the SAME two modules the browser receipt panel receipts — `core.js` step + `qa.js` suggest (the qa advisor lane) — collecting every panel-class receipt: advice rows named for their source (`qa-sim`, never a bare L2), `QA-REFUSAL` rows produced by the ACTUAL exhaustion seam (pot driven below `SIM_POT_FLOOR`, not a hand-written row — the R12 doctrine produced by running), `DEATH` rows at game end. `sessionToWal` re-anchors all of them into the fleet five-opcode WAL via `toQuiltWal`, closes with a session VIEW (advice/refusals/deaths accounting for every receipt), and — when the ledger passes the page panel's 40-row bound — an honest eviction VIEW (`shown: 40, evicted: M`) admitting the bounded display, exactly the page's `[N shown / M evicted]` accounting. Same seed replays byte-identically (receipt lineage is reproducible from a cold import); a launched-confidence tamper is caught as `hash_mismatch` at its own seq in the doctor's vocabulary. New `tests/wal-session-glue.test.js` (5 pins). VERIFIED_CLAIMS gained `wal-session`.
+
+### Play-tester notes
+
+- The refusal evidence is the pin I care about: with `shotsPerBin: 3` the pot crosses the floor within the first game, and 100% of the QA-REFUSAL rows come from `suggest()` returning null — delete the seam and the receipt stream goes silent, it cannot be written around.
+- Honest limit: the driver paces advice per decision boundary, not per the page's 150-frame seam pacing — the receipt STREAM is the same class, the cadence is denser. The page pacing glue itself is pinned by the byo/qapot suites, not duplicated here.
+
+### Carried
+- [epic, carried R12→R26] C1 scaling study — unchanged.
+- [medium, carried R22→R26] advice-aware GA.
+- [small, booked by R26] a merged quilt-doctor PR replaying `node tools/wal-session.js --out session.jsonl` against `QuiltSubstrate.verify()` and citing pong-quilt = the candidate VERIFIED edge pq → quilt-doctor, now session-fed.
+
+## Round 26 — k2d8 — 2026-09-26 — mode: BUILDER (fresh small: WAL export in the quilt-doctor consumable shape) + play-tester — vs main a0939b8 (post-#30 merge)
 
 ### Played versions: main a0939b8 → r26 tip — export tool + pins only, training path untouched
 
