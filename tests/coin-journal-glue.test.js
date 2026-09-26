@@ -112,3 +112,29 @@ test('label carries the derived axis, not the raw header', () => {
   const label = calls.texts.map(t => t.t).join(' ');
   assert.match(label, /gens 0-200/, `label must name the plotted range, got: ${label}`);
 });
+
+// R28 playtest pin (FAIL-first, found by driving the shipped page headless):
+// the degrade path lived in the CALLER (fetch .catch -> coinJournalUnavailable)
+// while renderCoinJournal itself THREW on a null/undefined journal
+// (TypeError: Cannot read properties of null (reading 'filter')) and painted
+// a grey "0 flips" strip on an empty one. The R23 claim "admits it in amber
+// instead of faking a strip" held only on the fetch-failure road; a malformed
+// curve.json reaching the renderer directly got a crash (or a silent empty
+// instrument), not the amber admission. R27 spec'd this small; the renderer
+// must own its degrade path: null/undefined/empty journal -> amber admission
+// in-renderer, no throw, no fake ticks — same vocabulary as the page's
+// data-absent instrument.
+test('renderer owns its degrade path: null/undefined/empty journal renders the amber admission, no throw', () => {
+  for (const bad of [null, undefined, []]) {
+    const calls = drive(bad, 260);
+    const label = calls.texts.map(t => t.t).join(' ');
+    assert.match(label, /data absent/,
+      `journal ${JSON.stringify(bad)} must render the admission, got: ${label || '(no text)'}`);
+    assert.ok(calls.styles.includes('#d29922'), 'amber admission, not the grey audit color');
+    assert.strictEqual(calls.rects.filter(r => r.y === 4).length, 0, 'no fake ticks');
+  }
+  // healthy path regression guard: a real journal still audits
+  const ok = drive([{ gen: 1, coin: 'H', swap: false, ...CITED }], 260);
+  assert.match(ok.texts.map(t => t.t).join(' '), /1 flips/);
+  assert.strictEqual(ok.rects.filter(r => r.y === 4).length, 1, 'one real tick');
+});
