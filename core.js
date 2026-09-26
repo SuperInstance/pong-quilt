@@ -155,6 +155,7 @@
   // across animation frames instead of blocking on a synchronous eval loop.
   function makeEvaluator(candidates, evalOne, opts) {
     const eliteK = (opts && opts.eliteK) || DEFAULTS.elites;
+    const onTie = (opts && opts.onTie) || null; // tiebreak seam: R21 quantum-coin
     let i = 0, sum = 0;
     let best = null;
     const elites = []; // fitness-desc, length <= eliteK; the ONLY retained records
@@ -166,7 +167,12 @@
           const rec = { index: i, fitness: r.fitness, frames: r.frames,
                         hits: r.hits, maxSpeed: r.maxSpeed, net: candidates[i] };
           sum += r.fitness;
-          if (!best || r.fitness > best.fitness) best = rec;
+          // R21: equal-fitness challengers used to lose silently (strict > kept
+          // the first record = index-order bias, undocumented). The seam stays
+          // OFF by default (behavior preserved); prerun wires the receipted
+          // quantum coin here (see tools/prerun.js).
+          if (!best || r.fitness > best.fitness ||
+              (r.fitness === best.fitness && onTie && onTie(rec, best))) best = rec;
           let j = elites.length;
           while (j > 0 && elites[j - 1].fitness < r.fitness) j--; // desc: skip only smaller; stable (new after equals)
           if (j < eliteK) {
@@ -410,6 +416,7 @@
     { id: "readme-count", claim: "the README's stated test counts are run-verified — a pin respawns the canonical suite (self-excluded, no recursion) plus tools/test-qa.js, parses the tap pass-summaries, and fails if the prose numbers drift; a hardcoded count can never silently rot again (Round 19)", proofTest: "tests/readme-count.test.js" },
     { id: "canonical-index", claim: "the PLAYLOG canonical index and the ## Round headings are the same fact viewed twice — every Round heading has an index row and every R<N> index row has a heading (the retitled R2-artifact row exempt), so a round can never again ship without its index row (Round 19)", proofTest: "tests/canonical-index.test.js" },
     { id: "coev-qarefusal-glue", claim: "the C1 coev ledger path admits advisor exhaustion honestly — a live() coev tick with the qa advisor at an empty pot (below the sim floor) receipts a QA-REFUSAL row and a warn stat line through the same l2Suggest(champGame) seam as classic mode, and a live channel still advises through that path (Round 20)", proofTest: "tests/coev-qarefusal-glue.test.js" },
+    { id: "quantum-tiebreak", claim: "equal-fitness champion ties are broken by a receipted quantum coin, not silent index order — the makeEvaluator onTie seam keeps default behavior off, prerun wires a seeded mock of quilt-quant's coin-toss-v1 (live moth-quantum engine cited, live:false explicit, every flip journaled to checkpoints/curve.json tiebreaks) (Round 21)", proofTest: "tests/quantum-tiebreak-glue.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];
   return { DEFAULTS, rng, makeNet, forward, mutate, step, newGame, sense, playOne,
