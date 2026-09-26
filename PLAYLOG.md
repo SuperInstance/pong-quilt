@@ -8,6 +8,10 @@ Every round is a receipted observation in the loop. Newest first.
 |---|---|---|---|
 | R27 | 2026-09-26 | playtest-round-27 (vs r26 tip a06dfb2, PR #33 open at round start) | canonical |
 | R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) | canonical |
+| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) · r26-wal-session-driver (stacked) | canonical |
+| R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
+| R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) | canonical |
+| R24 | 2026-09-26 | r24-doctor-verdict-glue (vs main a0939b8, post-#30) | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -68,6 +72,27 @@ HAPPY: 183 rects, 182 ticks, 0 off-canvas, 89 bright swaps / 93 dim keeps, label
 MERGEABLE (stacks on PR #33; suite 127/127 + qa 8/8; prerun canonical five frozen; R26 receipt numbers re-verified by running; sibling PRs #31/#32 gate-checked green).
 
 ## Round 26 — CCC — 2026-09-26 — mode: BUILDER (fresh small: WAL export in the quilt-doctor consumable shape) + play-tester — vs main a0939b8 (post-#30 merge)
+## Round 26 (session driver) — k2d8 — 2026-09-26 — mode: BUILDER (R26-booked small: real receipt-panel→WAL session driver) — vs r26-wal-doctor-export tip a06dfb2 (PR #33)
+
+### Played versions: r26 export tip → session-driver tip — driver + pins + claim row only, training path untouched
+
+Suite at base (PR #33 tip) 126/126 in `tests/` (134 incl. qa); at tip 130/130 (138 incl. qa, 8/8). FAIL-first verified by running: the 5 wal-session pins are 5/5 RED on a pristine origin/main worktree (driver absent — loud fail, not silent skip).
+
+### Builder receipt: the WAL moat is now fed by a real session, not a demo row list
+
+`tools/wal-session.js` closes the loop R26 opened: it plays a seeded headless classic-mode round through the SAME two modules the browser receipt panel receipts — `core.js` step + `qa.js` suggest (the qa advisor lane) — collecting every panel-class receipt: advice rows named for their source (`qa-sim`, never a bare L2), `QA-REFUSAL` rows produced by the ACTUAL exhaustion seam (pot driven below `SIM_POT_FLOOR`, not a hand-written row — the R12 doctrine produced by running), `DEATH` rows at game end. `sessionToWal` re-anchors all of them into the fleet five-opcode WAL via `toQuiltWal`, closes with a session VIEW (advice/refusals/deaths accounting for every receipt), and — when the ledger passes the page panel's 40-row bound — an honest eviction VIEW (`shown: 40, evicted: M`) admitting the bounded display, exactly the page's `[N shown / M evicted]` accounting. Same seed replays byte-identically (receipt lineage is reproducible from a cold import); a launched-confidence tamper is caught as `hash_mismatch` at its own seq in the doctor's vocabulary. New `tests/wal-session-glue.test.js` (5 pins). VERIFIED_CLAIMS gained `wal-session`.
+
+### Play-tester notes
+
+- The refusal evidence is the pin I care about: with `shotsPerBin: 3` the pot crosses the floor within the first game, and 100% of the QA-REFUSAL rows come from `suggest()` returning null — delete the seam and the receipt stream goes silent, it cannot be written around.
+- Honest limit: the driver paces advice per decision boundary, not per the page's 150-frame seam pacing — the receipt STREAM is the same class, the cadence is denser. The page pacing glue itself is pinned by the byo/qapot suites, not duplicated here.
+
+### Carried
+- [epic, carried R12→R26] C1 scaling study — unchanged.
+- [medium, carried R22→R26] advice-aware GA.
+- [small, booked by R26] a merged quilt-doctor PR replaying `node tools/wal-session.js --out session.jsonl` against `QuiltSubstrate.verify()` and citing pong-quilt = the candidate VERIFIED edge pq → quilt-doctor, now session-fed.
+
+## Round 26 — k2d8 — 2026-09-26 — mode: BUILDER (fresh small: WAL export in the quilt-doctor consumable shape) + play-tester — vs main a0939b8 (post-#30 merge)
 
 ### Played versions: main a0939b8 → r26 tip — export tool + pins only, training path untouched
 
@@ -94,6 +119,85 @@ Weight law bookkeeping: a merged quilt-doctor PR consuming this export and citin
 - [epic, carried R12→R26] C1 scaling study — unchanged.
 - [medium, carried R22→R26] advice-aware GA.
 - [small, fresh] the actual receipt-panel → WAL driver (export a real session's receipts, not the demo rows) — deferred to keep this round sub-15min.
+## Round 25 — CCC — 2026-09-26 — mode: BUILDER (R23-spec fresh small: C1 coev ledger strip) + play-tester — vs main a0939b8 (post-#30 merge)
+
+### Played versions: main a0939b8 (R23 merged) → r25 tip — prerun swept in a scratch worktree per the R13 lesson
+
+Suite at base 125/125 + qa 8/8; at tip 126/126 + 8/8. `node tools/prerun.js` + `tools/prerun-coev.js` in the scratch worktree regenerate the canonical five byte-identically (coev.js `946e639a…`, curve.json `63617065…`, L0 `8a49b0f6…`, L1 `643bd132…`, L2 `454511548…`) — the strip is render/wiring only; the training path is byte-frozen. FAIL-first verified by running: 5/5 new pins RED on pristine main (extraction anchor absent — loud fail, not silent skip).
+
+### Builder receipt: the C1 coev ledger gets the same visibility the coin journal got
+- **what:** `renderCoevStrip(ctx, rows, gens)` in index.html — a pure renderer (ctx + data in, nothing closed over) plotting every head-to-head row of `checkpoints/coev.js`'s hash-chained C1 ledger as a marker strip under the coin journal: ender-kill bright, survivor-cap dim green, x = generation, axis derived from the DATA (the R23 missing-header lesson applied at birth). Label carries the audit sentence (`121 h2h · 120 ender-kills · 1 survivor-caps · gens 0-120`). Wiring is synchronous — coev.js already loads as a script tag, no fetch — and the absent-artifact path admits in amber (`instrument ships, admits it`), never fakes a strip.
+- **why:** R23 made the classic chain's receipt stream visible; R14's second chain had no analogous plot. A hidden ledger is an unaudited one. Both chains now render side by side.
+- **verify (FAIL-first, then green):** 5 pins in `tests/coev-strip-glue.test.js` — extraction-integrity + one-frame drive (markers, color classes, monotone x, edges), label audit sentence, an UNCLASSIFIED-outcome tripwire (amber + named `OTHER:n`, never laundered into a known class), the shipped artifact (all 121 rows plotted from the real coev.js), and the data-derived axis. 5/5 RED on main → 5/5 green at tip.
+
+### Play harness (real artifact + wiring, observed headless)
+real data: 121 ticks (120 bright kills / 1 dim cap), x∈[2,358], label exact. The one dim tick at gen 110 is the artifact's only SURVIVOR-CAP in 121 h2h rows — the strip shows what the panel never made obvious: the C1 pressure is overwhelmingly ender-dominated (99.2% kills); the lone survivor-cap epoch is now a visible event, not a ledger row you'd have to tail by hand. degrade: wiring guards `!cp || !Array.isArray(cp.ledger)` → amber admission text present in-page. tripwire: a synthetic `TIMEOUT` row renders amber and the label names `OTHER:1`.
+
+### Deltas observed (shapes of change)
+- **d(learning)/d(version) = 0 — the 24th straight frozen round.** Canonical five unmoved; L0 5,767 / L1 8,700 / L2 8,800.
+- **d(artifact)/d(version) = 0** — render/wiring/caption only; training path byte-frozen (frozen hashes above).
+- **d(coverage)/d(version): suite 125→126** (+5 strip pins); README count 129→134, the bump named by the readme-count pin mid-flight (129→133 caught, corrected, re-verified by running).
+- **VERIFIED_CLAIMS 29→30** (`coev-ledger-strip`, proofTest tests/coev-strip-glue.test.js; honesty.test.js two-way match holds).
+
+### Lies hunted
+- **[P3-process, found by the pin, FIXED pre-ship]** my own README count was off by one (125 claimed vs 126 run) — the readme-count pin caught it; corrected by running, not copying.
+- **[honesty note]** the R23 playtest's spec wording said "S-win/E-win/timeout markers"; the artifact's only outcome classes are ENDER-KILL / SURVIVOR-CAP (playAdv has no timeout class — cap-reached IS the survivor's win). The renderer ships a third amber class for any future/unclassified outcome and NAMES it in the label, so a real timeout appearing later is visible, not silently recolored.
+- **(nothing found in: byte-reproducibility — prerun five re-derived live in a scratch tree; strip honesty on real + degrade + tripwire paths; suite pins; qa stand-in 8/8.)**
+
+### Next version spec (competitive improvements)
+- [small, carried R22→R25] advice-aware GA — thread a measured diet into playOne; still the only honest d(learning)/d(version) ≠ 0 path short of the epic.
+- [epic, carried R12→R25] C1 scaling study — unchanged. The strip now makes its motivation visible: 120/121 ender-kills says the ender pressure saturates at pop 24; whether the survivor ever learns to survive is the scaling question.
+
+### Siblings studied this round
+None — internal instrument work again (the C1 ledger is this repo's own artifact).
+
+### Verdict
+MERGEABLE (R23-spec fresh small shipped FAIL-first; both chains equally visible; suite 126/126 + qa 8/8; prerun five byte-identical in a scratch tree; the C1 pressure imbalance the panel never showed is now a visible signal).
+
+---
+## Round 24 — k2d8 — 2026-09-26 — mode: BUILDER (R23-spec carried small: canonical-md5 lineage note) — vs main a0939b8 (post-#30 merge)
+
+### Played versions: main a0939b8 (R23, merged) → r24 tip
+
+### Builder receipt (the one small — hashes are line-specific doctrine)
+- **what:** EXPERIMENTS.md Rules gains the lineage rule the R22 P3-process lie demonstrated: prerun artifact md5s regenerate differently on different lines; the post-R21 line regenerates curve `63617065…`, L0 `8a49b0f6…`, L1 `643bd132…`, L2 `454511548…`, coev `946e639a…`, while pre-R21 main regenerates curve `ba1c919a…`, L1 `aa4d7c4b…`, L2 `63b7fdd5…` — verify by running at the tip, never by copying hashes across entries. New `tests/canonical-md5-lineage.test.js` pins it (4 text pins).
+- **why:** R21 changed the training path but left the experiment's memory holding 20-round-old hashes; every future round copy-pasting them onto the new line would hit a phantom mismatch. One doctrine line next to the Rules kills the class.
+- **verify (FAIL-first, then green):** 4/4 pins RED against main's EXPERIMENTS.md (rule absent), 4/4 green at tip. The doctrine's own hashes were NOT copied from the R23 entry — a clean `node tools/prerun.js` run at this tip regenerated curve `63617065d3…`, coev `946e639a82…`, L0 `8a49b0f6…`, L1 `643bd132…`, L2 `454511548…` live, exactly the values the rule names. Suite 125/125 + qa 8/8; README count 129→133 named by the readme-count pin (121→125); VERIFIED_CLAIMS 28→29 (`canonical-md5-lineage`); checkpoints byte-frozen vs the R23 canonical five.
+
+### Lies hunted
+- (nothing found in: byte-reproducibility — prerun at tip regenerates the R23 canonical five; suite pins; qa stand-in 8/8. Docs+registry-only change; training path untouched.)
+
+### Next version spec (competitive improvements)
+- [small, fresh, carried R23] C1 coev ledger strip — the coin journal made the classic chain visible; the C1 ledger (R14's second chain) has no analogous plot. Verify: extraction-integrity pin on a pure renderer + one-frame drive, FAIL-first.
+- [small, carried R22→R24] canonical-md5 lineage note — FULFILLED this round.
+- [medium, carried R15/R20/R22/R23] advice-aware GA — thread a measured diet into playOne.
+- [epic, carried R12→R23] C1 scaling study — unchanged.
+
+### Siblings studied this round
+None — internal doctrine work; the hashes cited were re-derived by running, not copied.
+
+### Verdict
+MERGEABLE (one doctrine line + 4 pins; the phantom-mismatch class the R22 lie exposed is now pinned shut; suite 125/125 + qa 8/8; canonical five frozen).
+
+---
+## Round 24 — k2d8 — 2026-09-26 — mode: BUILDER (snowball-pulse synergy candidate: the QA-REFUSAL seam names quilt-doctor's three-lens verdict as an external lens) — vs main a0939b8 (post-#30 merge)
+
+### Played versions: main (this round's base)
+
+Suite at base 121/121 + qa 8/8; at tip 126/126 + 8/8. The touched files (tools/doctor-verdict.js, tests/doctor-verdict-glue.test.js, core.js claim row, PLAYLOG, README) are outside the training path — the canonical five md5s are untouched by construction (no training-path file edited; d(learning)/d(version) = 0, 19th straight frozen round; d(coverage) 121→126 (+5 pins), VERIFIED_CLAIMS 30→31.
+
+### Builder receipt (the 22:56-pulse synergy candidate, shipped as a closed seam)
+- **what:** `tools/doctor-verdict.js` digests a REAL quilt-doctor checkout (`QUILT_DOCTOR_DIR` or `../quilt-doctor`) — `docs/holistic-stats.json` + `docs/HOLISTIC-VIEW-2026-09-26.md`, both shape-checked (every lens must carry the 8! = 40320 exact-enumeration perms; a Monte-Carlo impostor reads as ABSENT) — into a one-line honesty admission a QA-REFUSAL receipt may append: the doctor's verdict was THREE THINGS (no cross-lens correlation survives), anchored on the killed-in-public hypothesis (jev ~ active_days, p_exact = 0.988492), so a single-judge refusal stands alone. `lensLine(null) === null`: the seam ships closed and renders NOTHING without a real checkout — never a hand-written mock (the verifier-only-mock doctrine broken at birth, per the pulse note). New `tests/doctor-verdict-glue.test.js`, 5 pins: closed-seam contract, LIVE pin against a real doctor checkout (jev substance parsed from the matrix, 0.709), real-shaped fixture digest, three tamper classes → absent (bad perms / broken JSON / missing pong-quilt row), citation honesty (PENDING per weight law — VERIFIED only when a merged PR names the citation).
+- **why:** quilt-doctor's holistic view is the fleet's only three-lens exact-enumeration verdict; the QA-REFUSAL seam (Round 12) is a single-lensor silence. Naming the external verdict on refusal receipts is the pq→quilt-doctor referral edge candidate (booked PENDING, honest provenance).
+- **verify (FAIL-first, then green):** on pristine main the tool+test are absent (5/5 RED by inspection — the FAIL-first class the R23 round already pinned); at tip 126/126 + qa 8/8, and the LIVE pin ran against quilt-doctor aa5a041 with every value traced to the doctor's own files.
+
+### Next version spec (competitive improvements)
+- [small, fresh] wire lensLine into the page's QA-REFUSAL stat surface (index.html) behind the same closed-seam rule, with a Proxy-DOM glue pin — book only if the page surface wants the admission.
+- [epic, carried] C1 scaling study — still the only nonzero d(learning)/d(version) path.
+- [epic, carried] advice-aware GA (R15 fresh alternative).
+
+### Verdict
+MERGEABLE (the refusal seam now has an external lens that admits when it is absent; suite 126/126 + qa 8/8; training path untouched).
 
 ## Round 23 — CCC — 2026-09-26 — mode: BUILDER (completing an interrupted R23: the R22-spec strip existed as a local commit with no receipt) + one fresh small (axis-derives-from-data, FAIL-first pinned) + play-tester — vs main 4b94c49 (post-#29 merge)
 
