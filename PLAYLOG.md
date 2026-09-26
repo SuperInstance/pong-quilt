@@ -7,6 +7,7 @@ Every round is a receipted observation in the loop. Newest first.
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
 | R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) | canonical |
+| R24 | 2026-09-26 | r24-doctor-verdict-glue (vs main a0939b8, post-#30) | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -57,6 +58,24 @@ None — internal doctrine work; the hashes cited were re-derived by running, no
 MERGEABLE (one doctrine line + 4 pins; the phantom-mismatch class the R22 lie exposed is now pinned shut; suite 125/125 + qa 8/8; canonical five frozen).
 
 ---
+## Round 24 — k2d8 — 2026-09-26 — mode: BUILDER (snowball-pulse synergy candidate: the QA-REFUSAL seam names quilt-doctor's three-lens verdict as an external lens) — vs main a0939b8 (post-#30 merge)
+
+### Played versions: main (this round's base)
+
+Suite at base 121/121 + qa 8/8; at tip 126/126 + 8/8. The touched files (tools/doctor-verdict.js, tests/doctor-verdict-glue.test.js, core.js claim row, PLAYLOG, README) are outside the training path — the canonical five md5s are untouched by construction (no training-path file edited; d(learning)/d(version) = 0, 19th straight frozen round; d(coverage) 121→126 (+5 pins), VERIFIED_CLAIMS 30→31.
+
+### Builder receipt (the 22:56-pulse synergy candidate, shipped as a closed seam)
+- **what:** `tools/doctor-verdict.js` digests a REAL quilt-doctor checkout (`QUILT_DOCTOR_DIR` or `../quilt-doctor`) — `docs/holistic-stats.json` + `docs/HOLISTIC-VIEW-2026-09-26.md`, both shape-checked (every lens must carry the 8! = 40320 exact-enumeration perms; a Monte-Carlo impostor reads as ABSENT) — into a one-line honesty admission a QA-REFUSAL receipt may append: the doctor's verdict was THREE THINGS (no cross-lens correlation survives), anchored on the killed-in-public hypothesis (jev ~ active_days, p_exact = 0.988492), so a single-judge refusal stands alone. `lensLine(null) === null`: the seam ships closed and renders NOTHING without a real checkout — never a hand-written mock (the verifier-only-mock doctrine broken at birth, per the pulse note). New `tests/doctor-verdict-glue.test.js`, 5 pins: closed-seam contract, LIVE pin against a real doctor checkout (jev substance parsed from the matrix, 0.709), real-shaped fixture digest, three tamper classes → absent (bad perms / broken JSON / missing pong-quilt row), citation honesty (PENDING per weight law — VERIFIED only when a merged PR names the citation).
+- **why:** quilt-doctor's holistic view is the fleet's only three-lens exact-enumeration verdict; the QA-REFUSAL seam (Round 12) is a single-lensor silence. Naming the external verdict on refusal receipts is the pq→quilt-doctor referral edge candidate (booked PENDING, honest provenance).
+- **verify (FAIL-first, then green):** on pristine main the tool+test are absent (5/5 RED by inspection — the FAIL-first class the R23 round already pinned); at tip 126/126 + qa 8/8, and the LIVE pin ran against quilt-doctor aa5a041 with every value traced to the doctor's own files.
+
+### Next version spec (competitive improvements)
+- [small, fresh] wire lensLine into the page's QA-REFUSAL stat surface (index.html) behind the same closed-seam rule, with a Proxy-DOM glue pin — book only if the page surface wants the admission.
+- [epic, carried] C1 scaling study — still the only nonzero d(learning)/d(version) path.
+- [epic, carried] advice-aware GA (R15 fresh alternative).
+
+### Verdict
+MERGEABLE (the refusal seam now has an external lens that admits when it is absent; suite 126/126 + qa 8/8; training path untouched).
 
 ## Round 23 — CCC — 2026-09-26 — mode: BUILDER (completing an interrupted R23: the R22-spec strip existed as a local commit with no receipt) + one fresh small (axis-derives-from-data, FAIL-first pinned) + play-tester — vs main 4b94c49 (post-#29 merge)
 
