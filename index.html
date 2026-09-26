@@ -47,7 +47,9 @@
  <div>
   <canvas id="cells" width="360" height="120"></canvas><br>
   <canvas id="curve" width="360" height="60" style="margin-top:6px"></canvas>
+  <canvas id="coinstrip" width="360" height="18" style="margin-top:2px"></canvas>
   <small>champion-fitness strip: ring-buffered history (bounded — oldest evicted),<br>pattern ported from <b>quilt-edge-ml</b>'s ring_buffer. live proof training is non-monotonic.</small><br>
+  <small>coin journal: every quantum-coin tiebreak flip from the prerun (H keep / T swap)<br>plotted against generation — the mutation-rate signal the experiment now owns (R23).</small><br>
   <canvas id="qa" width="180" height="60" style="margin-top:6px"></canvas>
   <canvas id="qastrip" width="64" height="12" style="margin-top:2px;display:none"></canvas>
   <small id="qastriplabel" style="display:none">confidence vs pot (shots/bin): measured once on a fixed grid, cached — the pinned trend is test-visible (tests/confidence-strip-glue.test.js)</small>
@@ -108,6 +110,27 @@ function receipt(kind,move,conf){const row={i:receipts.length,kind,move,conf:+co
 function renderWristband(){$("wristband").innerHTML=PQ.VERIFIED_CLAIMS.map(c=>
  `<span class="badge ${c.proofTest?"ok":"warn"}" title="${c.proofTest||"browser-only"}">✓ ${c.claim}</span>`).join("");}
 renderWristband();
+// R23 (R22 spec small): plot the tiebreak journal — the demo owns a real coin
+// instrument it didn't show. Pure renderer (ctx + data in, nothing closed
+// over) so tests/coin-journal-glue.test.js can extract it VERBATIM. x = gen.
+function renderCoinJournal(ctx, tiebreaks, gens) {
+ ctx.fillStyle = "#05070b"; ctx.fillRect(0, 0, 360, 18);
+ const swaps = tiebreaks.filter(t => t.swap).length;
+ const liveCount = tiebreaks.filter(t => t.live !== false).length;
+ tiebreaks.forEach(t => {
+  const x = 2 + (t.gen / Math.max(1, gens)) * 356;
+  ctx.fillStyle = t.swap ? "#f0f6fc" : "#238636"; // swap: bright tick; keep: dim green
+  ctx.fillRect(Math.round(x), 4, 1, 8); });
+ ctx.fillStyle = "#8b949e"; ctx.font = "10px monospace";
+ const liveNote = liveCount ? ` · LIVE:${liveCount} (moth engine!)` : " · live:false throughout";
+ ctx.fillText(`coin journal: ${tiebreaks.length} flips · ${swaps} swaps · gens 0-${gens}` + liveNote, 4, 16);
+}
+function coinJournalUnavailable() { const cv = $("coinstrip").getContext("2d");
+ cv.fillStyle = "#05070b"; cv.fillRect(0, 0, 360, 18); cv.fillStyle = "#d29922"; cv.font = "10px monospace";
+ cv.fillText("coin journal: data absent (serve over http, not file://) — instrument ships, admits it", 4, 12); }
+fetch("checkpoints/curve.json").then(r => r.ok ? r.json() : null).then(d => {
+ if (!d || !Array.isArray(d.tiebreaks) || !d.tiebreaks.length) return coinJournalUnavailable();
+ renderCoinJournal($("coinstrip").getContext("2d"), d.tiebreaks, d.gens || 0); }).catch(coinJournalUnavailable);
 // JEV: the MoveSuggestion type + validator (typesafe weighted answers)
 const MoveSuggestion={type:"{move:-1|0|1, confidence:0..1, source:string}",
  validate(s){if(!s||typeof s!=="object")return"not an object";
