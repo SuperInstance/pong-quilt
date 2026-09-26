@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -30,6 +31,43 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 25 — CCC — 2026-09-26 — mode: BUILDER (R23-spec fresh small: C1 coev ledger strip) + play-tester — vs main a0939b8 (post-#30 merge)
+
+### Played versions: main a0939b8 (R23 merged) → r25 tip — prerun swept in a scratch worktree per the R13 lesson
+
+Suite at base 125/125 + qa 8/8; at tip 126/126 + 8/8. `node tools/prerun.js` + `tools/prerun-coev.js` in the scratch worktree regenerate the canonical five byte-identically (coev.js `946e639a…`, curve.json `63617065…`, L0 `8a49b0f6…`, L1 `643bd132…`, L2 `454511548…`) — the strip is render/wiring only; the training path is byte-frozen. FAIL-first verified by running: 5/5 new pins RED on pristine main (extraction anchor absent — loud fail, not silent skip).
+
+### Builder receipt: the C1 coev ledger gets the same visibility the coin journal got
+- **what:** `renderCoevStrip(ctx, rows, gens)` in index.html — a pure renderer (ctx + data in, nothing closed over) plotting every head-to-head row of `checkpoints/coev.js`'s hash-chained C1 ledger as a marker strip under the coin journal: ender-kill bright, survivor-cap dim green, x = generation, axis derived from the DATA (the R23 missing-header lesson applied at birth). Label carries the audit sentence (`121 h2h · 120 ender-kills · 1 survivor-caps · gens 0-120`). Wiring is synchronous — coev.js already loads as a script tag, no fetch — and the absent-artifact path admits in amber (`instrument ships, admits it`), never fakes a strip.
+- **why:** R23 made the classic chain's receipt stream visible; R14's second chain had no analogous plot. A hidden ledger is an unaudited one. Both chains now render side by side.
+- **verify (FAIL-first, then green):** 5 pins in `tests/coev-strip-glue.test.js` — extraction-integrity + one-frame drive (markers, color classes, monotone x, edges), label audit sentence, an UNCLASSIFIED-outcome tripwire (amber + named `OTHER:n`, never laundered into a known class), the shipped artifact (all 121 rows plotted from the real coev.js), and the data-derived axis. 5/5 RED on main → 5/5 green at tip.
+
+### Play harness (real artifact + wiring, observed headless)
+real data: 121 ticks (120 bright kills / 1 dim cap), x∈[2,358], label exact. The one dim tick at gen 110 is the artifact's only SURVIVOR-CAP in 121 h2h rows — the strip shows what the panel never made obvious: the C1 pressure is overwhelmingly ender-dominated (99.2% kills); the lone survivor-cap epoch is now a visible event, not a ledger row you'd have to tail by hand. degrade: wiring guards `!cp || !Array.isArray(cp.ledger)` → amber admission text present in-page. tripwire: a synthetic `TIMEOUT` row renders amber and the label names `OTHER:1`.
+
+### Deltas observed (shapes of change)
+- **d(learning)/d(version) = 0 — the 24th straight frozen round.** Canonical five unmoved; L0 5,767 / L1 8,700 / L2 8,800.
+- **d(artifact)/d(version) = 0** — render/wiring/caption only; training path byte-frozen (frozen hashes above).
+- **d(coverage)/d(version): suite 125→126** (+5 strip pins); README count 129→134, the bump named by the readme-count pin mid-flight (129→133 caught, corrected, re-verified by running).
+- **VERIFIED_CLAIMS 29→30** (`coev-ledger-strip`, proofTest tests/coev-strip-glue.test.js; honesty.test.js two-way match holds).
+
+### Lies hunted
+- **[P3-process, found by the pin, FIXED pre-ship]** my own README count was off by one (125 claimed vs 126 run) — the readme-count pin caught it; corrected by running, not copying.
+- **[honesty note]** the R23 playtest's spec wording said "S-win/E-win/timeout markers"; the artifact's only outcome classes are ENDER-KILL / SURVIVOR-CAP (playAdv has no timeout class — cap-reached IS the survivor's win). The renderer ships a third amber class for any future/unclassified outcome and NAMES it in the label, so a real timeout appearing later is visible, not silently recolored.
+- **(nothing found in: byte-reproducibility — prerun five re-derived live in a scratch tree; strip honesty on real + degrade + tripwire paths; suite pins; qa stand-in 8/8.)**
+
+### Next version spec (competitive improvements)
+- [small, carried R22→R25] advice-aware GA — thread a measured diet into playOne; still the only honest d(learning)/d(version) ≠ 0 path short of the epic.
+- [epic, carried R12→R25] C1 scaling study — unchanged. The strip now makes its motivation visible: 120/121 ender-kills says the ender pressure saturates at pop 24; whether the survivor ever learns to survive is the scaling question.
+
+### Siblings studied this round
+None — internal instrument work again (the C1 ledger is this repo's own artifact).
+
+### Verdict
+MERGEABLE (R23-spec fresh small shipped FAIL-first; both chains equally visible; suite 126/126 + qa 8/8; prerun five byte-identical in a scratch tree; the C1 pressure imbalance the panel never showed is now a visible signal).
+
+---
 
 ## Round 23 — CCC — 2026-09-26 — mode: BUILDER (completing an interrupted R23: the R22-spec strip existed as a local commit with no receipt) + one fresh small (axis-derives-from-data, FAIL-first pinned) + play-tester — vs main 4b94c49 (post-#29 merge)
 
