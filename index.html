@@ -118,8 +118,17 @@ renderWristband();
 // R23 playtest pin: the axis derives from the DATA, not the gens header —
 // a missing/0 gens must not push every tick off-canvas (label would still
 // count them: an invisible instrument claiming visibility).
+// R28 playtest pin: the renderer owns its degrade path — null/undefined/empty
+// journal renders the SAME amber admission vocabulary as the page's
+// fetch-failure instrument (data absent, no throw, no fake ticks). Honesty
+// lives in the instrument, not in its caller's catch.
 function renderCoinJournal(ctx, tiebreaks, gens) {
  ctx.fillStyle = "#05070b"; ctx.fillRect(0, 0, 360, 18);
+ if (!Array.isArray(tiebreaks) || !tiebreaks.length) {
+  ctx.fillStyle = "#d29922"; ctx.font = "10px monospace";
+  ctx.fillText("coin journal: data absent (journal missing/empty) — instrument ships, admits it", 4, 12);
+  return;
+ }
  const swaps = tiebreaks.filter(t => t.swap).length;
  const liveCount = tiebreaks.filter(t => t.live !== false).length;
  const axis = Math.max(1, gens || 0, ...tiebreaks.map(t => t.gen || 0));
@@ -129,7 +138,7 @@ function renderCoinJournal(ctx, tiebreaks, gens) {
   ctx.fillRect(Math.round(x), 4, 1, 8); });
  ctx.fillStyle = "#8b949e"; ctx.font = "10px monospace";
  const liveNote = liveCount ? ` · LIVE:${liveCount} (moth engine!)` : " · live:false throughout";
- ctx.fillText(`coin journal: ${tiebreaks.length} flips · ${swaps} swaps · gens 0-${gens}` + liveNote, 4, 16);
+ ctx.fillText(`coin journal: ${tiebreaks.length} flips · ${swaps} swaps · gens 0-${axis}` + liveNote, 4, 16);
 }
 function coinJournalUnavailable() { const cv = $("coinstrip").getContext("2d");
  cv.fillStyle = "#05070b"; cv.fillRect(0, 0, 360, 18); cv.fillStyle = "#d29922"; cv.font = "10px monospace";
