@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) · r26-wal-session-driver (stacked) | canonical |
 | R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
 | R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) | canonical |
 | R24 | 2026-09-26 | r24-doctor-verdict-glue (vs main a0939b8, post-#30) | canonical |
@@ -34,6 +35,53 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 26 (session driver) — k2d8 — 2026-09-26 — mode: BUILDER (R26-booked small: real receipt-panel→WAL session driver) — vs r26-wal-doctor-export tip a06dfb2 (PR #33)
+
+### Played versions: r26 export tip → session-driver tip — driver + pins + claim row only, training path untouched
+
+Suite at base (PR #33 tip) 126/126 in `tests/` (134 incl. qa); at tip 130/130 (138 incl. qa, 8/8). FAIL-first verified by running: the 5 wal-session pins are 5/5 RED on a pristine origin/main worktree (driver absent — loud fail, not silent skip).
+
+### Builder receipt: the WAL moat is now fed by a real session, not a demo row list
+
+`tools/wal-session.js` closes the loop R26 opened: it plays a seeded headless classic-mode round through the SAME two modules the browser receipt panel receipts — `core.js` step + `qa.js` suggest (the qa advisor lane) — collecting every panel-class receipt: advice rows named for their source (`qa-sim`, never a bare L2), `QA-REFUSAL` rows produced by the ACTUAL exhaustion seam (pot driven below `SIM_POT_FLOOR`, not a hand-written row — the R12 doctrine produced by running), `DEATH` rows at game end. `sessionToWal` re-anchors all of them into the fleet five-opcode WAL via `toQuiltWal`, closes with a session VIEW (advice/refusals/deaths accounting for every receipt), and — when the ledger passes the page panel's 40-row bound — an honest eviction VIEW (`shown: 40, evicted: M`) admitting the bounded display, exactly the page's `[N shown / M evicted]` accounting. Same seed replays byte-identically (receipt lineage is reproducible from a cold import); a launched-confidence tamper is caught as `hash_mismatch` at its own seq in the doctor's vocabulary. New `tests/wal-session-glue.test.js` (5 pins). VERIFIED_CLAIMS gained `wal-session`.
+
+### Play-tester notes
+
+- The refusal evidence is the pin I care about: with `shotsPerBin: 3` the pot crosses the floor within the first game, and 100% of the QA-REFUSAL rows come from `suggest()` returning null — delete the seam and the receipt stream goes silent, it cannot be written around.
+- Honest limit: the driver paces advice per decision boundary, not per the page's 150-frame seam pacing — the receipt STREAM is the same class, the cadence is denser. The page pacing glue itself is pinned by the byo/qapot suites, not duplicated here.
+
+### Carried
+- [epic, carried R12→R26] C1 scaling study — unchanged.
+- [medium, carried R22→R26] advice-aware GA.
+- [small, booked by R26] a merged quilt-doctor PR replaying `node tools/wal-session.js --out session.jsonl` against `QuiltSubstrate.verify()` and citing pong-quilt = the candidate VERIFIED edge pq → quilt-doctor, now session-fed.
+
+## Round 26 — k2d8 — 2026-09-26 — mode: BUILDER (fresh small: WAL export in the quilt-doctor consumable shape) + play-tester — vs main a0939b8 (post-#30 merge)
+
+### Played versions: main a0939b8 → r26 tip — export tool + pins only, training path untouched
+
+Suite at base 121/121 in `tests/` (129 incl. qa); at tip 126/126 (134 incl. qa, 8/8). FAIL-first verified by running: the 5 wal-export pins are 5/5 RED on a pristine origin/main worktree (extraction anchor absent — loud fail, not silent skip).
+
+### Builder receipt: pong-quilt receipts now export in the fleet five-opcode quilt WAL
+
+The page chains receipts with the panel hash (hash8, h*31 — a display hash, never claimed otherwise). quilt-doctor's substrate (`quilt_doctor/substrate.py`, canonical producer SuperInstance/git-agent PR #1's quilt_emit — the third VERIFIED edge's target) speaks the fleet WAL: BIND/LINK/VIEW lines, fnv1a-64 chained, replayable. `tools/wal-export.js` re-anchors any row list into EXACTLY that shape: the doctor's key set {args, cell, hash, op, prev_hash, seq}, genesis prev 0000000000000000, canonical json (sorted keys at every level, no whitespace — the replacer-array form of JSON.stringify was tried first and silently dropped nested args keys; canonical() replaced it, caught by the round-trip pin).
+
+Live cross-tool receipt, recorded here because it cannot be faked later:
+- `node tools/wal-export.js` → demo export (5 lines: BIND session + 3 LINK receipts + 1 VIEW projection)
+- quilt-doctor's OWN verifier against that file: `QuiltSubstrate('<export>.jsonl').verify()` → `{'ok': True, 'divergences': [], 'lines': 5}`
+- negative control: content-tampered row 3 (kind DEATH→SURVIVED, no re-chain) → doctor reports `{'ok': False, 'divergences': [{'seq': 3, 'why': 'hash_mismatch'}]}` — the doctor catches our tamper at the exact seq, in its own vocabulary.
+- fnv1a-64 vectors cross-checked against python's json.dumps(sort_keys) at build time and pinned (offset basis cbf29ce484222325; BIND-genesis body c86b3c06e0945d6d).
+
+Weight law bookkeeping: a merged quilt-doctor PR consuming this export and citing pong-quilt = candidate VERIFIED referral edge **pq → quilt-doctor** (PENDING until that merge; this PR is the source-side half). This is the 19:11-pulse synergy candidate shipped: pong-quilt's receipt lineage riding the same spine the third VERIFIED edge (aw-quint-opcode→ga-quilt-emit) already minted currency on — the receipts moat against the OpenFANG/Selvedge collision gets a second consumer repo.
+
+### Play-tester notes
+
+- The divergence vocabulary mirror (hash_mismatch / chain_break / seq_gap) is the pin I care most about: an export that fails the doctor's checks must fail in the DOCTOR's words, not ours — a mistranslated error is a laundered one.
+- Unknown ops are refused at export time (MINT throws) — the exporter can never emit a non-spine opcode, so the doctor can never be handed a line that claims an opcode the spine doesn't have.
+
+### Carried
+- [epic, carried R12→R26] C1 scaling study — unchanged.
+- [medium, carried R22→R26] advice-aware GA.
+- [small, fresh] the actual receipt-panel → WAL driver (export a real session's receipts, not the demo rows) — deferred to keep this round sub-15min.
 ## Round 25 — CCC — 2026-09-26 — mode: BUILDER (R23-spec fresh small: C1 coev ledger strip) + play-tester — vs main a0939b8 (post-#30 merge)
 
 ### Played versions: main a0939b8 (R23 merged) → r25 tip — prerun swept in a scratch worktree per the R13 lesson
