@@ -9,6 +9,19 @@
 const test = require('node:test'), assert = require('node:assert');
 const fs = require('fs'), path = require('path');
 
+function extractAdmission() {
+  // R34: renderCoinJournal's degrade branch now builds its sentence from the
+  // shared amberAdmission source, so the VERBATIM extraction must carry the
+  // same definition the page closes over — extract it the same way.
+  const src = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const anchor = 'const amberAdmission = (what, cause) =';
+  const at = src.indexOf(anchor);
+  assert.notStrictEqual(at, -1, 'amberAdmission source absent on this tip');
+  const tail = src.slice(at);
+  const end = tail.indexOf('\n');
+  return tail.slice(0, end + 1);
+}
+
 function extractRenderer() {
   const src = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
   const anchor = 'function renderCoinJournal(ctx, tiebreaks, gens) {';
@@ -17,7 +30,7 @@ function extractRenderer() {
   const tail = src.slice(at);
   const end = tail.indexOf('\n}');
   assert.notStrictEqual(end, -1, 'function close not found');
-  return tail.slice(0, end + 2);
+  return extractAdmission() + tail.slice(0, end + 2);
 }
 
 function drive(tiebreaks, gens) {

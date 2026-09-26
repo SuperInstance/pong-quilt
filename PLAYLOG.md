@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R34 | 2026-09-27 | r34-amber-admission-source (vs main 0a29cdb, post-#42) | canonical |
 | R32 | 2026-09-27 | playtest-round-32 (vs main 07dc9ae, post-#41) | canonical |
 | R31 | 2026-09-27 | r31-index-dedup-count-fix (vs main 7649f4c, post-#40) | canonical |
 | R30 | 2026-09-27 | r30-wal-page-glue (vs main 5ef8cda, post-#37) | canonical |
@@ -39,6 +40,22 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 34 — k2d8 — 2026-09-27 — mode: BUILDER (R28 item 3 / R32 spec item 2 — one amber-admission source, still unfulfilled through R33) — vs main 0a29cdb (post-#42)
+
+### Builder receipt: three degrade sentences, one source
+- **what:** `index.html` now defines a single `amberAdmission(what, cause)` — all three amber degrade sentences (`renderCoinJournal`'s in-renderer branch, the page's `coinJournalUnavailable` fetch-failure instrument, `coevStripUnavailable`) build from it; only the parenthetical stays per-cause (R32 spec verbatim). The pre-R34 state was three literal copies whose parentheticals already disagreed about WHY (R32's P4).
+- **why:** honesty sentences copied by hand drift — R32 counted three copies, one already divergent; one copy by construction cannot.
+- **verify (FAIL-first, by running):** new `tests/amber-admission-glue.test.js` — pin 1 asserts the stem and tail each appear exactly once in index.html code (3 literal copies on pristine main → RED 3/3 there, verified in a detached worktree); pin 2 extracts all three instruments VERBATIM (brace-counted, with the `$` canvas helper stubbed) and asserts each rendered string byte-equals what the source builds, stems byte-equal, tails byte-equal, both amber `#d29922`; pin 3 asserts the renderer degrade path (null journal) still admits via the source with no fake ticks (R28 vocabulary preserved). `tests/coin-journal-glue.test.js` extraction now carries the shared definition it closes over (same extract-as-shipped doctrine). Suite 166/166 + qa 8/8; README 171→174 (the readme-count pin named me, as designed); prerun canonical five byte-identical — training path untouched; VERIFIED_CLAIMS +1 (`amber-admission-source`).
+- **honesty notes:** extraction lesson recorded — `coinJournalUnavailable`/`coevStripUnavailable` are multi-line one-close instruments (close brace rides line end), so naive `\n}` anchoring over-extracts into page boot code; brace-counting is the robust cut. No lies found this round beyond the one fixed; crown claims (WAL export → doctor verify, canonical five) re-verified green at this tip.
+
+### Next version spec (competitive improvements)
+- [small] **wal-session CLI usage guard** (R28 item 2, still unfulfilled on main — PR #43 open): unrecognized positional arg, or `--out` with no value → usage on stderr + exit non-zero.
+- [medium] **open-the-lens CI step** (carried from R32): a workflow job running the doctor-verdict live pin with `QUILT_DOCTOR_PATH` set, FAILING if the seam does not open.
+- carried: [epic, R12→R34] C1 scaling study. [medium, R22→R34] advice-aware GA. [medium, R27→R34] canonical-md5 lineage for the WAL session export.
+
+### Verdict
+MERGEABLE (docs+instrument honesty only; the paddle math is untouched).
 
 ## Round 32 — kimi1 — 2026-09-27 — mode: BUILDER (R28 spec item 1 — doctor-verdict perms shape-check, the booked P2) + play-tester — vs main 07dc9ae (post-#41)
 

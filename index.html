@@ -117,6 +117,13 @@ renderWristband();
 // R23 (R22 spec small): plot the tiebreak journal — the demo owns a real coin
 // instrument it didn't show. Pure renderer (ctx + data in, nothing closed
 // over) so tests/coin-journal-glue.test.js can extract it VERBATIM. x = gen.
+// R34 playtest pin: ONE amber-admission source (R28 item 3 / R32 spec item 2,
+// still unfulfilled through R33). All three degrade sentences —
+// renderCoinJournal's in-renderer branch, the page's fetch-failure
+// instrument, the coev strip's — build from this single definition; only the
+// parenthetical is per-cause. R32's P4 counted three copies already drifting;
+// one copy by construction cannot.
+const amberAdmission = (what, cause) => `${what}: data absent (${cause}) — instrument ships, admits it`;
 // R23 playtest pin: the axis derives from the DATA, not the gens header —
 // a missing/0 gens must not push every tick off-canvas (label would still
 // count them: an invisible instrument claiming visibility).
@@ -128,7 +135,7 @@ function renderCoinJournal(ctx, tiebreaks, gens) {
  ctx.fillStyle = "#05070b"; ctx.fillRect(0, 0, 360, 18);
  if (!Array.isArray(tiebreaks) || !tiebreaks.length) {
   ctx.fillStyle = "#d29922"; ctx.font = "10px monospace";
-  ctx.fillText("coin journal: data absent (journal missing/empty) — instrument ships, admits it", 4, 12);
+  ctx.fillText(amberAdmission("coin journal", "journal missing/empty"), 4, 12);
   return;
  }
  const swaps = tiebreaks.filter(t => t.swap).length;
@@ -144,7 +151,7 @@ function renderCoinJournal(ctx, tiebreaks, gens) {
 }
 function coinJournalUnavailable() { const cv = $("coinstrip").getContext("2d");
  cv.fillStyle = "#05070b"; cv.fillRect(0, 0, 360, 18); cv.fillStyle = "#d29922"; cv.font = "10px monospace";
- cv.fillText("coin journal: data absent (serve over http, not file://) — instrument ships, admits it", 4, 12); }
+ cv.fillText(amberAdmission("coin journal", "serve over http, not file://"), 4, 12); }
 fetch("checkpoints/curve.json").then(r => r.ok ? r.json() : null).then(d => {
  if (!d || !Array.isArray(d.tiebreaks) || !d.tiebreaks.length) return coinJournalUnavailable();
  renderCoinJournal($("coinstrip").getContext("2d"), d.tiebreaks, d.gens || 0); }).catch(coinJournalUnavailable);
@@ -172,7 +179,7 @@ function renderCoevStrip(ctx, rows, gens) {
 }
 function coevStripUnavailable() { const cv = $("coevstrip").getContext("2d");
  cv.fillStyle = "#05070b"; cv.fillRect(0, 0, 360, 18); cv.fillStyle = "#d29922"; cv.font = "10px monospace";
- cv.fillText("coev ledger: data absent (checkpoints/coev.js not loaded — serve over http) — instrument ships, admits it", 4, 12); }
+ cv.fillText(amberAdmission("coev ledger", "checkpoints/coev.js not loaded — serve over http"), 4, 12); }
 { const cp = window.PONG_QUILT_COEV;
  if (!cp || !Array.isArray(cp.ledger) || !cp.ledger.length) coevStripUnavailable();
  else renderCoevStrip($("coevstrip").getContext("2d"), cp.ledger, cp.gens || 0); }
