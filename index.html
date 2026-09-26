@@ -237,11 +237,11 @@ function qaSuggest(g){ // the qa branch of l2Suggest, extracted whole so node ca
  const byo=takeQaByo();
  if(byo){if(byo.degraded){receipt("byo-qpam-fallback",0,0);
    if(!byo.suggestion){receipt("QA-REFUSAL",0,0);
-    $("l2stat").textContent="byo-qpam: "+byo.reason+" — degraded, then qa-sim: channel silent (pot "+qapot+"/bin below floor "+QuantumAudioL2.SIM_POT_FLOOR+") — advice refused, receipted";$("l2stat").className="warn";return null;}
+    $("l2stat").textContent="byo-qpam: "+byo.reason+" — degraded, then qa-sim: channel silent (pot "+qapot+"/bin below floor "+QuantumAudioL2.SIM_POT_FLOOR+") — advice refused, receipted"+QuantumAudioL2.lensSuffix();$("l2stat").className="warn";return null;}
    return {suggestion:byo.suggestion,src:"qa-sim",note:"byo-qpam: "+byo.reason+" — degraded to the labeled sim (receipted)"};} // fallback advice is NAMED for the stand-in, never laundered as byo-qpam
   return {suggestion:byo.suggestion,src:"byo-qpam"};}
  const s=QuantumAudioL2.suggest(s0,qseed,qapot);
- if(!s){receipt("QA-REFUSAL",0,0);$("l2stat").textContent="qa-sim: channel silent (pot "+qapot+"/bin below floor "+QuantumAudioL2.SIM_POT_FLOOR+") — advice refused, receipted";$("l2stat").className="warn";return null;} // R12: exhaustion is receipted, never dropped silently; R13: the pot is playable in-page
+ if(!s){receipt("QA-REFUSAL",0,0);$("l2stat").textContent="qa-sim: channel silent (pot "+qapot+"/bin below floor "+QuantumAudioL2.SIM_POT_FLOOR+") — advice refused, receipted"+QuantumAudioL2.lensSuffix();$("l2stat").className="warn";return null;} // R12: exhaustion is receipted, never dropped silently; R13: the pot is playable in-page; R27: when a node driver injects the quilt-doctor external lens, the refusal names it — the browser ships with the seam closed (lensSuffix()=="")
  return {suggestion:s,src:"qa-sim"};}
 async function l2Suggest(g){const m=$("l2").value,w=$("w").value/100;if(m==="none")return null;
  let s=null,src="none",sNote=null;
