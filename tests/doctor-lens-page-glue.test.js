@@ -41,17 +41,17 @@ function extractL2Suggest() {
   return html.slice(start, end + marker.length);
 }
 
-// Real-shaped doctor fixture, values verbatim from quilt-doctor aa5a041
-// (same fixture discipline as tests/doctor-verdict-glue.test.js).
+// Real doctor fixture: the vendored verbatim snapshot
+// tests/fixtures/holistic-stats-aa5a041.json (quilt-doctor aa5a041) —
+// the SAME file tests/doctor-verdict-glue.test.js reads (Round 32), so the
+// page-glue lens producer and its consumer can never drift on shape. The
+// pre-R32 local copy was crafted-uniform (a 5-point row wearing 40320) and
+// hid the same live bug the verdict pin fixed.
 function makeDoctorFixture() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "doctor-fix-"));
   fs.mkdirSync(path.join(dir, "docs"), { recursive: true });
-  const stats = [
-    { test: "moth ~ active_days", n: 8, rho: -0.6386, p_exact: 0.094048, perms: 40320 },
-    { test: "jev ~ active_days", n: 8, rho: -0.012, p_exact: 0.988492, perms: 40320 },
-    { test: "jev ~ jepa_null_z (sufficient)", n: 5, rho: -0.9, p_exact: 0.083333, perms: 40320 },
-  ];
-  fs.writeFileSync(path.join(dir, "docs/holistic-stats.json"), JSON.stringify(stats, null, 2));
+  fs.copyFileSync(path.join(__dirname, "fixtures", "holistic-stats-aa5a041.json"),
+    path.join(dir, "docs/holistic-stats.json"));
   fs.writeFileSync(path.join(dir, "docs/HOLISTIC-VIEW-2026-09-26.md"),
     "# The Holistic View\n| repo | active days | JEV substance | JEPA score | JEPA null_z | MOTH coherence@16k |\n" +
     "|---|---|---|---|---|---|\n| pong-quilt | 3 | 0.709 | 0.200 | (starved) | 0.777 |\n");
