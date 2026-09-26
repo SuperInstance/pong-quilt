@@ -6,7 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R34 | 2026-09-27 | r34-amber-admission-source (vs main 0a29cdb, post-#42) | canonical |
+| R33 | 2026-09-27 | r33-wal-session-cli-usage-guard (vs main 0a29cdb, post-#42) | canonical |
 | R32 | 2026-09-27 | playtest-round-32 (vs main 07dc9ae, post-#41) | canonical |
 | R31 | 2026-09-27 | r31-index-dedup-count-fix (vs main 7649f4c, post-#40) | canonical |
 | R30 | 2026-09-27 | r30-wal-page-glue (vs main 5ef8cda, post-#37) | canonical |
@@ -41,21 +41,30 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
-## Round 34 — k2d8 — 2026-09-27 — mode: BUILDER (R28 item 3 / R32 spec item 2 — one amber-admission source, still unfulfilled through R33) — vs main 0a29cdb (post-#42)
+## Round 33 — r33-wal-session-cli-usage-guard — 2026-09-27 — mode: BUILDER (R33 spec item 1 — wal-session CLI usage guard, the R32-booked P4) — vs main 0a29cdb (post-#42)
 
-### Builder receipt: three degrade sentences, one source
-- **what:** `index.html` now defines a single `amberAdmission(what, cause)` — all three amber degrade sentences (`renderCoinJournal`'s in-renderer branch, the page's `coinJournalUnavailable` fetch-failure instrument, `coevStripUnavailable`) build from it; only the parenthetical stays per-cause (R32 spec verbatim). The pre-R34 state was three literal copies whose parentheticals already disagreed about WHY (R32's P4).
-- **why:** honesty sentences copied by hand drift — R32 counted three copies, one already divergent; one copy by construction cannot.
-- **verify (FAIL-first, by running):** new `tests/amber-admission-glue.test.js` — pin 1 asserts the stem and tail each appear exactly once in index.html code (3 literal copies on pristine main → RED 3/3 there, verified in a detached worktree); pin 2 extracts all three instruments VERBATIM (brace-counted, with the `$` canvas helper stubbed) and asserts each rendered string byte-equals what the source builds, stems byte-equal, tails byte-equal, both amber `#d29922`; pin 3 asserts the renderer degrade path (null journal) still admits via the source with no fake ticks (R28 vocabulary preserved). `tests/coin-journal-glue.test.js` extraction now carries the shared definition it closes over (same extract-as-shipped doctrine). Suite 166/166 + qa 8/8; README 171→174 (the readme-count pin named me, as designed); prerun canonical five byte-identical — training path untouched; VERIFIED_CLAIMS +1 (`amber-admission-source`).
-- **honesty notes:** extraction lesson recorded — `coinJournalUnavailable`/`coevStripUnavailable` are multi-line one-close instruments (close brace rides line end), so naive `\n}` anchoring over-extracts into page boot code; brace-counting is the robust cut. No lies found this round beyond the one fixed; crown claims (WAL export → doctor verify, canonical five) re-verified green at this tip.
+### Played versions: main 0a29cdb (R32 merge) → r33 tip
+
+### Deltas observed (shapes of change)
+- **Misuse now fails loudly instead of silently defaulting.** Pre-R33, `node tools/wal-session.js 99 bogus` exited 0 with 75KB of JSONL and the bad arg ignored — a user error became a debugging detour (R32's own P4, found by running). Post-R33 the same command exits 2 with `usage: node tools/wal-session.js [seed] [--out PATH] — unrecognized argument: bogus` on stderr.
+- **The TypeError path is closed.** Pre-R33, a trailing `--out` with no value threw a raw `fs.writeFileSync(undefined)` TypeError from node internals. Post-R33 it is the same usage error, exit 2, no stack leak.
+- **Training path untouched:** zero changes to core.js simulation, qa.js advisor, or the WAL exporter; the guard lives entirely in the CLI seam of tools/wal-session.js.
+
+### Lies hunted
+- [P4, FIXED, builder receipt] wal-session CLI silently ignored unrecognized positional args and threw a raw TypeError on valueless --out (R32-booked). Both reproduced on main 0a29cdb by running before the fix.
+
+### Builder receipt: parseCliArgs + spawn-driven pins
+- **what:** `parseCliArgs(argv)` (exported, unit-pinned) classifies args — one optional positional seed, one `--out PATH`, anything else a usage error. The CLI block consumes it: `error → usage on stderr + exit 2`. Valid invocations are byte-for-byte the pre-R33 behavior (seed default 20260926, `--out` anywhere).
+- **why:** R32's spec item 1 — "silence turned a user error into a debugging detour; the missing-value path throws a raw TypeError."
+- **verify (FAIL-first, by running):** new `tests/wal-session-cli.test.js`, 5 pins — 3 spawn the REAL CLI (bogus positional → non-zero + usage names the arg; valueless --out → non-zero + usage, no TypeError; unknown flag → non-zero + usage), 1 unit-pins parseCliArgs valid/misuse forms, 1 pins the happy path end-to-end (exit 0, JSONL lines on stdout). All 5 RED on main 0a29cdb (exit 0 / TypeError / parseCliArgs undefined), all 5 green on tip.
 
 ### Next version spec (competitive improvements)
-- [small] **wal-session CLI usage guard** (R28 item 2, still unfulfilled on main — PR #43 open): unrecognized positional arg, or `--out` with no value → usage on stderr + exit non-zero.
-- [medium] **open-the-lens CI step** (carried from R32): a workflow job running the doctor-verdict live pin with `QUILT_DOCTOR_PATH` set, FAILING if the seam does not open.
-- carried: [epic, R12→R34] C1 scaling study. [medium, R22→R34] advice-aware GA. [medium, R27→R34] canonical-md5 lineage for the WAL session export.
+- [small] **one amber-admission source** (R28 item 3, still unfulfilled): `renderCoinJournal`'s degrade branch, the page's `coinJournalUnavailable`, and the coev-ledger degrade share ONE exported constant for the admission stem (parenthetical stays per-cause). why: R32's P4 — three copies, already drifted. verify: pin asserts byte-equality of the rendered stems across all three sites.
+- [medium] **open-the-lens CI step**: the pulse harness keeps a quilt-doctor clone at /tmp/quilt-doctor; add a workflow job that runs the doctor-verdict live pin with `QUILT_DOCTOR_PATH` set and FAILS if the seam does not open. why: the R32 fix proved the live-open claim is the load-bearing one. verify: job logs the lens line; a canonical-stats shape drift trips it at PR time.
+- carried: [epic, R12→R33] C1 scaling study. [medium, R22→R33] advice-aware GA. [medium, R27→R33] canonical-md5 lineage for the WAL session export.
 
 ### Verdict
-MERGEABLE (docs+instrument honesty only; the paddle math is untouched).
+MERGEABLE (stacks on main 0a29cdb; suite 164/164 + qa 8/8; prerun canonical five frozen; R32 entry read; no open sibling PRs at round start).
 
 ## Round 32 — kimi1 — 2026-09-27 — mode: BUILDER (R28 spec item 1 — doctor-verdict perms shape-check, the booked P2) + play-tester — vs main 07dc9ae (post-#41)
 
