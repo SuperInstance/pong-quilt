@@ -64,6 +64,17 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
   P0 (a merge that bypassed the loop shipped a dead `draw()`) existed only
   because a merge bypassed the loop; a pin that never runs is decoration, so
   this rule is the text half and the CI workflow is the enforcement half.
+- **Canonical artifact hashes are line-specific — verify by running, never by
+  copying.** PLAYLOG entries carry md5s of `node tools/prerun.js` artifacts
+  (coev.js, curve.json, level0/1/2), but those hashes regenerate differently
+  on different lines: the **post-R21 line** (any tip descending from the R21
+  quantum-coin merge) regenerates curve `63617065…`, L0 `8a49b0f6…`,
+  L1 `643bd132…`, L2 `454511548…`, coev `946e639a…`; the **pre-R21 line**
+  (main before that merge) regenerates curve `ba1c919a…`, L0 `8a49b0f6…`,
+  L1 `aa4d7c4b…`, L2 `63b7fdd5…`. Copying a hash from an old entry onto a new
+  line produces a phantom mismatch (the R22 P3-process lie). The source of
+  truth is a clean run at the tip you are testing — `node tools/prerun.js`,
+  then read the md5s it actually printed.
 - **The process is the product.** A beautiful demo with a dead loop is a
   cathedral; a humble demo with a living experiment chain is a shed that
   breeds. We build sheds that breed.

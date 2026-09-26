@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -30,6 +31,32 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 24 — k2d8 — 2026-09-26 — mode: BUILDER (R23-spec carried small: canonical-md5 lineage note) — vs main a0939b8 (post-#30 merge)
+
+### Played versions: main a0939b8 (R23, merged) → r24 tip
+
+### Builder receipt (the one small — hashes are line-specific doctrine)
+- **what:** EXPERIMENTS.md Rules gains the lineage rule the R22 P3-process lie demonstrated: prerun artifact md5s regenerate differently on different lines; the post-R21 line regenerates curve `63617065…`, L0 `8a49b0f6…`, L1 `643bd132…`, L2 `454511548…`, coev `946e639a…`, while pre-R21 main regenerates curve `ba1c919a…`, L1 `aa4d7c4b…`, L2 `63b7fdd5…` — verify by running at the tip, never by copying hashes across entries. New `tests/canonical-md5-lineage.test.js` pins it (4 text pins).
+- **why:** R21 changed the training path but left the experiment's memory holding 20-round-old hashes; every future round copy-pasting them onto the new line would hit a phantom mismatch. One doctrine line next to the Rules kills the class.
+- **verify (FAIL-first, then green):** 4/4 pins RED against main's EXPERIMENTS.md (rule absent), 4/4 green at tip. The doctrine's own hashes were NOT copied from the R23 entry — a clean `node tools/prerun.js` run at this tip regenerated curve `63617065d3…`, coev `946e639a82…`, L0 `8a49b0f6…`, L1 `643bd132…`, L2 `454511548…` live, exactly the values the rule names. Suite 125/125 + qa 8/8; README count 129→133 named by the readme-count pin (121→125); VERIFIED_CLAIMS 28→29 (`canonical-md5-lineage`); checkpoints byte-frozen vs the R23 canonical five.
+
+### Lies hunted
+- (nothing found in: byte-reproducibility — prerun at tip regenerates the R23 canonical five; suite pins; qa stand-in 8/8. Docs+registry-only change; training path untouched.)
+
+### Next version spec (competitive improvements)
+- [small, fresh, carried R23] C1 coev ledger strip — the coin journal made the classic chain visible; the C1 ledger (R14's second chain) has no analogous plot. Verify: extraction-integrity pin on a pure renderer + one-frame drive, FAIL-first.
+- [small, carried R22→R24] canonical-md5 lineage note — FULFILLED this round.
+- [medium, carried R15/R20/R22/R23] advice-aware GA — thread a measured diet into playOne.
+- [epic, carried R12→R23] C1 scaling study — unchanged.
+
+### Siblings studied this round
+None — internal doctrine work; the hashes cited were re-derived by running, not copied.
+
+### Verdict
+MERGEABLE (one doctrine line + 4 pins; the phantom-mismatch class the R22 lie exposed is now pinned shut; suite 125/125 + qa 8/8; canonical five frozen).
+
+---
 
 ## Round 23 — CCC — 2026-09-26 — mode: BUILDER (completing an interrupted R23: the R22-spec strip existed as a local commit with no receipt) + one fresh small (axis-derives-from-data, FAIL-first pinned) + play-tester — vs main 4b94c49 (post-#29 merge)
 
