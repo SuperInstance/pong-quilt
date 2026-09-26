@@ -113,12 +113,16 @@ renderWristband();
 // R23 (R22 spec small): plot the tiebreak journal — the demo owns a real coin
 // instrument it didn't show. Pure renderer (ctx + data in, nothing closed
 // over) so tests/coin-journal-glue.test.js can extract it VERBATIM. x = gen.
+// R23 playtest pin: the axis derives from the DATA, not the gens header —
+// a missing/0 gens must not push every tick off-canvas (label would still
+// count them: an invisible instrument claiming visibility).
 function renderCoinJournal(ctx, tiebreaks, gens) {
  ctx.fillStyle = "#05070b"; ctx.fillRect(0, 0, 360, 18);
  const swaps = tiebreaks.filter(t => t.swap).length;
  const liveCount = tiebreaks.filter(t => t.live !== false).length;
+ const axis = Math.max(1, gens || 0, ...tiebreaks.map(t => t.gen || 0));
  tiebreaks.forEach(t => {
-  const x = 2 + (t.gen / Math.max(1, gens)) * 356;
+  const x = 2 + ((t.gen || 0) / axis) * 356;
   ctx.fillStyle = t.swap ? "#f0f6fc" : "#238636"; // swap: bright tick; keep: dim green
   ctx.fillRect(Math.round(x), 4, 1, 8); });
  ctx.fillStyle = "#8b949e"; ctx.font = "10px monospace";

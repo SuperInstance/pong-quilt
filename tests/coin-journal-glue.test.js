@@ -80,3 +80,20 @@ test('shipped journal plots 182 flips / 89 swaps from the real curve.json', () =
   const label = calls.texts.map(t => t.t).join(' ');
   assert.match(label, /182 flips · 89 swaps/);
 });
+
+// R23 playtest pin (FAIL-first, found by driving the shipped page headless):
+// the wiring passes `d.gens || 0`. A curve.json WITHOUT `gens` maps every
+// tick off-canvas (Math.max(1,0)=1 → x = 2 + gen*356) while the label still
+// counts them — an invisible instrument claiming visibility. The axis must
+// be derived from the data, not trusted from the header.
+test('axis is derived from data: missing gens header cannot push ticks off-canvas', () => {
+  const calls = drive([
+    { gen: 10, coin: 'H', swap: false, ...CITED },
+    { gen: 200, coin: 'T', swap: true, ...CITED },
+  ], 0); // header claims gens=0 / absent
+  const ticks = calls.rects.slice(1);
+  assert.strictEqual(ticks.length, 2);
+  for (const t of ticks) assert.ok(t.x >= 0 && t.x < 360, `tick at x=${t.x} must be on-canvas`);
+  assert.ok(ticks[1].x > ticks[0].x, 'monotone in gen even without header gens');
+  assert.strictEqual(ticks[1].x, 358, 'max-gen tick pins the right edge from data');
+});
