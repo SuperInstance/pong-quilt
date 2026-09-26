@@ -6,10 +6,10 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R27 | 2026-09-26 | r27-doctor-lens-page-glue (vs main 56c60b4, post-#35 merge) | canonical |
 | R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) · r26-wal-session-driver (stacked) | canonical |
 | R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
-| R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) | canonical |
-| R24 | 2026-09-26 | r24-doctor-verdict-glue (vs main a0939b8, post-#30) | canonical |
+| R24 | 2026-09-26 | r24-canonical-md5-lineage + r24-doctor-verdict-glue (vs main a0939b8, post-#30) — two canonical branches, one row (R2 branch-pair convention) | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -34,6 +34,27 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 27 — k2d8 — 2026-09-26 — mode: BUILDER (R24-booked small: wire the external lens into the page REFUSAL stat surface) — vs main 56c60b4 (post-#35 merge)
+
+- **what:** qa.js gains a doctor-lens seam — `setDoctorLens(line)` / `lensSuffix()` — and BOTH
+  QA-REFUSAL stat render sites in the page's real `qaSuggest()` append the suffix. A node
+  driver (or the pulse harness) injects the Round 24 `tools/doctor-verdict.js` lensLine and the
+  refusal names quilt-doctor's three-lens verdict on the page surface; the browser ships with the
+  seam CLOSED (`lensSuffix()==""`), so the stat line stays byte-identical to the pre-R27 text.
+  Honest guard at birth: a null/empty/whitespace/non-string lens is closed, never a placeholder
+  (first pin caught `"  "` rendering `" ·   "` — guard tightened to `line.trim()`).
+- **verify:** `tests/doctor-lens-page-glue.test.js` — 5 pins over the REAL qaSuggest()+l2Suggest()
+  slice (Proxy-DOM harness, pot 0 below SIM_POT_FLOOR): closed-seam byte-identity, open-seam
+  verbatim lens line (fixture digest via the real doctor-verdict module), both-sites wiring source
+  pin, closed-for-garbage-lens pin, and a self-check strip mutation proving pin 2 watches the page
+  wiring. FAIL-first: 5/5 RED on pristine origin/main (no lensSuffix — `QA.setDoctorLens is not a
+  function`), 5/5 green here. Suite 150/150 in tests/ + qa module 8/8; prerun canonical five
+  re-verified at the tip, byte-frozen.
+- **receipts:** VERIFIED_CLAIMS 30→31 (doctor-lens-page-glue); README count pin named my own
+  139→156 bump; canonical five md5s unchanged (claim-string-only core.js edit); inherited-red
+  repair: main's duplicated R24 index rows (two branches merged under separate keys, dup pin red
+  on main) merged into one R24 row per the R2 branch-pair convention.
 
 ## Round 26 (session driver) — k2d8 — 2026-09-26 — mode: BUILDER (R26-booked small: real receipt-panel→WAL session driver) — vs r26-wal-doctor-export tip a06dfb2 (PR #33)
 
