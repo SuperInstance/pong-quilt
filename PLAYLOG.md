@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R31 | 2026-09-27 | r31-index-dedup-count-fix (vs main 7649f4c, post-#40) | canonical |
 | R30 | 2026-09-27 | r30-wal-page-glue (vs main 5ef8cda, post-#37) | canonical |
 | R29 | 2026-09-27 | r29-doctor-live-e2e-pin (vs main 5ef8cda, post-#37) | canonical |
 | R28 | 2026-09-27 | playtest-round-28 (vs R27 tip 3c5f498, PRs #31–#36 open at round start) | canonical |
@@ -13,10 +14,6 @@ Every round is a receipted observation in the loop. Newest first.
 | R26 | 2026-09-26 | r26-wal-doctor-export + r26-wal-session-driver (stacked, vs main a0939b8 / export tip a06dfb2) — two canonical branches, one row (R2 branch-pair convention) | canonical |
 | R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
 | R24 | 2026-09-26 | r24-canonical-md5-lineage + r24-doctor-verdict-glue (vs main a0939b8, post-#30) — two canonical branches, one row (R2 branch-pair convention) | canonical |
-| R27 | 2026-09-26 | playtest-round-27 (vs r26 tip a06dfb2, PR #33 open at round start) | canonical |
-| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) · r26-wal-session-driver (stacked) | canonical |
-| R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
-| R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) · r24-doctor-verdict-glue | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -41,6 +38,13 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 31 — index-dedup-count-fix — 2026-09-27 — mode: BUILDER (small: main-repair — two inherited reds) — vs main 7649f4c (post-#40)
+
+- **[fixed] canonical-index duplicate rows R27/R26/R25/R24.** The #31–#40 merge burst stacked two index writes per round (the R2-convention "two canonical branches, one row" merge AND a stale single-branch copy both landed); the uniqueness pin tripped naming all four. Removed the four stale single copies, kept the branch-pair-convention rows. FAIL-first: `tests/canonical-index.test.js` uniqueness pin was RED on pristine main naming R27/R26/R25/R24.
+- **[fixed] README test-count block.** Six stale count lines from parallel rounds had accumulated (135/139/152/158…); collapsed to one live-verified line: 169 total = 161 in `tests/` + 8 in `tools/test-qa.js`. FAIL-first: `tests/readme-count.test.js` named the drift on main (claimed 152, suite runs 161).
+- [none, verified-by-running] docs-only round; no behavior touched. Suite `node --test tests/*.test.js` 161/161 + qa 8/8 green on this tip.
+- REFERRAL EDGES: none new.
 
 ## Round 30 — wal-page-glue — 2026-09-27 — mode: BUILDER (R26-booked follow-on: wal-session driver → page wiring) — vs main 5ef8cda (post-#37)
 
