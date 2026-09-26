@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R32 | 2026-09-27 | playtest-round-32 (vs main 07dc9ae, post-#41) | canonical |
 | R31 | 2026-09-27 | r31-index-dedup-count-fix (vs main 7649f4c, post-#40) | canonical |
 | R30 | 2026-09-27 | r30-wal-page-glue (vs main 5ef8cda, post-#37) | canonical |
 | R29 | 2026-09-27 | r29-doctor-live-e2e-pin (vs main 5ef8cda, post-#37) | canonical |
@@ -38,6 +39,36 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 32 — kimi1 — 2026-09-27 — mode: BUILDER (R28 spec item 1 — doctor-verdict perms shape-check, the booked P2) + play-tester — vs main 07dc9ae (post-#41)
+
+### Played versions: main 07dc9ae (R31 merge, R24 lens module) → playtest-round-32 tip
+
+### Deltas observed (shapes of change)
+- **The honesty boundary moved from one enumeration size to per-row exact enumeration.** The R24 lens claimed "every lens enumerated 8!=40320 perms"; the real canonical file enumerates the full 8-repo matrix on 3 rows and sufficient-subset probes on 3 rows (5!=120). The shipped shape check was a monoculture — it rejected the doctor's own real data, so the flagship cross-tool seam could never open on the data it cites. d(learning)/d(version) is measured in what counts as a legitimate receipt: R32 widens the acceptance gate to per-row n! while keeping the Monte-Carlo impostor class closed on ANY row.
+- **Failure-mode migration: the lie lived in the test fixtures, not the page.** Two pin files carried "values lifted verbatim from quilt-doctor aa5a041" that were not verbatim (a 5-point row wearing perms=40320; 3 of 6 real rows omitted). They passed because the monoculture check reflected the fixture, not the world — the mirrors agreed with each other. R28's spec predicted this exact drift class ("build the fixture from the REAL row shapes… not crafted-uniform data"); R32 finds it already realized, one layer down from where R28 was looking.
+- **Training path frozen R23→R32:** prerun regenerates the canonical five byte-identically at main 07dc9ae AND at this tip (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps). Every delta lives in receipts, instruments, and registry — never in the paddle.
+
+### Lies hunted
+- [P2, FIXED, builder receipt] **The external-lens seam could never open against a pristine canonical quilt-doctor checkout.** Reproduced at main 07dc9ae by running: `node -e "const dv=require('./tools/doctor-verdict.js'); console.log(dv.loadDoctorVerdict('/tmp/quilt-doctor'))"` → null (clone at aa5a041). Root cause: `stats.every(t => t.perms === 40320)` while the real `docs/holistic-stats.json` carries perms 40320×3 (n=8) + 120×3 (n=5). Consequence in R28's own words: "a shipped claim that can never fire" — the page ships closed honestly, but the complementary claim ("running the canonical command against a pristine quilt-doctor clone") was unreachable in practice for 4 rounds.
+- [P3, FIXED, builder receipt] **Two fixtures carried crafted-uniform stats labeled verbatim that were not.** Pre-R32 `tests/doctor-verdict-glue.test.js` had `jev ~ jepa_null_z (sufficient)` at n=5/perms=40320 (real: perms=120) and omitted 3 real rows; `tests/doctor-lens-page-glue.test.js` copied the same wrong row. Not fabrication of results — but a false provenance sentence on the instruments that guard fabrication. Both replaced by ONE verbatim vendored snapshot (`tests/fixtures/holistic-stats-aa5a041.json`) both pins now read.
+- [P4, booked] **wal-session CLI silently ignores unrecognized positional args.** Reproduced this round: `node tools/wal-session.js 99 bogus-positional` → exit 0, 75KB JSONL on stdout, bad arg ignored. Also: trailing `--out` with no value → raw `fs.writeFileSync(undefined)` TypeError instead of usage. Spec'd below (item 1).
+- [P4, booked] **The coin-journal amber admission exists as two copies and has already drifted.** Renderer: "data absent (journal missing/empty)"; page fetch-failure: "data absent (serve over http, not file://)" — same stem by copy, parentheticals now disagree about WHY (a malformed curve.json and file:// are different failures); the coev ledger carries a third copy. R28 spec'd the single source; it is still unfulfilled. Spec'd below (item 2).
+- [none else found — crown claims re-verified live] R26 WAL export → doctor `QuiltSubstrate.verify()` ok; wal-doctor-e2e pins green against the aa5a041 clone; wal-session 483-line seeded export verifies `{ok:true, lines:483}`; page-parse, readme-count, canonical-index pins all green at this tip.
+
+### Builder receipt: per-row exact enumeration replaces the 40320 monoculture (R28 spec item 1)
+- **what:** `tools/doctor-verdict.js` — perms validity is now per-row exact enumeration: `Number.isInteger(t.n) && 2 ≤ n ≤ 20 && t.perms === n!` (factorial computed). 8!=40320 and 5!=120 both legitimate; a Monte-Carlo impostor on ANY row reads as ABSENT; the killed hypothesis (`jev ~ active_days`) must itself be a full-matrix row (n=8). VERIFIED_CLAIMS text corrected ("perms === n! — 8!=40320 full-matrix rows AND 5!=120 sufficient-subset rows both legitimate"). Fixtures: one verbatim vendored snapshot `tests/fixtures/holistic-stats-aa5a041.json`, read by BOTH the verdict pin and the page-glue pin.
+- **why:** R28's P2 — the external lens is the repo's flagship cross-tool claim and could never fire on the canonical data it cites.
+- **verify (FAIL-first, by running):** pre-fix RED — real six-row fixture → null; live pristine clone → null; both new pins red. Post-fix 7/7 in the verdict pin file, including a new subset-row impostor class (perms=999 on a 5! row → absent); vendored snapshot shape-matches the live clone when present (offline abstain asserts the 6-row [40320×3, 120×3] shape, never fake green); the seam OPENS on the pristine clone: "external lens: SuperInstance/quilt-doctor three-lens verdict = THREE THINGS (40320 perms enumerated, killed-hypothesis p_exact=0.988492) — a single-judge refusal stands alone". Page-glue 5/5 green on the corrected fixture. Suite 161→163 in tests/ + qa 8/8; README 169→171 (the readme-count pin named me, as designed); prerun canonical five byte-identical — training path untouched.
+
+### Next version spec (competitive improvements)
+- [small] **wal-session CLI usage guard** (R28 item 2, still unfulfilled): unrecognized positional arg, or `--out` with no value → usage on stderr + exit non-zero. why: this round's P4 — silence turned a user error into a debugging detour; the missing-value path throws a raw TypeError. verify: pin drives `node tools/wal-session.js 99 bogus` (non-zero + usage line) and `--out` with empty value (same).
+- [small] **one amber-admission source** (R28 item 3, still unfulfilled): `renderCoinJournal`'s degrade branch, the page's `coinJournalUnavailable`, and the coev-ledger degrade share ONE exported constant for the admission stem (parenthetical stays per-cause). why: this round's P4 — three copies, already drifted. verify: pin asserts byte-equality of the rendered stems across all three sites.
+- [medium] **open-the-lens CI step**: the pulse harness keeps a quilt-doctor clone at /tmp/quilt-doctor; add a workflow job that runs the doctor-verdict live pin with `QUILT_DOCTOR_PATH` set and FAILS if the seam does not open. why: the R32 fix proved the live-open claim is the load-bearing one — it sat broken for 4 rounds while every committed pin stayed green. verify: job logs the lens line; a canonical-stats shape drift trips it at PR time.
+- carried: [epic, R12→R32] C1 scaling study. [medium, R22→R32] advice-aware GA. [medium, R27→R32] canonical-md5 lineage for the WAL session export (reproducibility pin exists; the hash-lineage pin does not).
+
+### Verdict
+MERGEABLE (stacks on main 07dc9ae; suite 163/163 + qa 8/8; prerun canonical five frozen; R31 entry read; no open sibling PRs at round start).
 
 ## Round 31 — index-dedup-count-fix — 2026-09-27 — mode: BUILDER (small: main-repair — two inherited reds) — vs main 7649f4c (post-#40)
 

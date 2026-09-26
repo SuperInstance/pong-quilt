@@ -23,7 +23,17 @@ const path = require("path");
 const SOURCE_REPO = "SuperInstance/quilt-doctor";
 const VIEW_DOC = "docs/HOLISTIC-VIEW-2026-09-26.md";
 const STATS_JSON = "docs/holistic-stats.json";
-const PERMS_EXPECTED = 40320; // 8! exact enumeration, no Monte Carlo
+const PERMS_EXPECTED = 40320; // 8! exact enumeration of the full fleet matrix
+
+// Exact enumeration is per-row: a row measured over n points must carry
+// perms === n! — 8! = 40320 for the full 8-repo matrix, 5! = 120 for the
+// sufficient-subset probes (the real holistic-stats.json mixes both; see the
+// R32 pin). A Monte-Carlo impostor (perms !== n!) reads as ABSENT.
+function factorial(n) { let f = 1; for (let i = 2; i <= n; i++) f *= i; return f; }
+function permsLegit(t) {
+  return t && Number.isInteger(t.n) && t.n >= 2 && t.n <= 20 &&
+    Number.isInteger(t.perms) && t.perms >= 1 && t.perms === factorial(t.n);
+}
 
 function doctorDir(explicit) {
   if (explicit) return explicit;
@@ -50,8 +60,9 @@ function loadDoctorVerdict(dirOpt) {
   if (!Array.isArray(stats) || stats.length === 0) return null;
 
   const killed = stats.find((t) => t && t.test === "jev ~ active_days");
-  const permsOk = stats.every((t) => t && Number.isInteger(t.perms) && t.perms === PERMS_EXPECTED);
+  const permsOk = stats.every(permsLegit);
   if (!killed || !permsOk || typeof killed.p_exact !== "number") return null; // shape drift = absent
+  if (killed.n !== 8 || killed.perms !== PERMS_EXPECTED) return null; // the killed hypothesis must be a full-matrix row
 
   // pong-quilt's row from the matrix: | pong-quilt | 3 | 0.709 | 0.200 | (starved) | 0.777 |
   const rowRe = /\|\s*pong-quilt\s*\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|/;
