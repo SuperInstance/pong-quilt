@@ -79,6 +79,10 @@ browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
 (136 tests total: 128 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(135 tests total: 127 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(139 tests total: 131 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(133 tests total: 125 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(134 tests total: 126 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
 is pinned in EXPERIMENTS.md).
 
