@@ -218,5 +218,15 @@
     };
   }
 
-  return { N, SIM_MAX_CONF, DEAD_ZCR, SIM_POT_FLOOR, sonify, channel, estimateX, zeroCrossingRate, suggest, suggestByo, confidenceEnvelope };
+  // --- doctor-lens seam (Round 27): the page's QA-REFUSAL stat line may name
+  // quilt-doctor's three-lens verdict as an external lens (digest produced by
+  // tools/doctor-verdict.js, Round 24). Node drivers/tests inject the line via
+  // setDoctorLens(); the browser ships with the seam CLOSED (null) — the page
+  // renders nothing it cannot load. lensSuffix() returns "" for any unset or
+  // non-string lens: a closed seam is byte-identical to no seam at all.
+  let doctorLensLine = null;
+  function setDoctorLens(line) { doctorLensLine = (typeof line === "string" && line.trim()) ? line : null; }
+  function lensSuffix() { return doctorLensLine ? " · " + doctorLensLine : ""; }
+
+  return { N, SIM_MAX_CONF, DEAD_ZCR, SIM_POT_FLOOR, sonify, channel, estimateX, zeroCrossingRate, suggest, suggestByo, confidenceEnvelope, setDoctorLens, lensSuffix };
 });

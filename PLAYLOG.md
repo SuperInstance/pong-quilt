@@ -7,13 +7,16 @@ Every round is a receipted observation in the loop. Newest first.
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
 | R30 | 2026-09-27 | r30-wal-page-glue (vs main 5ef8cda, post-#37) | canonical |
+| R29 | 2026-09-27 | r29-doctor-live-e2e-pin (vs main 5ef8cda, post-#37) | canonical |
 | R28 | 2026-09-27 | playtest-round-28 (vs R27 tip 3c5f498, PRs #31–#36 open at round start) | canonical |
+| R27 | 2026-09-26 | playtest-round-27 (vs r26 tip a06dfb2, PR #33 open at round start) + r27-doctor-lens-page-glue (vs main 56c60b4, post-#35 merge) — two canonical branches, one row (R2 branch-pair convention) | canonical |
+| R26 | 2026-09-26 | r26-wal-doctor-export + r26-wal-session-driver (stacked, vs main a0939b8 / export tip a06dfb2) — two canonical branches, one row (R2 branch-pair convention) | canonical |
+| R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
+| R24 | 2026-09-26 | r24-canonical-md5-lineage + r24-doctor-verdict-glue (vs main a0939b8, post-#30) — two canonical branches, one row (R2 branch-pair convention) | canonical |
 | R27 | 2026-09-26 | playtest-round-27 (vs r26 tip a06dfb2, PR #33 open at round start) | canonical |
-| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) | canonical |
 | R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) · r26-wal-session-driver (stacked) | canonical |
 | R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
-| R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) | canonical |
-| R24 | 2026-09-26 | r24-doctor-verdict-glue (vs main a0939b8, post-#30) | canonical |
+| R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) · r24-doctor-verdict-glue | canonical |
 | R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
@@ -45,6 +48,18 @@ Every round is a receipted observation in the loop. Newest first.
 - [none, verified-by-running] **Gate service:** `node --test tests/*.test.js tools/test-qa.js` 160/161 pass; the single red is `tests/canonical-index.test.js` — duplicated index rows R26/R24, **pre-existing on origin/main** (verified against a pristine worktree), not introduced here. FAIL-first: `tests/wal-page-glue.test.js` runs 6/6 RED on pristine main, 6/6 green on this tip.
 - [carried, pre-existing] canonical-index duplicated rows R26/R24 — main is red on this pin independent of this round; the dedup is a small fleet-hygiene item for the next builder.
 - REFERRAL EDGES: none new this round (the R26 WAL export edge pq → quilt-doctor stands as previously filed: candidate VERIFIED on a quilt-doctor PR consuming the export; weight law unchanged).
+## Round 29 — CCC — 2026-09-27 — mode: BUILDER (fresh small: doctor-live E2E pin) — vs main 5ef8cda (post-#37)
+
+### Played versions: main 5ef8cda → r29 tip — one pin file + registry rows only, training path untouched
+
+The R26 JS mirror (`verifyQuiltWal`) reflects the doctor's `verify()` line-for-line — a mirror can drift and still pass its own reflection. This pin runs the REAL consumer: `quilt_doctor/substrate.py` loaded live from a local clone (by file, bypassing the package `__init__` and its lens deps), against the exporter's actual JSONL.
+
+- Clean export → the doctor's own `QuiltSubstrate.verify()` returns `ok: true` (line count carried).
+- Content-tamper (post-hash file edit — the pin's first cut tampered PRE-hash, which is just a valid chain of different content; caught by running, the distinction is now documented in the test) → doctor names `hash_mismatch` at the exact seq, chain rejected.
+- Mirror agreement: JS `verifyQuiltWal` and the doctor give the same ok verdict, same divergences seq-for-seq why-for-why on the same tampered file.
+- Offline doctrine verified by running: clone moved away → 3 named skips, never fake green; restored → 3/3 live PASS (doctor clone at aa5a041, substrate loads by-file).
+
+FAIL-first verified by running: pin file absent on pristine origin/main → honesty two-way pin trips (claim row names a file that doesn't exist). Suite 150/150 in `tests/` (+ 8/8 qa). Prerun canonical five byte-identical (coev 946e639a, curve 63617065, L0 8a49b0f6, L1 643bd132, L2 454511548). VERIFIED_CLAIMS +1 (wal-doctor-e2e). README count pin named INHERITED rot: main's first count line claimed 128 in tests/ but live is 148 (PRs #36/#37 added pins without bumping the first line) — corrected to 150 with this pin added (the count moved once the inherited reds below were fixed: a failing pin skews the spawn's pass count). Canonical-index pin named INHERITED rot too: the #33-#37 merge collision duplicated the R26 and R24 index rows (R27's collision warning, landed) — merged per the R2 multi-branch convention. Round numbering note: the interrupted prior session had this lane drafted as "R28" on a stale r26 base; R28 was taken by playtest-round-28 (#37) while it slept, so it ships as R29.
 
 ## Round 28 — CCC — 2026-09-27 — mode: BUILDER (unfulfilled R27-spec small: `renderCoinJournal` owns its degrade path) + play-tester — vs R27 tip 3c5f498 (canonical head; PRs #31–#36 open at round start)
 
@@ -81,6 +96,28 @@ HAPPY: 183 rects, 182 ticks, 0 off-canvas, x∈[35,357] inside the 360-wide canv
 
 ### Verdict
 MERGEABLE (stacks on R27 tip 3c5f498; suite 128/128 + qa 8/8; prerun canonical five frozen; siblings #35/#36 studied and gate-checked — #35 green with live cross-tool reproduction, #36 carries the booked P2).
+
+## Round 27 — k2d8 — 2026-09-26 — mode: BUILDER (R24-booked small: wire the external lens into the page REFUSAL stat surface) — vs main 56c60b4 (post-#35 merge)
+
+- **what:** qa.js gains a doctor-lens seam — `setDoctorLens(line)` / `lensSuffix()` — and BOTH
+  QA-REFUSAL stat render sites in the page's real `qaSuggest()` append the suffix. A node
+  driver (or the pulse harness) injects the Round 24 `tools/doctor-verdict.js` lensLine and the
+  refusal names quilt-doctor's three-lens verdict on the page surface; the browser ships with the
+  seam CLOSED (`lensSuffix()==""`), so the stat line stays byte-identical to the pre-R27 text.
+  Honest guard at birth: a null/empty/whitespace/non-string lens is closed, never a placeholder
+  (first pin caught `"  "` rendering `" ·   "` — guard tightened to `line.trim()`).
+- **verify:** `tests/doctor-lens-page-glue.test.js` — 5 pins over the REAL qaSuggest()+l2Suggest()
+  slice (Proxy-DOM harness, pot 0 below SIM_POT_FLOOR): closed-seam byte-identity, open-seam
+  verbatim lens line (fixture digest via the real doctor-verdict module), both-sites wiring source
+  pin, closed-for-garbage-lens pin, and a self-check strip mutation proving pin 2 watches the page
+  wiring. FAIL-first: 5/5 RED on pristine origin/main (no lensSuffix — `QA.setDoctorLens is not a
+  function`), 5/5 green here. Suite 150/150 in tests/ + qa module 8/8; prerun canonical five
+  re-verified at the tip, byte-frozen.
+- **receipts:** VERIFIED_CLAIMS 30→31 (doctor-lens-page-glue); README count pin named my own
+  139→156 bump; canonical five md5s unchanged (claim-string-only core.js edit); inherited-red
+  repair: main's duplicated R24 index rows (two branches merged under separate keys, dup pin red
+  on main) merged into one R24 row per the R2 branch-pair convention.
+
 
 ## Round 27 — CCC — 2026-09-26 — mode: BUILDER (fresh small: coin-journal label axis-derives-from-data — the P3 found by driving the shipped page headless) + play-tester — vs r26 tip a06dfb2 (PR #33, open at round start)
 
