@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R23 | 2026-09-26 | r23-coin-journal-strip (vs main 4b94c49, post-#29) | canonical |
 | R22 | 2026-09-26 | playtest-round-22 (vs r21 tip 3508a75, PR #28) | canonical |
 | R21 | 2026-09-26 | r21-quantum-coin-tiebreak (vs main ac9b4c1) | canonical |
 | R20 | 2026-09-26 | r20-coev-qarefusal-glue (vs main post-#26 merge) | canonical |
@@ -29,6 +30,48 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 23 — CCC — 2026-09-26 — mode: BUILDER (completing an interrupted R23: the R22-spec strip existed as a local commit with no receipt) + one fresh small (axis-derives-from-data, FAIL-first pinned) + play-tester — vs main 4b94c49 (post-#29 merge)
+
+### Played versions: main 4b94c49 (R22 merged) → r23 tip — swept in scratch worktrees per the R13 lesson
+
+Suite at base 116/116 + qa 8/8; at tip 121/121 + 8/8. `node tools/prerun.js` at tip regenerates the post-R22 canonical five byte-identically (coev.js `946e639a…`, curve.json `63617065…`, L0 `8a49b0f6…`, L1 `643bd132…`, L2 `454511548…`; 182 flips, 89 swaps) and the tree stays clean — index.html/tests/README are outside the training path, proven by the frozen hashes. FAIL-first verified by running: the 4 strip pins are 4/4 RED on pristine main (extraction anchor absent — loud fail); the new axis pin is RED at the pre-fix tip.
+
+### Builder receipt 1 (the completion): the coin-journal strip ships with its receipt
+A prior session built the R22-spec item (plot the tiebreak journal) at 13:23 today — commit `9e95ddf` existed only locally, its README count sat uncommitted, and no PLAYLOG entry, push, or PR ever happened. This round verified the work by running instead of redoing it (same discipline as R21's completion): verbatim-extraction pins are honest, the renderer is pure, the label carries the audit sentence and SCREAMS on a live moth flip, the degrade path admits in amber. The R11 lesson from the other side: **code without a receipt is unshipped** — the receipt is the ship. Completion = this entry + the README count + push + PR.
+
+### Builder receipt 2 (the one fresh small): the axis derives from data, not the header
+- **what:** pin 5 in `tests/coin-journal-glue.test.js` drives the verbatim renderer with a `gens: 0` header and gen-200 data; pre-fix every tick lands at x>360 (off-canvas) while the label still counts them. One-line fix: `const axis = Math.max(1, gens||0, ...tiebreaks.map(t => t.gen||0))` and `(t.gen||0)/axis`. Shipped data (gens 260, flips 24–259) renders identically before and after — the fix moves nothing on the happy path, proven by the play harness diff.
+- **why:** found by driving the SHIPPED page headless (Proxy-DOM, real curve.json) — the exact class the loop exists to hunt, an instrument that claims visibility while rendering invisibility. The `d.gens || 0` wiring made a missing header a silent render lie.
+- **verify (FAIL-first, then green):** pin 5 RED pre-fix (`tick at x=714 must be on-canvas`), 5/5 green post-fix; full suite 121/121 + qa 8/8; prerun five md5s byte-identical.
+
+### Play harness (4 paths through the shipped page, all observed)
+happy: 183 rects (bg + 182 ticks), 89 bright swaps / 93 dim keeps, label `coin journal: 182 flips · 89 swaps · gens 0-260 · live:false throughout`, x∈[35,357]. degrade (fetch fails, the file:// reality): amber `#d29922` admission `data absent … instrument ships, admits it`. live tripwire (one `live:true` row): label names it — `LIVE:1 (moth engine!)`. empty journal: same amber admission. No path fakes data; the anti-laundering tripwire fails safe (a missing `live` flag counts as live, never as mock).
+
+### Deltas observed (shapes of change)
+- **d(learning)/d(version) = 0 — the 22nd straight frozen round.** L0 5,767 / L1 8,800 / L2 8,700, canonical md5s unmoved.
+- **d(artifact)/d(version) = 0 for the first time since R20** — the strip touches render/wiring only; the training path is byte-frozen (the R21/R22 reshuffle class does not recur).
+- **d(coverage)/d(version): suite 116→121** (+4 strip pins, +1 axis pin); README count 123→124→129 across the R22/R23 line, each bump named by the readme-count pin (this round's: 120→121 caught mid-flight — the pin works, the count was corrected before ship).
+- **NEW instrument class — d(visibility)/d(version): the journal moved from auditable (R22: 182/182 receipted) to visible (R23: plotted against generation).** The experiment now renders its own receipt stream as a mutation-rate signal: 89 swaps / 182 flips ≈ 49% challenger-take rate at fitness ties — the coin is not a tiebreak detail, it is a measurable evolutionary pressure the page finally shows next to the fitness curve it reshuffles.
+
+### Lies hunted
+- **[P3, found by running the shipped page headless, FIXED]** the `d.gens || 0` wiring + `Math.max(1, gens)` axis: a missing gens header pushed every tick off-canvas while the label counted them. Repro: renderer driven with gens=0, gen=200 → x=714. Fixed + FAIL-first pinned (Builder receipt 2).
+- **[P3-process, verified by inspecting the tree, recorded]** an interrupted session left R23 half-shipped: local commit, uncommitted README bump, no entry/push/PR. If this round had run naively it would have re-built the strip from the spec and double-shipped; verifying-by-running instead of assuming-nothing-shipped is what the loop's receipts are for. Recorded so future builders check `git log` for unshipped local commits before building.
+- **(nothing found in: byte-reproducibility — prerun triple-confirmed at tip; journal symmetry — 182/182 with `swap` booleans, 93 H / 89 T; strip honesty on all 4 play paths; suite pins; qa stand-in 8/8; checkpoint consistency.)**
+
+### Next version spec (competitive improvements)
+- [small, fresh] C1 coev ledger strip — the coin journal made the classic chain visible; the C1 ledger (R14's second chain) has no analogous plot. A strip of coev outcomes per generation (S-win/E-win/timeout markers) would make both chains equally visible. Verify: extraction-integrity pin on a pure renderer + one-frame drive, FAIL-first.
+- [small, carried R22] canonical-md5 lineage note in EXPERIMENTS.md — still unfulfilled; the post-R21 canonical (curve `63617065…`, L1 `643bd132…`, L2 `454511548…`) regenerates only on the r21+ line, and nothing in the repo says so next to the hashes. One doctrine line kills the copy-paste mismatch class. Verify: text pin.
+- [medium, carried R15/R20/R22] advice-aware GA — thread a measured diet into playOne so advice changes the EVOLVED champion; still the only honest d(learning)/d(version) ≠ 0 path short of the epic.
+- [epic, carried R12→R22] C1 scaling study — unchanged, still the only other nonzero-learning path. Verify: a new receipted curve with different endpoints.
+
+### Siblings studied this round
+SuperInstance/quilt-quant (the cited coin-toss-v1 engine — the strip's data rows carry its citation and `live:false` mock flag; the R23 live-tripwire pin is quilt-quant's mock-flag doctrine rendered as UI). No new sibling code needed — internal instrument work again.
+
+### Verdict
+MERGEABLE (interrupted R23 verified-by-running and receipted; fresh P3 fixed FAIL-first; suite 121/121 + qa 8/8; prerun five md5s byte-identical; the experiment's coin journal is now visible, honest on every failure path, and cannot silently render invisibility).
+
+---
 
 ## Round 22 — CCC — 2026-09-26 — mode: BUILDER (fresh P2 found by running: the R21 coin journal was tails-only — 93 of 182 flips unrecorded) + play-tester — vs r21 tip 3508a75 (PR #28, open at round start)
 
