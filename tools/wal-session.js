@@ -82,16 +82,48 @@ function sessionToWal(session) {
     source: `tools/wal-session.js (seed ${stats.seed}, ${stats.games} games)` }, rows);
 }
 
-module.exports = { runSession, sessionToWal };
+module.exports = { runSession, sessionToWal, parseCliArgs };
+
+// CLI arg parse (Round 33 — the R32-booked P4): unrecognized positional args,
+// unknown flags, and a valueless --out are USAGE errors (stderr + exit 2),
+// never silently defaulted and never a raw TypeError from
+// fs.writeFileSync(undefined). Exported for unit pins; the glue pin drives
+// the real CLI by spawning it.
+function parseCliArgs(argv) {
+  const USAGE = 'usage: node tools/wal-session.js [seed] [--out PATH]';
+  const fail = (why) => ({ error: USAGE + ' — ' + why });
+  let outPath = null;
+  const positional = [];
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === '--out') {
+      const v = argv[i + 1];
+      if (v == null || v.startsWith('--')) return fail('--out requires a PATH value');
+      outPath = v;
+      i++;
+    } else if (a.startsWith('--')) {
+      return fail('unrecognized flag: ' + a);
+    } else {
+      positional.push(a);
+    }
+  }
+  if (positional.length > 1)
+    return fail('unrecognized argument: ' + positional.slice(1).join(' '));
+  const seed = positional.length ? (parseInt(positional[0], 10) || 20260926) : 20260926;
+  return { seed, outPath };
+}
 
 // CLI: node tools/wal-session.js [seed] [--out PATH] — plays the session,
 // self-verifies the WAL, prints the verify report to stderr and the JSONL
-// to stdout (or --out PATH). Exit 1 on any divergence.
+// to stdout (or --out PATH). Exit 1 on any divergence; exit 2 + usage on
+// arg misuse.
 if (require.main === module) {
-  const argv = process.argv.slice(2);
-  const outIdx = argv.indexOf('--out');
-  const outPath = outIdx >= 0 ? argv[outIdx + 1] : null;
-  const seed = outIdx === 0 ? 20260926 : (parseInt(argv[0], 10) || 20260926);
+  const parsed = parseCliArgs(process.argv.slice(2));
+  if (parsed.error) {
+    console.error(parsed.error);
+    process.exit(2);
+  }
+  const { seed, outPath } = parsed;
   const session = runSession(seed);
   const lines = sessionToWal(session);
   const report = verifyQuiltWal(lines);
