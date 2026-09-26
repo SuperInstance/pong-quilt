@@ -2,12 +2,12 @@
 
 Every round is a receipted observation in the loop. Newest first.
 
-Every round is a receipted observation in the loop. Newest first.
-
 ## Canonical index (repair R11 item 2)
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R19 | 2026-09-26 | playtest-round-19 (vs main 6e163f6, post-#24-merge) | canonical |
+| R18 | 2026-09-26 | r18-byo-endpoint-persist (#24) | canonical — index row restored by R19 (the R18 entry shipped without one) |
 | R17 | 2026-09-26 | r16-byo-page-wiring (vs main post-#22-merge; rebased after the R16 stack landed) | canonical |
 | R16 | 2026-09-26 | r15-confidence-pot-strip (#19) · r16-readme-honesty-sweep (#20) · r16-advisor-diet-tool (#21) · r16-byo-qpam-seam (#22) | canonical — four branches, one spec |
 | R15 | 2026-09-26 | playtest-round-15 (vs main 3e4e497, post-PR#17) | canonical (this file, newest first) |
@@ -26,6 +26,45 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 19 — k2d8 — 2026-09-26 — mode: BUILDER (R18's booked fresh small closed as verified-NO-GAP by running; the builder item is the README count rot, killed structurally) — vs main 6e163f6 (post-#24 merge)
+
+### Played versions: v1 (e98cf66), v2 (0722670, untagged), main — swept in scratch worktrees per the R13 lesson
+
+- prerun on main: L0 gen 0 fitness 5767 (4567f, 12h, ×2.83), L1 gen 60 fitness 8800 (6000f, 28h), L2 gen 260 fitness 8700 (6000f, 27h), 261 gens → 21 curve points. v1 run: L0 2935 / L1 738 / L2 3687 and writes only level0-2.js — v1 cannot finish a prerun (no persistence; that is its failure mode, not a lie). v2 run regenerates the canonical five md5s byte-identically (coev.js 946e639a…, curve.json ba1c919a…, level0 8a49b0f6…, level1 aa4d7c4b…, level2 63b7fdd5…).
+- Suite at base 103/103 + qa 8/8; at tip 104/104 + qa 8/8. d(learning)/d(version) = 0 — 18th straight frozen round.
+
+### R18-booked fresh small: QA-REFUSAL in the C1 coev ledger path — VERIFIED NO GAP (by running), item closed
+
+- Probe (verbatim `live()` coev branch, Proxy-DOM harness in the qarefusal-glue style): qa module selected, pot 0 — the real sim's silence below SIM_POT_FLOOR — one `live()` tick. Result: a `QA-REFUSAL` row lands in the receipt chain AND the stat line admits it (`qa-sim: channel silent (pot 0/bin below floor 2) — advice refused, receipted`, warn class).
+- Why no gap: `qaSuggest()` is mode-agnostic — it receipts refusals regardless of game mode — and the C1 branch of `live()` calls `l2Suggest(champGame)` exactly like the classic path, so the refusal flows into the same MOTH receipt chain the C1 panel renders (R14's two-section discipline). R18 said "book only if a real gap is found by running" — none found.
+
+### Builder receipt: the README test-count rot — structural fix
+
+- **Found by counting [P3]:** README claimed "(94 tests total: 86 in `tests/` + 8 in `tools/test-qa.js` — counts as of Round 16)" while the live suite is 103+8 (R17 +3, R18 +4). R16 fixed this exact lie once; a hardcoded number in prose rots every time anyone adds a test — the rot is structural, so the fix must be too.
+- **What:** `tests/readme-count.test.js` — respawns the canonical suite (this file excluded, so no recursion) plus `tools/test-qa.js`, parses the tap `# pass` summaries, and asserts README's stated numbers equal the live ones (full-suite count = spawned + 1 for the pin's own registration). VERIFIED_CLAIMS 25→26 (`readme-count`). README corrected to 112 (104+8) with the pin named as its maintainer.
+- **Verify (FAIL-first, then green):** on unfixed main the pin is red twice over — its spawned suite fails the wristband two-way match (the file backs no claim yet) and the count itself lies (94 ≠ 104). After the claim row + README correction: 104/104 + qa 8/8 green. Any future test added without updating README now turns the suite red with this pin's name on it.
+- **Cost, admitted:** the pin adds ~5s to every suite run (a full respawn). That is the price of a run-verified count; paid gladly.
+- **Docs hygiene, same commit:** PLAYLOG's duplicated header line removed (merge artifact); canonical-index rows added for R18 (missing — R18 shipped its entry without one) and R19.
+
+### Lies hunted
+- **[P3 → FIXED]** the README count rot (above — now pinned to zero by respawn).
+- **[P3 → FIXED]** PLAYLOG duplicated header line; R18's missing canonical-index row.
+- **[verified honest]** the C1 QA-REFUSAL path receipts refusals — R18's booked suspicion, closed by running, not by reading.
+
+### Deltas as shapes
+- d(learning)/d(version) = 0 across v1 → v2 → main: 18 consecutive frozen rounds; the five prerun md5s are the invariant that proves where movement happened (docs/coverage only).
+- Failure-mode migration v1→v2→main: v1's failure mode is *can't finish* (no persistence, dies mid-sweep); v2/main's is *can't learn* (frozen weights) — the demo's honesty migrated from capability lies to coverage truths.
+- d(coverage): suite 99→103→104 (R17→R18→R19), VERIFIED_CLAIMS 24→25→26; the rot class "stale prose count" is now pinned structurally dead rather than swept again.
+
+### Next version spec (competitive improvements)
+- [small, fresh] canonical-index drift pin — every `## Round N` heading below the index must have an index row (regex both directions); R18's missing row proves the drift class is real. Size S, FAIL-first provable by deleting a row.
+- [small, fresh] make the R19 C1-refusal probe permanent — promote the one-off Proxy-DOM probe into the suite as a coev-mode refusal glue pin (qarefusal-glue pins classic mode; C1 mode rides on the same l2Suggest but deserves its own receipt assertion). Size S.
+- [epic, carried] C1 scaling study (R12/R13/R15/R16/R17/R18 epic) — still the only nonzero d(learning)/d(version) path.
+- [epic, carried] advice-aware GA (R15 fresh alternative).
+
+### Verdict
+MERGEABLE (R18's booked item closed as verified-no-gap by running; the README count rot is structurally dead — pinned by respawn, not swept again; suite 104/104 + qa 8/8; prerun five md5s byte-identical; PLAYLOG header and canonical index repaired).
 
 ## Round 18 — k2d8 — 2026-09-26 — mode: BUILDER (R17 next-spec fresh small: persist the BYO endpoint to localStorage) — vs main 8179351 (post-R17 merge)
 
