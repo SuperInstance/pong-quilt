@@ -76,7 +76,7 @@
 return { name:"my-loop", suggest(s){ return {move: s.ballX < s.paddleX ? -1 : 1, confidence:0.7}; } };</textarea>
  <button id="attach">Attach</button>
  <span id="llmkey" style="display:none">endpoint <input id="ep" placeholder="https://api.groq.com/..." size="30"> key <input id="key" type="password" size="12"> <small>stays in page memory only; seam paces calls (death/interval, one in flight — drops counted)</small></span>
- <span id="qapotwrap" style="display:none">pot (shots/bin) <input id="qapot" type="range" min="0" max="64" value="32"> <small>below the floor the QPAM stand-in returns silence → QA-REFUSAL, receipted</small> <label>BYO QPAM endpoint <input id="qabyoep" placeholder="empty = labeled sim" size="30"></label> <small>R16: fill it and the page POSTs the wire (64 8-bit bins + pot) to YOUR backend on the paced seam; any failure receipts byo-qpam-fallback and degrades to the labeled sim — never silent</small></span>
+ <span id="qapotwrap" style="display:none">pot (shots/bin) <input id="qapot" type="range" min="0" max="64" value="32"> <small>below the floor the QPAM stand-in returns silence → QA-REFUSAL, receipted</small> <label>BYO QPAM endpoint <input id="qabyoep" placeholder="empty = labeled sim" size="30"></label> <small>R16: fill it and the page POSTs the wire (64 8-bit bins + pot) to YOUR backend on the paced seam; any failure receipts byo-qpam-fallback and degrades to the labeled sim — never silent · R18: the URL is remembered on this device (localStorage), so a refresh doesn't strand your backend — a URL is not a credential; the LLM key above still never leaves page memory</small></span>
 </div>
 <script src="core.js"></script>
 <script src="qa.js"></script>
@@ -340,6 +340,14 @@ $("attach").onclick=()=>{try{const f=new Function($("scratch").value);const m=f(
  if(MoveSuggestion.validate(m.suggest(stateOf(PQ.newGame(Math.random)))))throw new Error("suggest() failed JEV validation on probe");
  l2Mod=m;$("l2").value="custom";$("l2stat").textContent="attached: "+m.name;$("l2stat").className="ok";receipt("ATTACH",0,1);}
  catch(e){$("l2stat").textContent="attach failed: "+e.message;$("l2stat").className="bad";}};
+// R18: persist the BYO endpoint — refresh must not strand a real backend.
+// URL only: a backend URL is not a credential, so it may live in localStorage.
+// The LLM key is the opposite and stays in page memory only (its field says so)
+// — the SECURITY pin in tests/byo-persist-glue.test.js makes that asymmetry
+// load-bearing: pq.byoQpamEndpoint is the only localStorage key on the page.
+try{const savedQaByoEp=localStorage.getItem("pq.byoQpamEndpoint");if(savedQaByoEp)$("qabyoep").value=savedQaByoEp;}catch(e){} // storage may be unavailable (private mode) — the seam still runs, unpersisted
+$("qabyoep").addEventListener("input",e=>{try{const v=e.target.value.trim();
+ if(v)localStorage.setItem("pq.byoQpamEndpoint",v);else localStorage.removeItem("pq.byoQpamEndpoint");}catch(e){}}); // clearing the field deletes the key — storage must not reopen a closed seam after refresh
 tick();
 </script>
 </body>
