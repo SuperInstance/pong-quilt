@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R20 | 2026-09-26 | r20-coev-qarefusal-glue (vs main post-#26 merge) | canonical |
 | R19 | 2026-09-26 | playtest-round-19 (vs main 6e163f6, post-#24-merge) | canonical |
 | R18 | 2026-09-26 | r18-byo-endpoint-persist (#24) | canonical — index row restored by R19 (the R18 entry shipped without one) |
 | R17 | 2026-09-26 | r16-byo-page-wiring (vs main post-#22-merge; rebased after the R16 stack landed) | canonical |
@@ -26,6 +27,27 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 20 — k2d8 — 2026-09-26 — mode: BUILDER (R19 spec item: promote the C1-refusal probe into the suite) — vs main c5a6f1a (post-#26 merge)
+
+### Builder receipt: the R19 one-off C1-refusal probe is now permanent
+- **what:** `tests/coev-qarefusal-glue.test.js` — extracts the page's REAL `live()` coev branch whole (same slice discipline as qarefusal-glue: no reimplementation that can drift) and runs it in a Proxy-DOM harness: coev mode, qa advisor, pot 0. Pin 1: a `QA-REFUSAL` row lands in the receipt chain. Pin 2: the stat line names it (`qa-sim: channel silent (pot 0/bin below floor 2)`, warn class). Pin 3: a live channel (pot 32) still receipts `qa-sim` advice through the same `l2Suggest(champGame)` seam — the pin is not vacuous in the pass direction.
+- **why:** R19 closed the "C1 ledger path maybe drops refusals" suspicion by running a one-off probe (verified NO GAP). One-off probes rot; the R19 spec booked this promotion.
+- **verify (FAIL-first by mutation):** pin 4 is the self-check — stripping `receipt("QA-REFUSAL",0,0);` from the extracted slice (the pre-R12 silent-drop half) leaves the ledger empty, so pins 1-2 run red against the mutated page code. Suite at base 107/107 + qa 8/8; at tip 111/111 + qa 8/8. VERIFIED_CLAIMS 26→27 (`coev-qarefusal-glue`).
+- **Cost, admitted:** +~0.3s suite time (four live() ticks with 20ms waits); pins 1-2 could share one boot — kept separate so a failure names the exact half (ledger vs stat line).
+
+### Lies hunted
+- **[none found]** the C1 coev path receipts refusals — now pinned forever, not just observed once.
+
+### Deltas as shapes
+- d(learning)/d(version) = 0, 19th straight frozen round; d(coverage): suite 107→111, VERIFIED_CLAIMS 26→27.
+
+### Next version spec (competitive improvements)
+- [epic, carried] C1 scaling study (R12-R20 epic) — still the only nonzero d(learning)/d(version) path.
+- [epic, carried] advice-aware GA (R15 fresh alternative).
+
+### Verdict
+MERGEABLE (suite 111/111 + qa 8/8; touched files — new test, core.js claim row, README count, PLAYLOG — are all outside the training path).
 
 ## Round 19 — k2d8 — 2026-09-26 — mode: BUILDER (R18's booked fresh small closed as verified-NO-GAP by running; the builder item is the README count rot, killed structurally) — vs main 6e163f6 (post-#24 merge)
 
