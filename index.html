@@ -39,6 +39,7 @@
  <button onclick="loadLevel('level2')">L2 · near-human</button>
  <button onclick="loadCoev()">C1 · coevolved pair</button>
  <button id="save">Save quilt (download)</button>
+ <button id="walexport">WAL quilt (download)</button>
  <input type="file" id="load" style="display:none"><button onclick="document.getElementById('load').click()">Load quilt file</button>
  <small>checkpoints are pre-run with the same core (tools/prerun.js, tools/prerun-coev.js) — training is non-monotonic; the curve dips before it climbs.</small>
 </div>
@@ -88,6 +89,7 @@ return { name:"my-loop", suggest(s){ return {move: s.ballX < s.paddleX ? -1 : 1,
 <script src="checkpoints/level1.js"></script>
 <script src="checkpoints/level2.js"></script>
 <script src="checkpoints/coev.js"></script>
+<script src="tools/wal-export.js"></script>
 <script>
 const PQ=PongQuilt,D=PQ.DEFAULTS,randPQ=PQ.rng(Date.now()%1e9);
 let pop=Array.from({length:D.popSize},()=>PQ.makeNet(randPQ)),gen=0,games=0,running=false;
@@ -382,6 +384,28 @@ $("mode").onchange=()=>{evalGen=null;if(coev){coev.evalS=null;coev.evalE=null;}c
  $("stats").textContent=`mode ${$("mode").value} — press Train`;};
 $("save").onclick=()=>{const blob=new Blob([JSON.stringify({gen,best:champNet,pop:pop.slice(0,8),stats:{games,best:lastSnap&&lastSnap.best.fitness}})],{type:"application/json"});
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-gen${gen}.json`;a.click();receipt("SAVE",0,1);};
+// === WAL export seam (Round 30): the live receipt panel, re-anchored into the fleet WAL ===
+// tools/wal-session.js (R26) proved a headless session can feed the doctor-
+// consumable exporter; this wires the PAGE's own receipts as the source: every
+// row currently on the panel becomes a LINK line, fnv1a-64 chained by the same
+// tools/wal-export.js the tools pin (dual-loaded above — one impl, two doors).
+// The panel's own display hash (prev/head) rides inside args as provenance —
+// the WAL chain is the doctor's vocabulary, never confused with the panel's.
+// Honesty: an empty panel exports a genesis-only chain and SAYS SO in the
+// receipt; verification runs before download and a non-ok verdict is
+// receipted refused, never silently saved.
+function walExportPanel(){
+ const W=window.QUILT_WAL;
+ const rows=receipts.map(r=>({op:'LINK',cell:'pq/panel',args:{i:r.i,kind:r.kind,move:r.move,conf:r.conf,gen:r.gen,panelPrev:r.prev}}));
+ const lines=W.toQuiltWal({tool:'pong-quilt page',source:'receipt panel (R30 page seam)'},rows);
+ const report=W.verifyQuiltWal(lines);
+ if(!report.ok){receipt("WAL-EXPORT/REFUSED",0,0);return null;}
+ return {jsonl:W.walToJsonl(lines),report,rows:rows.length};
+}
+$("walexport").onclick=()=>{const out=walExportPanel();if(!out)return;
+ const blob=new Blob([out.jsonl],{type:"application/jsonl"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-wal-gen${gen}.jsonl`;a.click();
+ receipt(out.rows?"WAL-EXPORT":"WAL-EXPORT/EMPTY",out.report.ok?1:0,1);};
 $("load").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const q=JSON.parse(t);
  pop=q.pop.concat(pop.slice(q.pop.length));gen=q.gen||0;receipt("LOAD",0,1);});};
 function loadLevel(l){const cp=window.PONG_QUILT_CHECKPOINTS&&window.PONG_QUILT_CHECKPOINTS[l];

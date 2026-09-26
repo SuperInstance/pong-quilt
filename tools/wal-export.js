@@ -84,11 +84,15 @@ function walToJsonl(lines) {
   return lines.map(l => canonical(l)).join('\n') + '\n';
 }
 
-module.exports = { fnv1a64, canonical, toQuiltWal, verifyQuiltWal, walToJsonl, OPS };
+// Dual load: node (tools, tests) and the page (script tag). The page
+// seam (Round 30) needs the SAME exporter the tools pin — one impl, two doors.
+const WAL_EXPORT_API = { fnv1a64, canonical, toQuiltWal, verifyQuiltWal, walToJsonl, OPS };
+if (typeof module !== 'undefined' && module.exports) module.exports = WAL_EXPORT_API;
+if (typeof window !== 'undefined') window.QUILT_WAL = WAL_EXPORT_API;
 
 // CLI: node tools/wal-export.js — demo driver, exports the page's demo
 // receipt kinds as a doctor-consumable WAL and self-verifies it.
-if (require.main === module) {
+if (typeof require !== 'undefined' && require.main === module) {
   const lines = toQuiltWal(
     { tool: 'pong-quilt', source: 'tools/wal-export.js demo driver (Round 26)' },
     [

@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R30 | 2026-09-27 | r30-wal-page-glue (vs main 5ef8cda, post-#37) | canonical |
 | R29 | 2026-09-27 | r29-doctor-live-e2e-pin (vs main 5ef8cda, post-#37) | canonical |
 | R28 | 2026-09-27 | playtest-round-28 (vs R27 tip 3c5f498, PRs #31–#36 open at round start) | canonical |
 | R27 | 2026-09-26 | playtest-round-27 (vs r26 tip a06dfb2, PR #33 open at round start) + r27-doctor-lens-page-glue (vs main 56c60b4, post-#35 merge) — two canonical branches, one row (R2 branch-pair convention) | canonical |
@@ -41,6 +42,12 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 30 — wal-page-glue — 2026-09-27 — mode: BUILDER (R26-booked follow-on: wal-session driver → page wiring) — vs main 5ef8cda (post-#37)
+
+- **[built] the WAL exporter lands ON the page, dual-loaded from the same pinned `tools/wal-export.js`.** R26 proved a headless session can feed the doctor-consumable WAL; the page itself still had no path to it — the receipt panel, the thing the whole receipt doctrine is about, could never leave the page in the shape quilt-doctor verifies. This round wires it: `tools/wal-export.js` becomes dual-loadable (node `module.exports` + browser `window.QUILT_WAL`, ONE implementation — a page-side reimplementation would drift from the pinned one the first time anyone touched a hash); a "WAL quilt (download)" button re-anchors the LIVE panel rows into the fleet WAL (BIND genesis + one LINK per row, the panel's own display hash carried inside `args.panelPrev` as provenance — the WAL chain and the panel chain are never confused); verification runs BEFORE download — a non-ok verdict receipts `WAL-EXPORT/REFUSED` and no file is saved; an empty panel exports a genesis-only chain receipted `WAL-EXPORT/EMPTY`; re-export after a new receipt produces a different chain (the seam reads the live panel, never a stale copy).
+- [none, verified-by-running] **Gate service:** `node --test tests/*.test.js tools/test-qa.js` 160/161 pass; the single red is `tests/canonical-index.test.js` — duplicated index rows R26/R24, **pre-existing on origin/main** (verified against a pristine worktree), not introduced here. FAIL-first: `tests/wal-page-glue.test.js` runs 6/6 RED on pristine main, 6/6 green on this tip.
+- [carried, pre-existing] canonical-index duplicated rows R26/R24 — main is red on this pin independent of this round; the dedup is a small fleet-hygiene item for the next builder.
+- REFERRAL EDGES: none new this round (the R26 WAL export edge pq → quilt-doctor stands as previously filed: candidate VERIFIED on a quilt-doctor PR consuming the export; weight law unchanged).
 ## Round 29 — CCC — 2026-09-27 — mode: BUILDER (fresh small: doctor-live E2E pin) — vs main 5ef8cda (post-#37)
 
 ### Played versions: main 5ef8cda → r29 tip — one pin file + registry rows only, training path untouched
