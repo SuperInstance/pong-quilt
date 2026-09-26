@@ -95,5 +95,20 @@ test('axis is derived from data: missing gens header cannot push ticks off-canva
   assert.strictEqual(ticks.length, 2);
   for (const t of ticks) assert.ok(t.x >= 0 && t.x < 360, `tick at x=${t.x} must be on-canvas`);
   assert.ok(ticks[1].x > ticks[0].x, 'monotone in gen even without header gens');
-  assert.strictEqual(ticks[1].x, 358, 'max-gen tick pins the right edge from data');
+  assert.strictEqual(ticks[1].x, 358, 'max-gen tick derives the right edge from data');
+});
+
+// R27 playtest pin (FAIL-first, found by driving the shipped page headless):
+// the R23 fix derived the TICK axis from data but left the LABEL reading the
+// raw header. gen-200 data under a gens:0 header renders every tick on-canvas
+// while the label claims `gens 0-0` — the instrument shows 200 generations
+// of mutation signal and reports none. The label must carry the SAME derived
+// axis the ticks were plotted against.
+test('label carries the derived axis, not the raw header', () => {
+  const calls = drive([
+    { gen: 10, coin: 'H', swap: false, ...CITED },
+    { gen: 200, coin: 'T', swap: true, ...CITED },
+  ], 0); // header claims gens=0 / absent
+  const label = calls.texts.map(t => t.t).join(' ');
+  assert.match(label, /gens 0-200/, `label must name the plotted range, got: ${label}`);
 });

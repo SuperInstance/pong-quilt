@@ -6,6 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R27 | 2026-09-26 | playtest-round-27 (vs r26 tip a06dfb2, PR #33 open at round start) | canonical |
+| R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) | canonical |
 | R26 | 2026-09-26 | r26-wal-doctor-export (vs main a0939b8, post-#30) · r26-wal-session-driver (stacked) | canonical |
 | R25 | 2026-09-26 | r25-coev-ledger-strip (vs main a0939b8, post-#30) | canonical |
 | R24 | 2026-09-26 | r24-canonical-md5-lineage (vs main a0939b8, post-#30) | canonical |
@@ -35,6 +37,41 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 27 — CCC — 2026-09-26 — mode: BUILDER (fresh small: coin-journal label axis-derives-from-data — the P3 found by driving the shipped page headless) + play-tester — vs r26 tip a06dfb2 (PR #33, open at round start)
+
+### Played versions: v1 (e98cf66, reconstructed via R1 receipt + claim-registry archaeology) → main a0939b8 (R23) → r26 tip a06dfb2 (R26) → playtest-round-27 tip
+
+### Deltas observed (shapes of change)
+- **The unit of learning moved three times.** v1 = fitness frames (no registry, 0 claims — learning was the paddle's). R23 main = provenance (33-claim honesty registry, the 182-flip journal rendered — learning was the experiment's memory). r26 tip = fleet interop (34 claims, receipts re-anchored into quilt-doctor's WAL). d(learning)/d(version) is no longer measured in frames or convergence — it is measured in verified claims, and as of R26 in cross-repo consumable edges. R26 is the first round whose crown claim is verified by ANOTHER repo's verifier — the experiment stopped being self-referential.
+- **Failure-mode migration:** v1's dead controls and teleporting ball → R23's silent render lies (off-canvas ticks that still counted; found, fixed, pinned) → R26's cross-boundary mistranslation risk (vocabulary mirror + MINT refusal). Each round the hunted failure mode moves one abstraction layer up: physics → rendering → tool boundaries.
+- **Training path frozen R23→R27:** prerun regenerates the canonical five byte-identically at the r26 tip AND at this round's tip (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps) — every delta lives in receipts, instruments, and registry, never in the paddle. Per R24's doctrine: hashes are line-specific, verified by running.
+
+### Lies hunted
+- [none, verified-by-running] **R26's shipped receipt numbers verify.** Mid-flight this round I observed a stale pre-commit draft of the R26 entry stating "base 134/134; tip 139/139" — wrong on both counts. The shipped commit a06dfb2 carries "base 121/121 in tests/ (129 incl. qa); tip 126/126 (134 incl. qa, 8/8)" — and re-running the canonical command at both commits confirms exactly that. A wrong-numbers draft was caught before ship; the receipt as shipped is clean. (Booked because the near-miss is the interesting datum: the receipt discipline held, but only because someone re-ran.)
+- [P3, fixed] **The coin-journal label read the raw header while the ticks derived from data.** gen-200 data under a `gens:0` header renders every tick on-canvas (the R23 fix working) while the label claims `gens 0-0` — the instrument shows 200 generations of mutation signal and reports none. repro: `drive(renderer, [{gen:200,coin:'T',swap:true,live:false}], 0)` → label "gens 0-0", tick x=358. Same lie class as R23's off-canvas ticks, one layer up: geometry fixed then, text now. Fixed and pinned (builder receipt below).
+- [P3, spec'd] **`renderCoinJournal(null)` throws TypeError.** NOT a shipped lie — the page's fetch `.catch` renders the amber admission instead (verified by reading the wiring at index.html:133-137), so the file:// reality degrades honestly. But it's a latent contract gap: the renderer's honesty lives in its caller. A glue driver — or any future caller — invoking it directly with absent data gets an exception, not the amber sentence. Spec'd below.
+- [none else found — WAL claims re-verified live this round] `node tools/wal-export.js` → doctor's own `QuiltSubstrate.verify()` = `{ok: True, 5 lines}`; content-tampered row 3 caught at the exact seq (`hash_mismatch@3`); pinned vector `c86b3c06e0945d6d` recomputed against python `json.dumps(sort_keys)` — exact match; offset basis `cbf29ce484222325` exact; divergence vocabulary `hash_mismatch/chain_break/seq_gap` confirmed at `quilt_doctor/substrate.py:77-81` in the doctor's own source.
+- [gate service] R24 tip fb4315b full suite 125/125 green; R25 tip 6391594 full suite 126/126 green; page-parse + readme-count + canonical-index pins 7/7 on both — the merge gate is satisfied for PRs #31/#32 even before their dedicated playtests. Collision warning, stated plainly: R24, R25, and R27 each bump the README count line and the canonical index from the same base — whoever merges last takes the others' bumps, and the readme-count/canonical-index pins will name you until you do (by design, R19).
+
+### Builder receipt: the label derives from the same axis the ticks were plotted against
+- **what:** one line in `renderCoinJournal` — the label prints `gens 0-${axis}` where `axis = Math.max(1, gens||0, maxGen)` (the R23 derivation), replacing the raw `${gens}` header read. Happy path provably unchanged: shipped curve.json (gens 260, data ≤ 259) labels "gens 0-260" before and after.
+- **why:** the R23 fix made the instrument render the truth but left it reporting the header's claim. A missing/wrong header produced a label under-reporting the plotted range while displaying it — a half-fixed lie is still a lie.
+- **verify (FAIL-first, by running):** pin 6 RED pre-fix (`/gens 0-200/` expected, "gens 0-0" rendered), 6/6 green post-fix; full suite 127/127 + qa 8/8; README 134→135 (the readme-count pin named me, as designed); prerun canonical five byte-identical — training path untouched.
+
+### Played notes (headless, real curve.json, r26 tip)
+HAPPY: 183 rects, 182 ticks, 0 off-canvas, 89 bright swaps / 93 dim keeps, label `coin journal: 182 flips · 89 swaps · gens 0-260 · live:false throughout` — matches the R22 journal audit exactly. GEN0-HEADER: post-fix tick x=358, label `gens 0-200`. EMPTY (real empty journal): `0 flips · 0 swaps` in grey — honest; a truly empty journal is not an absent one. LIVE tripwire and MISSING-flag both SCREAM `LIVE:1 (moth engine!)` — the anti-laundering tripwire still fails safe. FETCH-FAIL (null data): amber admission — via the caller's catch, not the renderer (see the P3 above).
+
+### Next version spec (competitive improvements)
+- [small] `renderCoinJournal` owns its degrade path — null/undefined journal renders the amber admission in-renderer (no throw); the page `.catch` stays as belt-and-braces. why: the P3 contract gap found this round. verify: FAIL-first pin — `drive(null)` must produce the amber sentence, no exception.
+- [small] real-ledger WAL driver — wire the page `receipt()` ledger (rows `{i,kind,move,conf,gen,prev,hash}`, bounded at 40 with counted eviction, R7) through `toQuiltWal`, replacing the R26 demo rows. why: R26-carried item; the export lane currently proves shape, not lineage — the loop's product is real receipts. verify: FAIL-first pin feeds a scripted 3-receipt ledger → BIND + 3 LINKs with kinds matching; the doctor's verify() ok on the exported file.
+- [medium] doctor-live E2E pin under `node --test` — child-process `QuiltSubstrate.verify()` against an exported tmp file when a quilt-doctor clone is present; explicit skip (never green-by-silent-absence) when absent. why: the repo's strongest claim — cross-tool verification — currently rests on a PLAYLOG sentence plus a build-time audit, not a suite pin. verify: with the doctor present the pin runs live and the tamper negative control is included.
+- [medium] canonical-md5 lineage for the WAL demo export — pin the demo export's five line-hashes so any tool change that alters exported bytes trips loudly. why: R24 doctrine applied to the newest artifact; the export is now a cited cross-repo object. verify: FAIL-first by editing one byte.
+- carried: [epic, R12→R27] C1 scaling study. [medium, R22→R27] advice-aware GA.
+
+### Verdict
+MERGEABLE (stacks on PR #33; suite 127/127 + qa 8/8; prerun canonical five frozen; R26 receipt numbers re-verified by running; sibling PRs #31/#32 gate-checked green).
+
+## Round 26 — CCC — 2026-09-26 — mode: BUILDER (fresh small: WAL export in the quilt-doctor consumable shape) + play-tester — vs main a0939b8 (post-#30 merge)
 ## Round 26 (session driver) — k2d8 — 2026-09-26 — mode: BUILDER (R26-booked small: real receipt-panel→WAL session driver) — vs r26-wal-doctor-export tip a06dfb2 (PR #33)
 
 ### Played versions: r26 export tip → session-driver tip — driver + pins + claim row only, training path untouched

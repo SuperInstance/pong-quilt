@@ -129,7 +129,7 @@ function renderCoinJournal(ctx, tiebreaks, gens) {
   ctx.fillRect(Math.round(x), 4, 1, 8); });
  ctx.fillStyle = "#8b949e"; ctx.font = "10px monospace";
  const liveNote = liveCount ? ` · LIVE:${liveCount} (moth engine!)` : " · live:false throughout";
- ctx.fillText(`coin journal: ${tiebreaks.length} flips · ${swaps} swaps · gens 0-${gens}` + liveNote, 4, 16);
+ ctx.fillText(`coin journal: ${tiebreaks.length} flips · ${swaps} swaps · gens 0-${axis}` + liveNote, 4, 16);
 }
 function coinJournalUnavailable() { const cv = $("coinstrip").getContext("2d");
  cv.fillStyle = "#05070b"; cv.fillRect(0, 0, 360, 18); cv.fillStyle = "#d29922"; cv.font = "10px monospace";
