@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R41 | 2026-09-27 | r41-maxspeed-honesty (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
 | R37 | 2026-09-27 | r37-prerun-stone-seal (vs main dd7f858, post-#46) | canonical |
@@ -46,6 +47,13 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 41 — maxspeed honesty: the metric reports the moved-at speed, never the trailing phantom boost (R40 playtest finding 2)
+
+- [found] playtest PR #53 (R40) traced the L1 `maxSpeed` metric: `playOne()` returned the FINAL-frame `speedMul`, so a game ending on a hit frame reported `(1+frames*ramp)×hitBoost` — a boosted value the ball never moved at (trace: maxReported 1.0652 vs maxActual 1.0648). The metric was a phantom on exactly the frames that end games.
+- [built] `g.maxSeen`: sampled at frame START (the multiplier the frame's ball movement actually used), before the ramp reset and before any hitBoost application. Dynamics untouched — `speedMul` still carries the boost into `sense()`/`swanP` for the next frame; only the reported metric changed. `newGame` initializes `maxSeen=1`; `playOne` reports `maxSeen`. VERIFIED_CLAIMS +1 (`maxspeed-honesty`).
+- [pinned] `tests/maxspeed-honesty.test.js` (4 pins, FAIL-first: `g.maxSeen` absent on pre-R41 main — every assertion trips): game-ending hit frame keeps the boost on `speedMul` but excludes it from the metric; a boost the NEXT frame actually moves at IS captured; seeded `playOne` smoke bounded by the physical ceiling.
+- [verified live] suite 201/201 + qa 8/8; readme-count pin named my own bump (197→201, README corrected 205→209); no canonical artifact touched (md5 set byte-frozen, untouched this round).
 
 ## Round 39 — stone-sign-pilot: the producer staples the birth-seal chain's tip (STONE-V2-PILOTS first sign pilot)
 
