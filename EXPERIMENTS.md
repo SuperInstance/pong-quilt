@@ -75,6 +75,20 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
   line produces a phantom mismatch (the R22 P3-process lie). The source of
   truth is a clean run at the tip you are testing — `node tools/prerun.js`,
   then read the md5s it actually printed.
+- **Provenance is a chained receipt, not a promise (Round 37).** Every
+  `node tools/prerun.js` run ends by sealing the four artifacts it just
+  wrote into `checkpoints/stone-v1.json` — a stone-v1 forward chain
+  (SuperInstance/quilt-stone stone.mjs, STONE-SPEC.md §4.6) whose rows
+  carry `{file, md5}`, verified BEFORE it is written (offline mirror, plus
+  quilt-stone's own `verifyChain` live when `QUILT_STONE_DIR` names a
+  checkout) and refused loudly (exit 1) on any mismatch. The seal is not a
+  sixth canonical artifact — it is the receipt over the four artifacts
+  prerun itself writes (coev.js belongs to `tools/prerun-coev.js`'s own
+  lane), so it is dropped before the provenance loop and never appears in
+  that loop's md5 list. The sealed four are the same post-R21 set above; a
+  changed lineage re-emits the seal on the next run, and a seal whose md5s
+  do not match the files it names fails verification instead of passing
+  silently.
 - **The process is the product.** A beautiful demo with a dead loop is a
   cathedral; a humble demo with a living experiment chain is a shed that
   breeds. We build sheds that breed.
