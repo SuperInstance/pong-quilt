@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R44 | 2026-09-28 | r44-site-v2 (vs main 1da41be, post-#58) | canonical |
 | R43 | 2026-09-28 | r43-seed-zero-honesty (PR #57, vs main 2aa7901, post-R42 main-repair) | canonical |
 | R42 | 2026-09-28 | r42-site (PR #58, vs main 4d447ed, post-#55) + playtest-round-42 (PR #56 main-repair, vs main 4d447ed, post-#55) — two canonical branches; the #58 merge concatenated both stacks (index + entries + README counts) | canonical — deduped by R44 (R31/R2 convention) |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (lost in the #55 merge conflict resolution, same class as R34) |
@@ -50,6 +51,71 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 44 — site v2: play without leaving the page (+ the #58 merge-wound repair)
+
+**vs main 1da41be (post-#58) — r44-site-v2**
+
+Casey's order: take the website a lot further, iteratively playtest and
+improve. Two halves.
+
+### Half 1 — the #58 merge wound, healed (playtest finding 0)
+
+The #58 merge (site R42 into a main that already carried the playloop's R42
+from PR #56) concatenated instead of resolving:
+- canonical index carried R42 twice, R41 three times — the R43 index-unique
+  pin (from PR #57, spawned for exactly this class) caught it: main arrived
+  217/223.
+- the round entries duplicated the same way; README carried three stacked
+  test-count paragraphs.
+- site-glue tests failed on a fresh checkout (dist/ is gitignored, and they
+  demanded a manual build step) — they now self-seal via
+  tools/build-site.mjs when the output is absent, keeping the canonical
+  suite command self-sufficient.
+Repair: index deduped per the R31/R2 branch-pair convention (one R42 row
+naming both branches, one R41 row), the PR #56 main-repair receipts folded
+into the R42 entry as a subsection, README collapsed to one count line.
+Suite 223/223 after repair.
+
+### Half 2 — site v2, from playtesting the live site
+
+Findings from playing https://pong-quilt-site.casey-digennaro.workers.dev:
+1. [P1] The page carried zero client-side JS — Seed Lab and Claim Judge
+   were plain forms that navigated away to raw JSON. Every interaction
+   ejected the visitor from the explorable. (ciechanowski's rule: the
+   explanation must respond where you stand.)
+2. [P2] No inline play — every card linked out.
+3. [P2] The L0→L1→L2 champion progression existed only as prose.
+4. [P2] The coevolution record (260 gens, 182 coin flips) was invisible.
+5. [P3] Judge verdicts evaporated — no history, no shareable receipt.
+6. [P3] Seed Lab was one-at-a-time — no way to see a distribution.
+
+What shipped:
+- `site/app.js` (zero-dep interactive layer, progressive enhancement:
+  every form keeps its no-JS action; absent mounts abstain named).
+  Engine Room: inline receipts (frames/hits/maxSpeed/fitness/digest), a
+  receipt link (?level&seed auto-runs and re-runs for anyone), and an
+  8-seed sweep table with unique-digest + hits min/mean/max summary.
+  Champion lineage + coevolution strip: rendered in the visitor's browser
+  from the SAME committed artifacts the demo loads (checkpoints via script
+  tags — their own browser idiom; curve.json + coev.js via fetch), never
+  re-typed or re-implemented. Play-here buttons lazy-iframe the byte-
+  identical demo inline.
+- Claim Wall: `POST /api/judge` now records every verdict AND every
+  abstain (content-addressed by replay digest + time) into a Cloudflare
+  KV binding (CLAIMS); `GET /api/wall` serves newest-first. Unbound →
+  named abstain, never faked. No identities stored.
+- Pins: tests/site-glue.test.js +4 (wall abstain unbound; wall
+  newest-first from a stub KV; judge records verdicts and abstains when
+  bound; widget wiring contract — mounts exist, app.js wires each, app.js
+  speaks only to known /api endpoints, no-JS fallbacks intact).
+  VERIFIED_CLAIMS +1 (site-interactive); site-glue claim text updated.
+
+### Verify
+- `node tools/build-site.mjs` → suite: 227/227 in tests/ + qa 8/8.
+- Deployed live (Casey's "take it further" = iterate the preview):
+  wrangler KV namespaces created (prod 9e6572fb…, preview 7783e751…),
+  wrangler deploy clean; endpoints re-verified against the running worker.
 
 ## Round 42 — the website: understand the repo by playing it, in many forms
 

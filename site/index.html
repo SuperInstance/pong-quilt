@@ -26,42 +26,66 @@ p.sub{color:var(--dim);margin:0 0 20px}
   padding:1px 8px;margin-right:6px;color:var(--dim)}
 .card p{margin:8px 0;color:var(--dim);font-size:13px}
 .card p b{color:var(--txt);font-weight:600}
-.play{display:inline-block;margin-top:8px;background:var(--green);color:#0d1117;border-radius:6px;
-  padding:6px 14px;font-weight:700;font-size:13px}
+.play{display:inline-block;margin-top:8px;margin-right:8px;background:var(--green);color:#0d1117;border-radius:6px;
+  padding:6px 14px;font-weight:700;font-size:13px;border:0;cursor:pointer;font:inherit}
 .play:hover{text-decoration:none;filter:brightness(1.1)}
-.claim{border-left:3px solid var(--green);padding:6px 10px;margin:6px 0;font-size:12.5px;background:#161b22}
-.claim small{color:var(--dim)}
-#lab,#judge{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:10px}
+.play.ghost{background:transparent;color:var(--acc);border:1px solid var(--line)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:10px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
 select,input[type=text],input[type=number]{background:var(--bg);color:var(--txt);border:1px solid var(--line);
   border-radius:6px;padding:6px 10px;font:inherit}
 button{background:var(--acc);color:#0d1117;border:0;border-radius:6px;padding:7px 16px;font-weight:700;
   font:inherit;cursor:pointer}
 button:disabled{opacity:.45;cursor:default}
-pre{background:#0d1117;border:1px solid var(--line);border-radius:6px;padding:10px;overflow:auto;
-  font-size:12.5px;color:var(--green);max-height:280px}
-.receipt{color:var(--dim);font-size:12px}
-.receipt b{color:var(--amber)}
-.wrist{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px}
-details{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
-summary{cursor:pointer;font-size:12.5px}
-summary .id{color:var(--violet)}
+.receipt{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-top:10px}
+.receipt-head{color:var(--dim);font-size:12px;margin-bottom:8px}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:8px 0}
+.statgrid div{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+.statgrid b{display:block;font-size:19px;color:var(--green)}
+.statgrid span{font-size:11px;color:var(--dim)}
+.digest{display:block;font-size:11.5px;color:var(--violet);word-break:break-all;margin:6px 0}
+.abstain{border-left:3px solid var(--amber);padding:6px 10px;margin:6px 0;font-size:13px;background:#161b22;color:var(--dim)}
+.verdict{font-size:15px}.verdict b{color:var(--amber)}
+.dim{color:var(--dim);font-size:12.5px}
+.sweeptable{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+.sweeptable th{text-align:left;color:var(--dim);border-bottom:1px solid var(--line);padding:4px 8px}
+.sweeptable td{border-bottom:1px solid var(--line);padding:4px 8px;vertical-align:top}
+.lineage-row{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.lineage-name{font-weight:700}
+.lineage-name span{display:block;font-weight:400;color:var(--dim);font-size:11.5px}
+.bar{position:relative;height:20px;margin:3px 0;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--acc);opacity:.55}
+.bar em{position:relative;font-style:normal;font-size:11.5px;padding-left:8px;line-height:20px;color:var(--txt)}
+.spark{width:100%;max-width:560px;background:var(--bg);border:1px solid var(--line);border-radius:6px;margin:8px 0}
+.spark polyline{fill:none;stroke:var(--green);stroke-width:2}
+.spark .axis{stroke:var(--line)}
+.coev-nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:8px 0}
+.coev-nums div{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+.coev-nums b{display:block;font-size:18px;color:var(--acc)}
+.coev-nums span{font-size:11px;color:var(--dim)}
+.chip{display:inline-block;font-size:11.5px;border:1px solid var(--line);border-left:3px solid var(--green);
+  border-radius:4px;padding:2px 8px;margin:2px;color:var(--txt)}
+.inline-play{margin-top:10px}
+.inline-play iframe{width:100%;height:420px;border:1px solid var(--line);border-radius:8px;background:#000}
+ul.plain{list-style:none;padding:0;margin:8px 0}
+ul.plain li{padding:2px 0;color:var(--dim);font-size:12.5px}
 footer{border-top:1px solid var(--line);margin-top:60px;padding:18px 20px;color:var(--dim);font-size:12px;
   display:flex;gap:18px;flex-wrap:wrap}
-.ok{color:var(--green)} .bad{color:var(--red)} .dim{color:var(--dim)}
+.ok{color:var(--green)} .bad{color:var(--red)}
 </style>
 </head>
 <body>
-<header><b>pong-quilt</b> <small>ML you can watch think — every claim below is replayable, receipted, and falsifiable in your browser. The demo is the repo, byte-identical.</small></header>
+<header><b>pong-quilt</b> <small>ML you can watch think — every claim below is replayable, receipted, and falsifiable in your browser. The demo is the repo, byte-identical. v2: play without leaving the page.</small></header>
 <main>
 
 <h1>Understand a neural net the way you understand a game:<br>by playing it.</h1>
 <p class="sub">pong-quilt is a zero-dependency browser Pong where a 6→10→3 tanh net learns by genetic
 algorithm — and everything it does is <b>seeded, receipted, and honest about what it isn't</b>.
-This site is the map. The territory is <a href="/demo/">one click away</a>.</p>
+This site is the map, the lab bench, and the ledger — the territory itself is
+<a href="/demo/">one click away</a> (or zero clicks, below).</p>
 
-<div class="row"><a class="play" href="/demo/">▶ play the demo (the repo itself)</a>
-<span class="receipt" id="prov">checking demo provenance…</span></div>
+<div class="row"><a class="play" href="/demo/">▶ open the demo full-screen</a>
+<span class="dim" id="prov">checking demo provenance…</span></div>
 
 <h2>Many forms of playing</h2>
 <div class="grid">
@@ -69,153 +93,117 @@ This site is the map. The territory is <a href="/demo/">one click away</a>.</p>
     <span class="tag">train</span><span class="tag">watch learning start</span>
     <p>Fresh random nets, seeded. Generation 0 mostly stares at the ball. <b>What to watch:</b>
     the fitness strip — most nets die in seconds; the ring favors whoever survives longest.</p>
-    <a class="play" href="/demo/">play</a></div>
+    <button class="play" data-play-here="/demo/">▶ play it right here</button>
+    <a class="play ghost" href="/demo/">open full demo</a></div>
   <div class="card"><h3>Classic L1/L2 — committed champions</h3>
     <span class="tag">checkpoints</span><span class="tag">byte-reproducible</span>
-    <p>The repo ships <b>level1 (gen 60)</b> and <b>level2 (gen 240)</b>, evolved by
+    <p>The repo ships <b>level1 (gen 60)</b> and <b>level2</b>, evolved by
     <code>tools/prerun.js</code>, md5-stable. Same seed → same bytes. <b>What to watch:</b>
     hits carry 100× fitness weight — the champion returns the ball, not just dodges it.</p>
-    <a class="play" href="/demo/">play</a></div>
+    <a class="play" href="#lineage-sec">see their lineage below ↓</a></div>
   <div class="card"><h3>C1 · coevolution — a GAN pair of paddles</h3>
     <span class="tag">adversarial</span><span class="tag">ledger</span>
     <p>Two populations: a <b>survivor</b> that must return the ball, an <b>ender</b> that wins
-    by killing it. 121 receipted head-to-heads sealed in <code>checkpoints/coev.js</code>.
-    <b>What to watch:</b> the ledger strip — every generation plotted, kills bright.</p>
-    <a class="play" href="/demo/">play</a></div>
+    by killing it — 260 generations, every tie broken by a cited quantum coin.
+    <b>What to watch:</b> the fitness curve and the coin journal below.</p>
+    <a class="play" href="#coev-sec">see the training record below ↓</a></div>
   <div class="card"><h3>Advisors — micro-JEPA · QPAM · scratch tile</h3>
     <span class="tag">L2 seams</span><span class="tag">named, not faked</span>
     <p>Attach a learned 1-step world model, a quantum-audio imager (<b>labeled sim stand-in</b>;
     a real endpoint slot exists and degrades honestly), or write your own advisor in the
     scratch tile — every suggestion is receipted with its source and confidence.</p>
-    <a class="play" href="/demo/">play</a></div>
+    <a class="play ghost" href="/demo/">in the full demo ↗</a></div>
   <div class="card"><h3>WAL export — receipts into the fleet quilt</h3>
     <span class="tag">five-opcode</span><span class="tag">cross-tool receipt</span>
     <p>The demo's receipt panel re-anchors into the fleet's quilt WAL (BIND/LINK/VIEW,
     fnv1a-64 chained) and the export <b>passes quilt-doctor's own verify()</b> — a live
     cross-tool receipt, not a demo row list.</p>
-    <a class="play" href="/demo/">play</a></div>
-  <div class="card"><h3>Seed Lab — determinism you can poke</h3>
+    <a class="play ghost" href="/demo/">in the full demo ↗</a></div>
+  <div class="card"><h3>Engine Room — determinism you can poke</h3>
     <span class="tag">this site</span><span class="tag">worker-verified</span>
-    <p>Pick a checkpoint and a seed. This site's backend runs the <b>same core.js</b> and
-    returns the game it played — run it twice, same numbers. That's what
-    "seeded everywhere" means, felt in the hands.</p>
-    <a class="play" href="#lab">play below ↓</a></div>
+    <p>Pick a checkpoint and a seed: this site's backend runs the <b>same core.js</b> and
+    hands back the receipt — frames, hits, max speed, fitness, and a digest that
+    <b>cannot change between runs</b>. Sweep 8 seeds to see a distribution, not a number.</p>
+    <a class="play" href="#engine-sec">to the Engine Room ↓</a></div>
   <div class="card"><h3>Claim Judge — say something checkable</h3>
     <span class="tag">this site</span><span class="tag">JEV-judged</span>
-    <p>Make a claim about a game ("level1 at seed 42 survives past 5000 frames").
-    The backend replays it and a live JEV judge scores whether your claim matched reality.
-    <b>Verified means replayable.</b></p>
-    <a class="play" href="#judge">play below ↓</a></div>
+    <p>Make a claim about a game ("level1 at seed 42 scores at least 10 hits"). The backend
+    replays it and a live JEV judge scores whether your words matched the receipt.
+    Verdicts join the wall. <b>Verified means replayable.</b></p>
+    <a class="play" href="#judge-sec">to the Judge ↓</a></div>
   <div class="card"><h3>Quantum audio — stand-in vs engine</h3>
     <span class="tag">moth</span><span class="tag">receipt-only</span>
     <p>The demo's QPAM advisor is a labeled simulation. The real engine — moth-quantum,
     IBM hardware behind <code>mode:"qpu"</code> — is reachable. This site reads its live
     job ledger (no credits spent) and shows what a real receipt carries that a sim can't.</p>
-    <a class="play" href="#quantum">look below ↓</a></div>
+    <a class="play" href="#moth-sec">look below ↓</a></div>
 </div>
 
-<h2 id="lab">Seed Lab</h2>
-<p class="sub">Same code you just played, run server-side. The point isn't the numbers — it's that
-the numbers <i>cannot change</i> between runs.</p>
-<div id="lab">
-  <div class="row">
-    <label>checkpoint <select id="lab-level"><option>level0</option><option selected>level1</option><option>level2</option></select></label>
-    <label>seed <input id="lab-seed" type="number" value="20260928" min="0" max="2147483647"></label>
-    <button id="lab-run">replay on the worker</button>
-    <span class="receipt" id="lab-status"></span>
-  </div>
-  <pre id="lab-out" style="display:none"></pre>
+<h2 id="engine-sec">Engine Room</h2>
+<p class="sub">Same code you can play above, run in the worker. One seed is a receipt; eight seeds are a
+distribution. Determinism is per-seed, not global — that distinction is the whole lesson.</p>
+<div class="panel">
+  <form id="engine-form" action="/api/replay" method="post">
+    <div class="row">
+      <label>checkpoint <select name="level"><option>level0</option><option selected>level1</option><option>level2</option></select></label>
+      <label>seed <input name="seed" type="number" value="20260928" min="0" max="2147483647"></label>
+      <button type="submit">replay → receipt</button>
+      <button type="button" id="engine-sweep">sweep 8 seeds</button>
+      <span class="dim">no JS? the form still works — it opens the raw receipt.</span>
+    </div>
+  </form>
+  <div id="engine-results"><p class="dim">run a replay — the receipt renders here.</p></div>
+  <div id="sweep-results"></div>
 </div>
 
-<h2 id="judge">Claim Judge</h2>
-<p class="sub">A claim is only interesting if it could be wrong. Write one about the replay below;
-JEV judges whether your words matched the receipt.</p>
-<div id="judge">
-  <div class="row">
-    <label>checkpoint <select id="jg-level"><option>level0</option><option selected>level1</option><option>level2</option></select></label>
-    <label>seed <input id="jg-seed" type="number" value="777" min="0" max="2147483647"></label>
-  </div>
-  <div class="row">
-    <input id="jg-claim" type="text" size="72" placeholder="e.g. this game survives past 5000 frames and scores at least 10 hits">
-    <button id="jg-run">replay + judge my claim</button>
-  </div>
-  <pre id="jg-out" style="display:none"></pre>
+<h2 id="lineage-sec">Champion lineage</h2>
+<p class="sub">Three committed checkpoints: gen 0 (noise), gen 60 (commits to returning), the final champion.
+The bars render <b>in your browser</b> from the same artifact files the demo loads — nothing is re-typed,
+nothing is re-implemented.</p>
+<div class="panel" id="lineage"><p class="dim">loading the committed checkpoints…</p></div>
+
+<h2 id="coev-sec">Coevolution: the training record</h2>
+<p class="sub">A survivor and an ender, trained against each other. The curve, the coin journal, and the two
+final champions — all read from the committed artifacts.</p>
+<div class="panel" id="coev-strip"><p class="dim">loading the coevolution artifacts…</p></div>
+
+<h2 id="judge-sec">Claim Judge</h2>
+<p class="sub">A claim is only interesting if it could be wrong. Write one about the game the worker will
+replay; JEV judges whether your words matched the receipt. Every verdict is recorded on the wall below.</p>
+<div class="panel">
+  <form id="judge-form" action="/api/judge" method="post">
+    <div class="row">
+      <label>checkpoint <select name="level"><option>level0</option><option selected>level1</option><option>level2</option></select></label>
+      <label>seed <input name="seed" type="number" value="777" min="0" max="2147483647"></label>
+    </div>
+    <div class="row">
+      <input name="claim" type="text" size="72" placeholder="e.g. this game scores at least 10 hits and survives all 6000 frames">
+      <button type="submit">replay + judge my claim</button>
+    </div>
+  </form>
+  <div id="judge-result"><p class="dim">the verdict renders here.</p></div>
 </div>
 
-<h2 id="quantum">Quantum audio: stand-in vs engine</h2>
-<div class="row"><button id="qt-look">read the live moth ledger (no credits)</button>
-<span class="receipt" id="qt-status"></span></div>
-<pre id="qt-out" style="display:none"></pre>
+<h2>Claim Wall</h2>
+<p class="sub">Verdicts accumulate — claim, game, verdict, digest, time. No identities stored; every row is
+re-runnable from its game params. An abstain is recorded as honestly as a verdict.</p>
+<div class="panel" id="wall"><p class="dim">reading the wall…</p></div>
+
+<h2 id="moth-sec">Quantum audio: stand-in vs engine</h2>
+<div class="panel" id="moth"><p class="dim">reading the live moth ledger (no credits spent)…</p></div>
 
 <h2>The wristband</h2>
-<p class="sub">Every verified claim the repo wears, fetched live from this build. Amber = ships closed
-(named, never faked). Expand any claim to read it whole.</p>
-<div class="wrist" id="wrist"></div>
+<p class="sub">Every verified claim the repo wears, served live from this build's own <code>core.js</code>.
+Hover a badge for the claim text and its pinned proof.</p>
+<div class="panel" id="wristband"><p class="dim">reading VERIFIED_CLAIMS…</p></div>
 
 </main>
 <footer>
   <span>site + worker source: <code>site/</code> in the repo</span>
   <span>demo files byte-identical — provenance above</span>
-  <span>backend: cloudflare workers · JEV (typesafe) · moth (read-only receipts)</span>
+  <span>backend: cloudflare workers + KV · JEV (typesafe) · moth (read-only receipts)</span>
   <span>zero dependencies · no build step · the repo is the product</span>
 </footer>
-
-<script>
-const $ = id => document.getElementById(id);
-const show = (el, obj) => { el.style.display = 'block'; el.textContent = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2); };
-
-// provenance: compare demo bytes against this repo's own receipts
-(async () => {
-  try {
-    const r = await fetch('/api/provenance');
-    const p = await r.json();
-    $('prov').innerHTML = p.ok
-      ? `demo provenance <b class="ok">verified</b> — ${p.files} files, chain head ${p.head}`
-      : `demo provenance <b>unverified</b> — ${p.why || 'see /api/provenance'}`;
-  } catch { $('prov').textContent = 'provenance check offline (worker unreachable)'; }
-})();
-
-$('lab-run').onclick = async () => {
-  $('lab-status').textContent = 'replaying…';
-  try {
-    const r = await fetch('/api/replay', { method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ level: $('lab-level').value, seed: +$('lab-seed').value }) });
-    const p = await r.json();
-    $('lab-status').textContent = r.ok ? 'receipt ↓ run it again — same numbers' : `refused: ${p.why||r.status}`;
-    show($('lab-out'), p);
-  } catch (e) { $('lab-status').textContent = 'worker unreachable'; }
-};
-
-$('jg-run').onclick = async () => {
-  $('jg-out').style.display='none';
-  const claim = $('jg-claim').value.trim();
-  if (!claim) { $('jg-out').style.display='block'; $('jg-out').textContent = 'write a claim first — a judge needs something to check'; return; }
-  try {
-    const r = await fetch('/api/judge', { method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ level: $('jg-level').value, seed: +$('jg-seed').value, claim }) });
-    show($('jg-out'), await r.json());
-  } catch { $('jg-out').style.display='block'; $('jg-out').textContent = 'worker unreachable'; }
-};
-
-$('qt-look').onclick = async () => {
-  $('qt-status').textContent = 'reading…';
-  try {
-    const r = await fetch('/api/moth');
-    const p = await r.json();
-    $('qt-status').textContent = r.ok ? `live — ${p.jobs} jobs on the account` : `moth unreachable — ${p.why||r.status}`;
-    show($('qt-out'), p);
-  } catch { $('qt-status').textContent = 'worker unreachable'; }
-};
-
-(async () => {
-  try {
-    const r = await fetch('/api/claims');
-    const { claims } = await r.json();
-    $('wrist').innerHTML = claims.map(c =>
-      `<details><summary><span class="id">${c.id}</span> — ${c.claim.slice(0, 72)}${c.claim.length>72?'…':''}</summary>
-       <div class="claim">${c.claim.replace(/</g,'&lt;')}<br><small>proof: ${c.proofTest||'render claim (no pinned test)'}</small></div></details>`).join('');
-  } catch { $('wrist').textContent = 'claims ledger unreachable'; }
-})();
-</script>
+<script src="/app.js" defer></script>
 </body>
 </html>

@@ -6,3 +6,10 @@ compatibility_date = "2024-09-25"
 
 [assets]
 directory = "./dist"
+
+# Claim Wall receipts (judge verdicts accumulate server-side; read-only ledger).
+# Created R44: production + preview namespaces.
+[[kv_namespaces]]
+binding = "CLAIMS"
+id = "9e6572fb1f684c9fb3270fb2ee9589bd"
+preview_id = "7783e75179134fb2a6677170a7a8ade8"

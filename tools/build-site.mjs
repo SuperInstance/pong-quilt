@@ -18,8 +18,9 @@ rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 mkdirSync(gen, { recursive: true });
 
-// 1. the site itself
+// 1. the site itself (page + interactive layer)
 copyFileSync(path.join(site, 'index.html'), path.join(dist, 'index.html'));
+copyFileSync(path.join(site, 'app.js'), path.join(dist, 'app.js'));
 
 // 2. the demo, byte-identical (index.html + core.js + qa.js + checkpoints)
 const demoFiles = ['index.html', 'core.js', 'qa.js'];
