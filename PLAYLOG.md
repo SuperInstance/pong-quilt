@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R43 | 2026-09-28 | r43-seed-zero-honesty (vs main 2aa7901, post-R42 main-repair) | canonical |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, R40 finding 2) | canonical — index row + entry restored by R42 repair (lost in the #55 merge conflict resolution, same class as R34) |
 | R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
@@ -48,6 +49,45 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 43 — seed honesty: an explicit seed is played verbatim (R40 finding 3)
+
+**vs main 2aa7901 (post-R42 main-repair) — branch r43-seed-zero-honesty.**
+
+- `parseCliArgs` computed the seed as `parseInt(arg, 10) || 20260926`, so an
+  explicit `0` was falsy-collapsed into the default — the user asked for one
+  session and the CLI played another, with the genesis row naming the seed
+  that was actually played. One falsy value away from every misuse the R33
+  usage guard already fails loudly on ("never silently default the seed").
+- Fix: an explicit seed is used verbatim — 0 is a real seed (`PQ.rng(0)` is a
+  valid LCG stream, verified live), and a non-integer seed (`abc`, `0x10`)
+  is a usage error (exit 2 + usage naming the arg) instead of a silent
+  default. Full-string integer check also refuses `parseInt`'s silent-prefix
+  parses. No-arg default (20260926) and negative integers unchanged.
+- Pinned by `tests/wal-session-seed-honesty.test.js` (5 pins, FAIL-first 5/5
+  RED on pristine main 2aa7901): unit seed-0, unit non-integer → usage error,
+  real CLI run reports `stats.seed === 0` + genesis names `seed 0`,
+  seed-0 vs default sessions differ, R33 guarded forms unchanged
+  (regression rail).
+
+### Verdict
+
+Shipped; VERIFIED_CLAIMS +1 (`seed-zero-honesty`). README count pin named
+its own bump (197→207 in `tests/`, total 215).
+
+### Inherited reds named, not touched (this round)
+
+- **prerun repro drift at main tip:** `node tools/prerun.js` at pristine main
+  2aa7901 rewrites `checkpoints/level1.js`, `level2.js`, AND
+  `stone-v1.json` — the committed canonical five do not reproduce at their
+  own tip (R42's main-repair re-froze the documented line; the checkpoint
+  files themselves drift). Verified in a detached pristine worktree; NOT
+  caused by this round (diff here touches only `tools/wal-session.js`,
+  `core.js` registry, README count, this PLAYLOG). Belongs to the canonical
+  lane, not a finding-3 fix.
+- **README count at main was already stale:** main claimed 197 in `tests/`,
+  live at the tip was 201 (R42's re-pin didn't match the live suite); this
+  round's pin-named bump sets the live-verified 206.
 
 ## Round 41 — maxSpeed honesty: the metric reports the moved-at speed (R40 finding 2)
 
