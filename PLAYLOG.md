@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R38 | 2026-09-27 | r38-wal-session-stone-seal (vs main dd7f858, post-#46) | canonical |
 | R36 | 2026-09-27 | r36-stone-v1-export (vs main b455715, post-#45) | canonical |
 | R35 | 2026-09-27 | playtest-round-35 (vs main a4f3516, post-#44) | canonical |
 | R34 | 2026-09-27 | r34-amber-admission-source (vs main 0a29cdb, post-#42) | canonical — entry + index row restored by R35 (lost in the #44 conflict resolution; verified against 777e76d) |
@@ -43,6 +44,26 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 38 — kimi1 (snowball pulse) — 2026-09-27 — mode: BUILDER (queue lane: every receipt/WAL export lane verifies through stone-v1 — R36 sealed the EXPORTER, R37 (#47, parallel session) sealed the PRERUN; this round seals the SESSION driver, the real-session half of the WAL lane) — vs main dd7f858 (post-#46)
+
+### Played versions: main dd7f858 → r38 tip — in a /tmp worktree per the R13 lesson
+
+Suite on main at round start: 176 tests in tests/, 8 in tools/test-qa.js — all GREEN under the canonical glob command (`node --test tests/*.test.js`; the bare directory form's opaque failure on Node 22 is pre-existing, pinned in testcmd-docs).
+
+### Deltas observed (shapes of change)
+- **d(seal-coverage)/d(version): the session driver emits a stone-v1 seal on demand.** `tools/wal-session.js [seed] [--out PATH] [--stone-out PATH]` re-anchors the SAME session rows into quilt-stone's canonical stone-v1 forward format via wal-export.js's `toStoneV1` — exactly one stone-v1 dialect in the repo, so the exporter seal (R36), the prerun seal (R37), and the session seal can never drift apart in dialect.
+- **d(rows-source)/d(version): one row builder feeds two chains.** `sessionRows(session)` is extracted so the five-opcode WAL and the stone seal consume identical rows — the seal is the receipt OVER the session WAL, one-for-one, payload ops and cells pinned equal in the glue test.
+- **d(honesty)/d(version): verified-before-write, R30 lesson applied.** The seal is mirror-verified BEFORE the file is written; quilt-stone's OWN stone.mjs (`loadStone()` under `QUILT_STONE_DIR`) cross-checks the chain and is receipted on stderr (`live stone.mjs verifyChain: ok (links N)`); a bogus checkout degrades to a labeled mirror-only receipt, never a fake live line; any refusal → exit 1, no file. A valueless `--stone-out` is a usage error (exit 2), extending the R33 guard.
+
+### Lies hunted
+- [P1, found by running] `execFileSync` discards child stderr on SUCCESS (the error-object capture only fires on non-zero exit) — the first CLI pin read stderr as '' and failed. Fixed by switching the spawn harness to `spawnSync`, which always returns stderr.
+- [note] The bare `node --test tests/` directory form fails opaquely on this repo (pre-existing, R15-documented); the canonical glob form is the pinned command.
+
+### REFERRAL EDGES
+- weight law: a merged quilt-stone PR replaying `tools/wal-session.js --stone-out` and citing pong-quilt = candidate VERIFIED edge pq -> quilt-stone, fed by a REAL seeded session instead of the exporter's demo row list.
+- pq -> quilt-stone (stone-v1 dialect authority, R36 exporter + R38 session seal both verify through its stone.mjs).
+- pq -> quilt-doctor (unchanged, R26/R29): the WAL lane still self-verifies under verifyQuiltWal; the seal rides alongside, not instead.
 
 ## Round 36 — k2d8 (snowball pulse) — 2026-09-27 — mode: BUILDER (the 09:57 edge-watch lane item: quilt-stone is LANE-AFFECTING — all receipt/WAL export lanes must target stone-v1; shipped: the WAL exporter seals in the canonical stone-v1 forward format) — vs main b455715 (post-#45)
 
