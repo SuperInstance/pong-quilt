@@ -138,7 +138,18 @@ function parseCliArgs(argv) {
   }
   if (positional.length > 1)
     return fail('unrecognized argument: ' + positional.slice(1).join(' '));
-  const seed = positional.length ? (parseInt(positional[0], 10) || 20260926) : 20260926;
+  // R43 (R40 playtest finding 3): an explicit seed is used verbatim — 0 is a
+  // real seed (PQ.rng(0) is a valid LCG stream), never falsy-collapsed into
+  // the default by `|| 20260926`; a non-integer seed is a usage error like
+  // every other R33 misuse, never a silent default. The full-string integer
+  // check also refuses parseInt's silent-prefix parses ('0x10' -> 0).
+  let seed = 20260926;
+  if (positional.length) {
+    const arg = positional[0];
+    if (!/^-?\d+$/.test(arg))
+      return fail('seed must be an integer, got: ' + arg);
+    seed = parseInt(arg, 10);
+  }
   return { seed, outPath, stoneOutPath };
 }
 

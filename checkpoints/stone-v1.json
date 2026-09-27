@@ -36,9 +36,9 @@
   "cell": "pq/prerun-checkpoint",
   "args": {
    "file": "level1.js",
-   "md5": "643bd132d51f3fd2f08c0054b48967ae"
+   "md5": "cf08b0004b054f6314596ea9378673da"
   },
-  "row_hash": "332ff37beb9cf75f78a90ed763e2f4d7c2fdbb507cb37cceb49fa9b3d5e3234d"
+  "row_hash": "afcae506dc589868c52f5a278464e4e8fb91be56072de8527bffa8062805f6d1"
  },
  {
   "kind": "pq/wal-op",
@@ -47,8 +47,8 @@
   "cell": "pq/prerun-checkpoint",
   "args": {
    "file": "level2.js",
-   "md5": "454511548f9224f9302c106abd9313d0"
+   "md5": "c8ba57db35a152e5b8231bd3e12142a5"
   },
-  "row_hash": "ffe8abd842162d717ff274fdd3c21c58622df9ede534f6b540f2ae16b69f5503"
+  "row_hash": "c155fd016b364335c076cc18772b835672581230c2fd377fd8ac9f2849d296c7"
  }
 ]

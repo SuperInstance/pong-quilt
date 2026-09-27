@@ -8,6 +8,10 @@ Every round is a receipted observation in the loop. Newest first.
 |---|---|---|---|
 | R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) | canonical |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
+| R43 | 2026-09-28 | r43-seed-zero-honesty (vs main 2aa7901, post-R42 main-repair) | canonical |
+| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, R40 finding 2) | canonical — index row + entry restored by R42 repair (lost in the #55 merge conflict resolution, same class as R34) |
+| R42 | 2026-09-28 | playtest-round-42 (vs main 4d447ed, post-#55) | canonical |
+| R41 | 2026-09-27 | r41-maxspeed-honesty (vs main 4bb0264, post-#52) | canonical — entry + index row restored by R42 (lost in the #55 conflict resolution; verified against 9c701d2) |
 | R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
@@ -121,6 +125,191 @@ dynamics untouched. 4 new pins, FAIL-first verified on pristine origin/main.
 Merged as PR #55. The merge shipped without this entry and without a
 canonical-index row — restored by R42 above; the R38 pin caught the loss at
 the next tip.
+## Round 43 — seed honesty: an explicit seed is played verbatim (R40 finding 3)
+
+**vs main 2aa7901 (post-R42 main-repair) — branch r43-seed-zero-honesty.**
+
+- `parseCliArgs` computed the seed as `parseInt(arg, 10) || 20260926`, so an
+  explicit `0` was falsy-collapsed into the default — the user asked for one
+  session and the CLI played another, with the genesis row naming the seed
+  that was actually played. One falsy value away from every misuse the R33
+  usage guard already fails loudly on ("never silently default the seed").
+- Fix: an explicit seed is used verbatim — 0 is a real seed (`PQ.rng(0)` is a
+  valid LCG stream, verified live), and a non-integer seed (`abc`, `0x10`)
+  is a usage error (exit 2 + usage naming the arg) instead of a silent
+  default. Full-string integer check also refuses `parseInt`'s silent-prefix
+  parses. No-arg default (20260926) and negative integers unchanged.
+- Pinned by `tests/wal-session-seed-honesty.test.js` (5 pins, FAIL-first 5/5
+  RED on pristine main 2aa7901): unit seed-0, unit non-integer → usage error,
+  real CLI run reports `stats.seed === 0` + genesis names `seed 0`,
+  seed-0 vs default sessions differ, R33 guarded forms unchanged
+  (regression rail).
+
+### Verdict
+
+Shipped; VERIFIED_CLAIMS +1 (`seed-zero-honesty`). README count pin named
+its own bump (197→207 in `tests/`, total 215).
+
+### Inherited reds named, not touched (this round)
+
+- **prerun repro drift at main tip:** `node tools/prerun.js` at pristine main
+  2aa7901 rewrites `checkpoints/level1.js`, `level2.js`, AND
+  `stone-v1.json` — the committed canonical five do not reproduce at their
+  own tip (R42's main-repair re-froze the documented line; the checkpoint
+  files themselves drift). Verified in a detached pristine worktree; NOT
+  caused by this round (diff here touches only `tools/wal-session.js`,
+  `core.js` registry, README count, this PLAYLOG). Belongs to the canonical
+  lane, not a finding-3 fix.
+- **README count at main was already stale:** main claimed 197 in `tests/`,
+  live at the tip was 201 (R42's re-pin didn't match the live suite); this
+  round's pin-named bump sets the live-verified 206.
+
+## Round 41 — maxSpeed honesty: the metric reports the moved-at speed (R40 finding 2)
+
+**vs main post-#54 — branch r41-maxspeed-honesty, PR #55.** Entry restored
+by the R42 main-repair: the #55 merge conflict resolution dropped this entry
+and the index row (same loss class as R34); content reconstructed from the
+PR #55 body and the merged diff (9c701d2), which are intact.
+
+- `playOne()` returned the FINAL-frame `speedMul`, so a game ending on a hit
+  frame reported `(1+frames×ramp)×hitBoost` — a boosted value the ball never
+  moved at. The L1 metric carried a phantom exactly on the frames that end
+  games.
+- Fix: `g.maxSeen` sampled at frame START (the multiplier the frame's ball
+  movement actually used), before ramp reset and before hitBoost. Dynamics
+  untouched — `speedMul` still carries the boost into `sense()`/`swanP()`;
+  only the reported metric changed.
+- Pinned by `tests/maxspeed-honesty.test.js` (4 pins: exclusion on
+  game-ending hit frames, capture of a boost the next frame actually moves
+  at, seeded `playOne` smoke bounded by the physical ceiling).
+## Round 42 — playtest + main-repair: R41's receipt restored (the R34 class recurred), the canonical line re-frozen under R41 semantics
+
+**vs main 4d447ed (post-#55) — branch playtest-round-42**
+
+BUILDER × play-tester round. Mode: the R40 spec is down to carried items and
+open P4s, so this round ships one small builder item — the R41 receipt
+restoration + canonical-line re-embed (docs/artifacts/pin only, zero dynamics
+change) — and specifies the next version.
+
+### Played versions
+Only tag is `v1`; played the R39→R40→R41 commit chain and merges #53/#54/#55
+by diff + suite at the tip (fba0324 sign pilot, 1557c03 coev-label repair,
+9c701d2 maxspeed honesty, 4d447ed the #55 merge).
+
+### Numbers verified by running (at 4d447ed, before any repair)
+- Canonical suite: **200/202, RED** — fails: `readme-count` (README claims 198
+  in tests/, live is 201: the R41 bump was dropped in the #55 merge) and
+  `receipt-completeness` live pin ("R41: merged via 'r41-maxspeed-honesty'
+  (PR #55) has no canonical-index row"). qa 8/8 green.
+- `gh api check-runs` on push 4d447ed: "full test suite" FAILURE (16:15:24Z),
+  "merged rounds are receipted" FAILURE (16:15:29Z), page-parse success —
+  the R38 detector fired 7 minutes after merge and nothing blocked, alerted,
+  or reverted: main sat red for ~35 minutes until this round.
+- `node tools/prerun.js`: coev `946e639a…`, curve `63617065…`, L0 `8a49b0f6…`
+  regenerate byte-identical; L1/L2 regenerate as `cf08b000…`/`c8ba57db…` vs
+  committed `643bd132…`/`454511548…` — field-by-field parse: populations
+  byte-identical, ONLY the embedded `maxSpeed` differs (3.400 → 3.497 /
+  3.476). Stone seal re-emitted clean (5 rows).
+
+### Lies hunted — findings
+1. [P2, process] **R41's receipt was amputated by the #55 conflict
+   resolution — the R34 loss class recurred.** `git diff bd91026..4d447ed`
+   shows the merge touched only core.js (+13/-2) and
+   tests/maxspeed-honesty.test.js (+70); R41's PLAYLOG entry + index row
+   (+8 lines) and README bump (198→201, 205→209) are gone, while its code
+   shipped. The R38 receipt-completeness job caught it at push time (red),
+   but it runs post-merge with no enforcement — R35 spec item 2's
+   branch-protection half was never a repo setting (R36 declared
+   workflow-only enforcement infeasible). Minimal repro: `node tools/receipt-completeness.js`
+   at 4d447ed → names R41; `node --test tests/readme-count.test.js` → red.
+2. [P3, lineage-hygiene] **R41's "no canonical artifact touched (md5 set
+   byte-frozen, untouched this round)" is falsified at the file level.**
+   prerun.js embeds `maxSpeed` in the L1/L2 artifacts (prerun.js:69) and the
+   R41 metric-semantics change rewrites exactly that field, so regen drifts
+   two of the frozen five at every prerun run — the R22 verify-by-copying
+   class recurred in a receipt 17 rounds after the R24 doctrine pinned it.
+   Populations byte-identical (the "dynamics untouched" claim survives).
+   Page-visible too: index.html:421 renders `speed x${cp.maxSpeed}` — the page
+   showed x3.4 where the honest moved-at value is x3.50/x3.48. Minimal repro:
+   `node tools/prerun.js` at the R41 tip → `git diff checkpoints/` shows the
+   field-only L1/L2 drift.
+3. [P4, open] **parseCliArgs seed-0 collapse still live** (R40 finding 3,
+   unfulfilled): `parseCliArgs(["0"])` → `{seed: 20260926}` —
+   `parseInt(positional[0],10) || 20260926` (tools/wal-session.js:140)
+   silently discards the legitimate seed 0.
+4. [P4, open] **prerun-coev.js still has no birth seal** (R40 finding 4,
+   unfulfilled): zero seal/stone code in the tool; coev.js (5th canonical
+   artifact) carries an md5 print only.
+
+### What shipped here (the builder item)
+- **[restored]** R41's PLAYLOG entry + index row, verbatim from 9c701d2, row
+  annotated "restored by R42" (R34 precedent, R35 method).
+- **[restored]** README count 198→204 in tests/ → 212 total with qa (R41's own
+  201→209 bump restored, plus +2 pins in artifact-maxspeed-lineage +1
+  honesty-claim subtest from the VERIFIED_CLAIMS registration).
+- **[re-embedded]** checkpoints/level1.js + level2.js regenerated at this tip
+  (pops byte-identical; maxSpeed now the honest 3.497/3.476) + stone-v1.json
+  re-emitted over the new line → `node tools/prerun.js` is drift-free again
+  (committed == regen, verified by running). EXPERIMENTS.md declares the
+  **post-R42 line** (curve 63617065…, L0 8a49b0f6…, L1 cf08b000…, L2
+  c8ba57db…, coev 946e639a…), post-R21 kept labeled for the R24 pin.
+- **[pinned]** tests/artifact-maxspeed-lineage.test.js (2 pins, FAIL-first on
+  pre-re-embed main): committed L1/L2 maxSpeed == 3.497/3.476; EXPERIMENTS.md
+  declares the post-R42 line. Any future metric-semantics drift trips it and
+  forces a declared re-embed — never silent drift.
+
+### Deltas observed (shapes of change)
+d(learning)/d(version) R38→R41: the failure mode migrated from *lies escape
+receipts* (R22, copy-paste hashes) to *receipts escape the ledger* (R34, R41:
+merged code, amputated entry) — and the R38 detection layer worked while the
+enforcement layer (R35 item 2) stayed a repo setting nobody set, so the
+failure now lives entirely in the detect-but-don't-act gap. The R41 metric
+change also exposed a new drift shape: a semantics-only change walks through
+embedded fields of frozen artifacts (L1/L2 maxSpeed) while nets stay frozen —
+"byte-frozen" was a receipt claim, not a pinned property, until this round's
+re-embed + pin.
+
+### Next version spec (R43)
+1. [small] wal-session seed-0 guard — distinguish absent seed from
+   seed-parse-to-0 (NaN-check, not `|| default`); non-numeric seed errors
+   loudly instead of silently defaulting. why: finding 3. verify: parseCliArgs
+   pins for `["0"]`, `["abc"]`, `[]` + the R33 glue spawn.
+2. [small] coev birth seal — prerun-coev.js seals coev.js's birth rows into
+   the stone chain, mirror-first exactly like wal-session-stone (R38). why:
+   finding 4; the 5th canonical artifact is the only unsealed one. verify:
+   seal pins + tamper-row catch.
+3. [medium] live regen-idempotence pin — a suite job (or scheduled workflow
+   if the ~3-4 min prerun cost is too heavy per-PR) that runs prerun in a
+   scratch checkout and fails on any committed-vs-regen md5 mismatch. why:
+   finding 2's general form; the R42 value-pin holds today's line only.
+   verify: red when an artifact field is hand-edited, green at a clean tip.
+4. [small, carried R35→R40] lens-freshness pin (scheduled quilt-doctor HEAD
+   re-run).
+5. [medium, carried R27→R40] canonical-md5 lineage for the WAL session
+   export.
+6. [epic, carried R12→R40] C1 scaling study; advice-aware GA.
+
+### Verdict
+MERGEABLE — restores main to green (suite + receipt-completeness + readme-count
+all repaired), re-freezes the canonical line under R41 semantics, pins the
+drift class. Credit: R35 (restoration precedent), R36 (enforcement-infeasible
+analysis), R38 (the detector that fired), R39 (main-repair precedent),
+R40 (Casey's four findings), R41 (the maxspeed honesty itself — sound code,
+amputated receipt).
+
+## Round 41 — maxspeed honesty: the metric reports the moved-at speed, never the trailing phantom boost (R40 playtest finding 2)
+
+**vs main 4bb0264 (post-#52) — branch r41-maxspeed-honesty**
+
+*(entry restored verbatim by R42 — lost in the #55 conflict resolution; verified against 9c701d2)*
+
+- [found] playtest PR #53 (R40) traced the L1 `maxSpeed` metric: `playOne()` returned the FINAL-frame `speedMul`, so a game ending on a hit frame reported `(1+frames*ramp)×hitBoost` — a boosted value the ball never moved at (trace: maxReported 1.0652 vs maxActual 1.0648). The metric was a phantom on exactly the frames that end games.
+- [built] `g.maxSeen`: sampled at frame START (the multiplier the frame's ball movement actually used), before the ramp reset and before any hitBoost application. Dynamics untouched — `speedMul` still carries the boost into `sense()`/`swanP` for the next frame; only the reported metric changed. `newGame` initializes `maxSeen=1`; `playOne` reports `maxSeen`. VERIFIED_CLAIMS +1 (`maxspeed-honesty`).
+- [pinned] `tests/maxspeed-honesty.test.js` (4 pins, FAIL-first: `g.maxSeen` absent on pre-R41 main — every assertion trips): game-ending hit frame keeps the boost on `speedMul` but excludes it from the metric; a boost the NEXT frame actually moves at IS captured; seeded `playOne` smoke bounded by the physical ceiling.
+- [verified live] suite 201/201 + qa 8/8; readme-count pin named my own bump (197→201, README corrected 205→209); no canonical artifact touched (md5 set byte-frozen, untouched this round).
+
+### Verdict
+MERGEABLE (R42 note: the "byte-frozen" clause is accurate for the trained populations but was falsified at the file level — L1/L2 embed maxSpeed, which the metric change rewrites; see R42 finding 2 and the post-R42 line).
 
 ## Round 40 — playtest: four P4 findings, first one repaired (coev label/axis divergence)
 
