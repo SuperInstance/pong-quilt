@@ -117,6 +117,30 @@ What shipped:
   wrangler KV namespaces created (prod 9e6572fb…, preview 7783e751…),
   wrangler deploy clean; endpoints re-verified against the running worker.
 
+### Playtest round (scripted harness + real browser) — findings F7, F8 shipped
+
+- `tools/site-playtest.mjs` (9 live checks): mounts wired, receipt link,
+  same-seed→same-digest, 8-seed distribution (8/8 unique digests),
+  live JEV verdict 0.71–0.73 on a true claim, wall record + round-trip,
+  served checkpoint sha256 == local, provenance sealed. **9/9 PASS.**
+- Real-browser pass (Chromium via CDP, the visitor's view):
+  - **[P2] F7**: coev strip rendered "named abstain — artifact missing:
+    /demo/coev.js". The artifact lives at /demo/checkpoints/coev.js —
+    wrong path shipped, and only the browser caught it (the mount existed,
+    the fetch 404'd). Fixed; the widget-wiring pin now asserts every
+    artifact path app.js touches ships in the build — FAIL-first-verified
+    against the old bug before fixing.
+  - **[P3] F8**: strip copy conflated two artifacts' gen counts (coev.js
+    120 vs curve 260) as one number. Now source-attributed per artifact.
+  - Judge calibrated live: true claim → 0.73; false claim ("at least 5
+    hits" vs the game's 4) → **0.07**. It discriminates.
+  - Sweep told its story in-browser: seeds …930/…934 the champion DIES
+    (4,826f/6h and 1,880f/2h) while neighbors survive 6,000f — variance
+    visible in the visitor's hands.
+  - Play-here button embeds the byte-identical demo inline. Lineage bars,
+    sparkline, wall (3 receipts), moth ledger, wristband all render.
+- Suite stays 227/227 through both fixes; PR #59; deploy v3 (2fab50c).
+
 ## Round 42 — the website: understand the repo by playing it, in many forms
 
 **vs main 4d447ed (post-#55) — r42-site**
