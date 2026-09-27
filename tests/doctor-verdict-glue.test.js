@@ -23,9 +23,22 @@ const REAL_STATS_AA5A041 = JSON.parse(
 // live clone (test name / n / perms — the enumeration receipt per row).
 const snapshotShape = (rows) => rows.map((r) => [r.test, r.n, r.perms]);
 
+// Round 47 freshness pins: the digest names the doctor checkout state it
+// ACTUALLY observed (resolveHead, pure-fs .git read). A drifted checkout
+// can no longer be silently cited as aa5a041.
+const FIXTURE_HEAD = "aa5a041cafe00000000000000000000000000f00d";
+const FIXTURE_HEAD_2 = "beef1234cafe0000000000000000000000000abc";
+
+function writeFixtureGit(dir, headContent) {
+  fs.mkdirSync(path.join(dir, ".git", "refs", "heads"), { recursive: true });
+  fs.writeFileSync(path.join(dir, ".git", "HEAD"), headContent);
+  fs.writeFileSync(path.join(dir, ".git", "refs", "heads", "main"), FIXTURE_HEAD + "\n");
+}
+
 function makeDoctorFixture(tamper) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "doctor-fix-"));
   fs.mkdirSync(path.join(dir, "docs"), { recursive: true });
+  writeFixtureGit(dir, "ref: refs/heads/main\n");
   const stats = REAL_STATS_AA5A041.map((r) => ({ ...r }));
   if (tamper === "perms") stats[1].perms = 1000; // Monte-Carlo impostor on a full row
   if (tamper === "subsetperms") stats[3].perms = 999; // impostor on a sufficient-subset row
@@ -96,6 +109,34 @@ test("tamper = absent: Monte-Carlo perms (full OR subset row), broken JSON, or m
     const dir = makeDoctorFixture(t);
     assert.equal(DV.loadDoctorVerdict(dir), null, "tamper '" + t + "' must read as absent");
   }
+});
+
+test("R47 freshness pin: the digest names the checkout commit it actually observed", () => {
+  const dir = makeDoctorFixture();
+  const v = DV.loadDoctorVerdict(dir);
+  assert.equal(v.observedCommit, FIXTURE_HEAD.slice(0, 12), "verdict carries the resolved HEAD, short form");
+  assert.match(DV.lensLine(v), /\[observed @aa5a041cafe0\]/, "the receipt line names the observed commit");
+});
+
+test("R47 freshness pin: a MOVED checkout moves the name — the citation can never go stale silently", () => {
+  const dir = makeDoctorFixture();
+  fs.writeFileSync(path.join(dir, ".git", "refs", "heads", "main"), FIXTURE_HEAD_2 + "\n");
+  const v = DV.loadDoctorVerdict(dir);
+  assert.equal(v.observedCommit, FIXTURE_HEAD_2.slice(0, 12));
+  assert.match(DV.lensLine(v), /\[observed @beef1234cafe\]/);
+  assert.doesNotMatch(DV.lensLine(v), /aa5a041/, "the old commit must not survive a checkout move");
+});
+
+test("R47 freshness pin: detached HEAD resolves; unresolved .git is NAMED, never silent or faked", () => {
+  const dir = makeDoctorFixture();
+  writeFixtureGit(dir, FIXTURE_HEAD_2 + "\n"); // detached
+  assert.equal(DV.loadDoctorVerdict(dir).observedCommit, FIXTURE_HEAD_2.slice(0, 12));
+  const bare = makeDoctorFixture();
+  fs.rmSync(path.join(bare, ".git"), { recursive: true, force: true });
+  const v = DV.loadDoctorVerdict(bare);
+  assert.ok(v, "a checkout without .git still digests — freshness is degraded, not absent");
+  assert.equal(v.observedCommit, null);
+  assert.match(DV.lensLine(v), /\[observed-commit unresolved\]/, "degraded freshness is named in the receipt");
 });
 
 test("citation honesty: the canonical source repo is named in the tool, PENDING not VERIFIED", () => {
