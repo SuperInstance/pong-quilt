@@ -60,3 +60,23 @@ jobs:
           test -f /tmp/quilt-stone/stone.mjs
       - name: node --test tests/*.test.js
         run: node --test tests/*.test.js
+
+  # R35 spec item 1 (shipped R38): the canonical-index pin is two-way only for
+  # what IS in PLAYLOG.md — R34's entire entry vanished in the PR #44 conflict
+  # resolution while the pin stayed green (no orphan heading, no phantom row).
+  # Only git ground truth sees absence. This job diffs merged-PR branch names
+  # (r<N>-*, playtest-round-<N>) against canonical-index rows AFTER every merge
+  # (push to main); it needs full history, hence fetch-depth 0 — a shallow
+  # checkout is REFUSED by the tool, never a quiet vacuous green.
+  receipt-completeness:
+    name: merged rounds are receipted (R35 spec, R38)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: every merged r<N>/playtest-round-<N> branch has a canonical-index row
+        run: node tools/receipt-completeness.js

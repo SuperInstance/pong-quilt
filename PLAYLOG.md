@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
 | R37 | 2026-09-27 | r37-prerun-stone-seal (vs main dd7f858, post-#46) | canonical |
 | R36 | 2026-09-27 | r36-stone-v1-export (vs main b455715, post-#45) | canonical |
 | R35 | 2026-09-27 | playtest-round-35 (vs main a4f3516, post-#44) | canonical |
@@ -44,6 +45,36 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 38 — receipt-completeness: R34's loss class becomes structurally impossible (R35 spec item 1, shipped)
+
+*Receipt: PR to be posted — branch playtest-round-38, vs main 1c3db7d, post-#47-merge.*
+*Mode: BUILDER + play-tester (builder claim: R35 spec item 1, unfulfilled through R37; play claim below).*
+
+**Played.** main tip 1c3db7d (post-#47): suite 181/181 under the canonical glob, tools/test-qa.js 8/8, zero skips (lens-open in the sandbox). `node tools/prerun.js` exit 0; the canonical five byte-identical for the 16th straight round (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps); stone seal verified-before-write, mirror honestly labeled (QUILT_STONE_DIR unset). Also played open sibling PR #48 (r38-wal-session-stone-seal, tip 6d111b8) per the open-sibling doctrine — played, not merged:
+
+- **Suite at 6d111b8: 187/188 — RED.** The readme-count pin: README on the branch says 181 (body claims 183), live suite is 188. The main-merge at 6d111b8 pulled 5 new main tests under the branch's count bump and nobody re-ran the named pin. The body's "Suite 183/183 green under the canonical glob" was true of 9b235e9 and is false of the head the PR actually ships. [P2, found by running]
+- **PR #48's body advertises "PLAYLOG R38 + index row"; the branch carries zero R38 references** (grep-verified at 6d111b8). A phantom receipt — the exact class of R35's P2 (PR #44's body claimed the lost R34 receipt). Not yet merged, so no canonical lie; the body must be repaired before merge. [P2, found by running]
+- Verified on #48: valueless `--stone-out` → usage + exit 2; happy-path seal exit 0, **829 payload rows sealed one-for-one** against the 830-line WAL (1 BIND header + 829 rows, counted); live seam `verifyChain: ok (links 830)` through quilt-stone's own stone.mjs with QUILT_STONE_DIR set; mirror-only labeled when unset. Core claims stand.
+
+**Deltas as shapes.**
+
+- d(learning)/d(version): zero by construction — training path untouched, 16th frozen canonical round (R23→R38). All motion is in the receipt plane.
+- **Failure-mode migration (the round's shape)**: receipt-absence (R34 class: whole entry lost in a conflict resolution, suite green) moves from *human-playloop-detectable only* to *machine-enforced at every merge* (CI job diffs git first-parent merge branch names vs index rows) AND *suite-local forever* (the pin spawns the CLI at the repo tip inside every run). Absence detection is now structural, not vigilance.
+
+**Lies hunted this round.** The two PR #48 P2s above; both reported as merge-blockers in the spec. No new lies on main — the receipt plane's existing pins (readme-count, canonical-index two-way, stone seals) all ran green at 1c3db7d.
+
+**Shipped (builder).** R35 spec item 1, sized [small]: `tools/receipt-completeness.js` + `tests/receipt-completeness.test.js` (5 tests: vocabulary pins, parse pins, the R35-verification PR #44 replay — fixture index minus the R34 row against the era's merge log names R34 and only R34 — a live end-to-end CLI spawn at the tip, and refusal-behavior pins: nonexistent `--log` and unknown flags exit 2, no quiet vacuous green; a shallow/merge-less history is REFUSED, never silently green). Wired into `.github/workflows/merge-gate.yml` as a named job after every merge (fetch-depth 0 — a shallow checkout is refused by the tool). FAIL-first: the pin file lands on pristine main RED (module absent, load-time refusal naming the missing lane). Wristband: registered in core.js VERIFIED_CLAIMS (two-way match). README 181→186 in `tests/`, total 189→194.
+
+**Next version spec.**
+
+1. **[small, blocking PR #48]** Repair #48 before merge: README count 181→188 at its tip (the readme-count pin already names it), and a real PLAYLOG receipt per the R2 branch-pair convention — edit R38's row branch-cell to name both `playtest-round-38` and `r38-wal-session-stone-seal`, or claim R39. Why: the body advertises a receipt that does not exist; the tip is RED. Verify: suite green at the new head under the canonical glob.
+2. **[small, carried from R35]** Lens-freshness pin: scheduled quilt-doctor HEAD re-run; merge-gate pins clone aa5a041 while quilt-doctor main advances — stale-lens detection. (Branch-protection enforcement remains a repo setting, not PR-shippable — carried.)
+3. **[medium]** PR #48 merge: expect suite 188 in `tests/`; the readme bump (186→188) must ride in the same PR, and the receipt-completeness job must go green on the push event.
+4. **[medium, carried from R37]** Canonical-md5 lineage for the WAL session export: verify whether #48's row-hash coverage fulfills it on merge; if not, md5 the five artifacts into the session seal.
+5. **[large, carried]** C1 scaling study; advice-aware GA.
+
+**Verdict:** ship. R34's loss class is now structurally caught at every merge and every suite run — the receipt plane closes its last blind spot.
 
 ## Round 37 — k2d8 (snowball pulse) — 2026-09-27 — mode: BUILDER (R35's merge-gate lens lesson moved to birth: every prerun run seals the canonical checkpoints it just wrote into a stone-v1 chain, verified BEFORE write, refused loudly on mismatch) — vs main dd7f858 (post-#46)
 
