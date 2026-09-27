@@ -30,9 +30,16 @@
   const DEFAULTS = {
     popSize: 48, elites: 4, sigma: 0.12,
     decisionInterval: 4,        // frames between decisions = speed-of-action limit
+    decisionDrift: 0.05,        // R50: the decision interval grows decisionDrift frames per frame played
+    decisionCap: 16,            // R50: ...up to this cap (the model thinks slower as the game hardens)
     paddleW: 0.16, paddleSpeed: 0.02,
+    paddleMin: 0.06,            // R50: shrink floor — the paddle never vanishes
+    shrink: 0.999,              // R50: paddle width decays shrink^frames toward paddleMin
     ballBase: 0.004, ramp: 0.0004, hitBoost: 1.03,
+    accel: 8e-7,                // R50: quadratic ball acceleration — speedMul gains accel*frames^2
+    maxSpeedMul: 6,             // R50: speed cap (the ceiling that makes guaranteed failure finite)
     swanP: 0.00008,             // black-swan chance/frame, scales with speed
+    swanGrow: 2,                // R50: swan probability scales as speedMul^swanGrow (quadratic)
     maxFrames: 6000, inDim: 6, hid: 10, outDim: 3, seed: 20260924,
   };
   function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
@@ -69,29 +76,52 @@
   const EFFECTIVE_MARGIN = 0.02; // hit registration extends the drawn paddle
   // by this on both sides — one constant for draw AND death-check (no ghost).
   function fitnessOf(frames, hits) { return frames + hits * HIT_WEIGHT; }
-  function effectivePaddle(px) { return { x: px - EFFECTIVE_MARGIN,
-                                          w: DEFAULTS.paddleW + 2 * EFFECTIVE_MARGIN }; }
-  function step(g, action, rand) { // one frame; action in {-1,0,1} held for decisionInterval
+  // R50: px is the drawn paddle's LEFT edge (clamp is 1 - paddleW). The hit
+  // zone is the drawn paddle extended by ±EFFECTIVE_MARGIN — now TIME-VARYING:
+  // the drawn width decays shrink^frames floored at paddleMin, and the zone
+  // follows it exactly (one law for draw AND death-check, no ghost anywhere).
+  function effectivePaddle(g) {
+    const D = DEFAULTS, frames = g.frames || 0;
+    const w = Math.max(D.paddleMin, D.paddleW * Math.pow(D.shrink, frames)) + 2 * EFFECTIVE_MARGIN;
+    return { x: g.px - EFFECTIVE_MARGIN, w };
+  }
+  // R50: the model's decision cadence slows as the game hardens —
+  // interval = min(decisionCap, round(decisionInterval + frames*decisionDrift)),
+  // floored at 2. L1 uses this; C1 (stepAdv) keeps the fixed decisionInterval
+  // cadence by design (its adversarial pressure contract is generation-scored).
+  function decisionIntervalAt(g) {
+    const D = DEFAULTS, frames = g.frames || 0;
+    return Math.min(D.decisionCap, Math.max(2, Math.round(D.decisionInterval + frames * D.decisionDrift)));
+  }
+  function step(g, action, rand) { // one frame; action held for decisionIntervalAt(g)
     const D = DEFAULTS, swan = rand || Math.random; // seeded in prerun, live-random in browser
-    if (g.frames % D.decisionInterval === 0) g.hold = action;
+    if (g.frames % decisionIntervalAt(g) === 0) g.hold = action;
     g.px = Math.max(0, Math.min(1 - D.paddleW, g.px + g.hold * D.paddleSpeed));
     const sp = D.ballBase * g.speedMul;
     g.x += g.vx * sp; g.y += g.vy * sp;
     if (g.x < 0) { g.x = 0; g.vx = Math.abs(g.vx); }
     if (g.x > 1) { g.x = 1; g.vx = -Math.abs(g.vx); }
     if (g.y < 0) { g.y = 0; g.vy = Math.abs(g.vy); }
-    if (swan() < D.swanP * g.speedMul) { // black swan: angle kick
+    // black swan: angle kick; probability grows as speedMul^swanGrow (R50)
+    if (swan() < Math.min(1, D.swanP * Math.pow(g.speedMul, D.swanGrow))) {
       const a = Math.atan2(g.vy, g.vx) + (swan() - 0.5) * 1.2;
       g.vx = Math.cos(a); g.vy = Math.abs(Math.sin(a)) * (g.vy < 0 ? -1 : 1);
     }
     if (!(g.maxSeen >= 1)) g.maxSeen = 1;
     if (g.speedMul > g.maxSeen) g.maxSeen = g.speedMul; // moved-at speed, pre-reset
-    g.speedMul = 1 + g.frames * D.ramp;
+    // R50 speed law: (1+frames*ramp) — the old linear ramp — compounded by
+    // hitBoost^hits (hitBoost is REAL in L1 now: every return makes the ball
+    // persistently faster, the same compounding shape C1 documents) PLUS the
+    // quadratic accel*frames^2, capped at maxSpeedMul. With accel=0,
+    // hitBoost=1, shrink=1, decisionDrift=0, swanGrow=1 this reduces
+    // BYTE-EXACTLY to the pre-R50 law (pinned by tests/escalation.test.js).
+    g.speedMul = Math.min((1 + g.frames * D.ramp) * Math.pow(D.hitBoost, g.hits) +
+                          D.accel * g.frames * g.frames, D.maxSpeedMul);
     g.frames++;
     if (g.vy > 0 && g.y >= 0.94) {
-      const eff = effectivePaddle(g.px);
+      const eff = effectivePaddle(g);
       if (g.x > eff.x && g.x < eff.x + eff.w) {
-        g.vy = -Math.abs(g.vy); g.hits++; g.speedMul *= D.hitBoost;
+        g.vy = -Math.abs(g.vy); g.hits++; // the boost enters next frame's law via hits
         g.x = Math.max(0.02, Math.min(0.98, g.x)); // avoid wall lock
       } else return false; // death
     }
@@ -107,7 +137,8 @@
     const a = (rand() * 0.8 + 0.7) * Math.PI * (rand() < 0.5 ? 0.25 : 0.75);
     return { x: 0.5, y: 0.5, vx: Math.cos(a), vy: Math.abs(Math.sin(a)),
              px: 0.42, hold: 0, frames: 0, hits: 0, speedMul: 1, maxSeen: 1 };
-  }
+  } // R50: L1's hitBoost compounds through the speed law itself (hitBoost^hits);
+    //  C1 makes boosts real via its own `boost` field (see stepAdv) — both live.
   function sense(g) {
     return [g.x * 2 - 1, g.y * 2 - 1, g.vx, g.vy * (g.vy > 0 ? 1 : -1) * (g.vy > 0 ? 1 : -0.2),
             (g.px + DEFAULTS.paddleW / 2 - g.x) * 2, Math.min(1, g.speedMul / 3)];
@@ -306,9 +337,9 @@
   function newAdvGame(rand) {
     const g = newGame(rand);
     g.ex = 0.42; g.enderHits = 0; g.boost = 1; // boost: hits/blocks accumulate HERE
-    return g; // (L1's hitBoost multiplies speedMul after the per-frame ramp reset,
-  }            //  so it is dead code there — C1 makes boosts real via `boost`)
-  function stepAdv(g, actS, actE, rand) { // one frame; both nets act each decisionInterval
+    return g; // R50: L1 hitBoost is alive (compounds via hitBoost^hits in the
+  }            //  speed law); C1 boosts live separately in `boost` — both real.
+  function stepAdv(g, actS, actE, rand) { // one frame; both nets act each decisionInterval (FIXED cadence — C1's contract, R50)
     const D = DEFAULTS, swan = rand || Math.random;
     if (g.frames % D.decisionInterval === 0) { g.hold = actS; g.holdE = actE; }
     g.px = Math.max(0, Math.min(1 - D.paddleW, g.px + g.hold * D.paddleSpeed));
@@ -317,21 +348,21 @@
     g.x += g.vx * sp; g.y += g.vy * sp;
     if (g.x < 0) { g.x = 0; g.vx = Math.abs(g.vx); }
     if (g.x > 1) { g.x = 1; g.vx = -Math.abs(g.vx); }
-    if (swan() < D.swanP * g.speedMul) { // black swan: angle kick (same law as L1)
+    if (swan() < Math.min(1, D.swanP * Math.pow(g.speedMul, D.swanGrow))) { // black swan: same quadratic law as L1 (R50)
       const a = Math.atan2(g.vy, g.vx) + (swan() - 0.5) * 1.2;
       g.vx = Math.cos(a); g.vy = Math.abs(Math.sin(a)) * (g.vy < 0 ? -1 : 1);
     }
-    g.speedMul = (1 + g.frames * D.ramp) * g.boost; // boost survives the ramp
+    g.speedMul = (1 + g.frames * D.ramp) * g.boost; // C1 speed law UNTOUCHED by R50: boost survives the ramp
     g.frames++;
     if (g.vy < 0 && g.y <= 0.06) { // ender's line (top)
-      const eff = effectivePaddle(g.ex);
+      const eff = effectivePaddle(g); // R50: the ender's zone shrinks on the same law
       if (g.x > eff.x && g.x < eff.x + eff.w) { // ender block: back down, faster
         g.vy = Math.abs(g.vy); g.enderHits++; g.boost *= 1.02;
         g.x = Math.max(0.02, Math.min(0.98, g.x));
       } else g.vy = Math.abs(g.vy); // clean escape past the ender — wall bounce, rally continues
     }
     if (g.vy > 0 && g.y >= 0.94) { // survivor's line (bottom) — same contract as L1
-      const eff = effectivePaddle(g.px);
+      const eff = effectivePaddle(g); // R50: the survivor's zone shrinks on the same law
       if (g.x > eff.x && g.x < eff.x + eff.w) {
         g.vy = -Math.abs(g.vy); g.hits++; g.boost *= D.hitBoost;
         g.x = Math.max(0.02, Math.min(0.98, g.x));
@@ -449,11 +480,12 @@
     { id: "site-glue", claim: "the website's demo copies are byte-identical to the repo working tree under a build-sealed sha256 provenance receipt (site/generated/provenance.json); /api/replay re-runs the same core.js in the worker and is seed-deterministic (same seed → same receipt digest) with checkpoint-name and seed-range validation; /api/judge replays the claimed game before judging and abstains with a named skip when no JEV key is bound; /api/moth reads the live moth ledger without spending credits and abstains named when unbound; every judge verdict AND every abstain is recorded on the server-side Claim Wall when its KV is bound, and the wall itself abstains named when unbound — every backend seam honest or absent, never faked (Round 42, wall R44)", proofTest: "tests/site-glue.test.js" },
     { id: "site-interactive", claim: "the Engine Room renders replay receipts inline — same seed → same digest, every receipt linkable (?level&seed) and re-runnable by anyone, the 8-seed sweep renders a distribution (determinism is per-seed, not global) — and the champion-lineage + coevolution panels render in the visitor's browser from the same committed checkpoint/curve/coev artifacts the demo loads: consumed as designed via script tags and fetch, never re-typed, never re-implemented (Round 44)", proofTest: "tests/site-glue.test.js" },
     { id: "artifact-maxspeed-lineage", claim: "the canonical L1/L2 checkpoints carry the post-R42 line's moved-at maxSpeed values (3.497 / 3.476) and EXPERIMENTS.md declares that line — a metric-semantics change can no longer drift the embedded artifact fields silently; it trips this pin and forces a declared re-embed (Round 42, R42 playtest finding 2: the R41 receipt's 'md5 set byte-frozen' claim was falsified at the file level — prerun.js embeds maxSpeed in level1/level2, which the R41 metric change rewrites; populations byte-identical)", proofTest: "tests/artifact-maxspeed-lineage.test.js" },
+    { id: "escalation", claim: "difficulty escalates over time so a perfect-reaction oracle ALWAYS eventually dies: speedMul = min((1+frames*ramp)·hitBoost^hits + accel·frames², maxSpeedMul); the paddle width decays shrink^frames floored at paddleMin; the model's decision interval grows decisionDrift per frame capped at decisionCap; swan probability scales as speedMul^swanGrow; with accel=0, hitBoost=1, shrink=1, decisionDrift=0, swanGrow=1 the physics is byte-identical to the pre-R50 law (R50)", proofTest: "tests/escalation.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];
   return { DEFAULTS, rng, makeNet, forward, mutate, step, newGame, sense, playOne,
            runGeneration, makeRing, makeEvaluator,
-           HIT_WEIGHT, EFFECTIVE_MARGIN, fitnessOf, effectivePaddle, formatStats,
+           HIT_WEIGHT, EFFECTIVE_MARGIN, fitnessOf, effectivePaddle, decisionIntervalAt, formatStats,
            makeSeam, makeJepa, hash8, netId, makeLedger,
            newAdvGame, stepAdv, playAdv, runCoevGeneration, VERIFIED_CLAIMS };
 });

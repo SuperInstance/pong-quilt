@@ -85,13 +85,17 @@ test('label SCREAMS if a live moth flip ever appears (anti-laundering tripwire)'
   assert.match(label, /LIVE:1 \(moth engine!\)/, 'a real moth flip must be named, never silent');
 });
 
-test('shipped journal plots 182 flips / 89 swaps from the real curve.json', () => {
+test('shipped journal plots 5 flips / 3 swaps from the real curve.json (R50 re-embed)', () => {
   const d = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'checkpoints', 'curve.json'), 'utf8'));
   const calls = drive(d.tiebreaks, d.gens);
-  assert.strictEqual(calls.rects.length - 1, 182, 'real journal: every flip gets a tick');
-  assert.strictEqual(d.tiebreaks.filter(t => t.swap).length, 89);
+  // R50 escalation spreads fitness values (accel + real hitBoost compound), so
+  // far fewer generations land on an exact tie: 182 flips / 89 swaps (post-R21
+  // line) became 5 flips / 3 swaps. Re-pinned at the R50 re-embed, declared in
+  // the R50 receipt.
+  assert.strictEqual(calls.rects.length - 1, 5, 'real journal: every flip gets a tick');
+  assert.strictEqual(d.tiebreaks.filter(t => t.swap).length, 3);
   const label = calls.texts.map(t => t.t).join(' ');
-  assert.match(label, /182 flips · 89 swaps/);
+  assert.match(label, /5 flips · 3 swaps/);
 });
 
 // R23 playtest pin (FAIL-first, found by driving the shipped page headless):

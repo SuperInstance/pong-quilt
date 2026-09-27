@@ -42,12 +42,27 @@ test("formatStats does not flag a 0-hit game that died early (no luck to badge)"
 });
 
 // --- effective paddle: drawn zone == registered zone -------------------------
-test("effectivePaddle geometry: 0.20 wide centered on px", () => {
+// R50: the paddle width is TIME-VARYING — max(paddleMin, paddleW*shrink^frames)
+// + 2*margin, always centered on px (R50 escalation; the old static-0.20 pin
+// was the R50 FAIL-first red).
+test("effectivePaddle geometry: the drawn paddle's left edge is px, at every width the game can reach", () => {
   for (const px of [0, 0.05, 0.2, 0.55, 0.8]) {
-    const eff = PQ.effectivePaddle(px);
-    assert.equal(eff.x, px - PQ.EFFECTIVE_MARGIN);
-    assert.equal(eff.w, PQ.DEFAULTS.paddleW + 2 * PQ.EFFECTIVE_MARGIN);
+    for (const frames of [0, 250, 1500]) {
+      const eff = PQ.effectivePaddle({ px, frames });
+      assert.equal(eff.x, px - PQ.EFFECTIVE_MARGIN, `left edge at px=${px} frames=${frames}`);
+      const floor = PQ.DEFAULTS.paddleMin + 2 * PQ.EFFECTIVE_MARGIN;
+      assert.ok(eff.w >= floor - 1e-12, `width >= floor ${floor} at px=${px} frames=${frames}`);
+      assert.ok(eff.w <= PQ.DEFAULTS.paddleW + 2 * PQ.EFFECTIVE_MARGIN + 1e-12, "never wider than the birth width");
+    }
   }
+});
+test("effectivePaddle honesty: the drawn paddle IS the registered hitbox (R50 time-varying law)", () => {
+  const D = PQ.DEFAULTS;
+  const expectedW = (frames) =>
+    Math.max(D.paddleMin, D.paddleW * Math.pow(D.shrink, frames)) + 2 * PQ.EFFECTIVE_MARGIN;
+  assert.equal(PQ.effectivePaddle({ px: 0.5, frames: 0 }).w, expectedW(0));
+  assert.ok(PQ.effectivePaddle({ px: 0.5, frames: 2000 }).w < PQ.effectivePaddle({ px: 0.5, frames: 0 }).w,
+    "paddle shrinks over time (the R50 FAIL-first red: pre-R50 core keeps the static 0.20 width)");
 });
 
 test("step() registers hits exactly over the effective zone (boundary probe)", () => {
