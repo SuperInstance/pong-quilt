@@ -8,6 +8,8 @@
 //   GET  /api/provenance  build-time demo-file sha256 receipt
 //   POST /api/replay      {level, seed} -> deterministic game receipt (runs core.js here)
 //   POST /api/judge       {level, seed, claim} -> replay + live JEV verdict, or named abstain
+//                           (verdict receipts accumulate server-side when the CLAIMS KV is bound)
+//   GET  /api/wall        the accumulated claim-wall receipts, newest first, or named abstain
 //   GET  /api/moth        live read of the moth job ledger (no credits spent), or named abstain
 import PQ from '../core.js';
 import provenance from './generated/provenance.json' with { type: 'json' };
@@ -105,6 +107,30 @@ async function mothLedger(env) {
 const json = (x, status = 200) =>
   new Response(JSON.stringify(x, null, 2), { status, headers: { 'content-type': 'application/json' } });
 
+// Claim Wall: judge verdicts are receipts too — they accumulate, named and
+// timestamped, content-addressed by the replay digest (same game, same id).
+// When the KV is unbound the wall abstains with its name, never fakes.
+const WALL_PREFIX = 'w:';
+
+async function recordVerdict(env, entry) {
+  if (!env.CLAIMS) return { recorded: false, why: 'CLAIMS KV not bound — verdict not recorded (named, not faked)' };
+  const key = `${WALL_PREFIX}${String(entry.ts).padStart(13, '0')}:${entry.digest.slice(0, 12)}`;
+  await env.CLAIMS.put(key, JSON.stringify(entry));
+  return { recorded: true, key };
+}
+
+async function readWall(env, limit) {
+  if (!env.CLAIMS)
+    return { ok: false, why: 'claim wall KV not bound — abstained (named, not faked)' };
+  const listed = await env.CLAIMS.list({ prefix: WALL_PREFIX });
+  const keys = listed.keys.map(k => k.name).sort().reverse().slice(0, limit);
+  const wall = [];
+  for (const k of keys) {
+    try { wall.push(JSON.parse(await env.CLAIMS.get(k))); } catch { /* skip malformed entry, keep the wall honest */ }
+  }
+  return { ok: true, count: wall.length, wall };
+}
+
 export async function handle(request, env) {
   const url = new URL(request.url);
   if (request.method === 'GET' && url.pathname === '/api/claims')
@@ -125,7 +151,18 @@ export async function handle(request, env) {
     const r = await replayGame(String(body.level ?? ''), Number(body.seed));
     if (!r.ok) return json(r, 422);
     const judged = await judgeClaim(env, r, claim);
-    return json({ ok: true, replay: r, judge: judged });
+    const entry = {
+      id: `${Date.now()}-${r.digest.slice(0, 8)}`, ts: Date.now(),
+      level: r.level, seed: r.seed, claim,
+      verdict: judged.verdict, abstain: judged.abstain ?? null,
+      digest: r.digest, frames: r.frames, hits: r.hits, maxSpeed: r.maxSpeed,
+    };
+    const wallNote = await recordVerdict(env, entry);
+    return json({ ok: true, replay: r, judge: judged, wall: wallNote });
+  }
+  if (request.method === 'GET' && url.pathname === '/api/wall') {
+    const limit = Math.min(100, Math.max(1, Number(url.searchParams.get('limit')) || 50));
+    return json(await readWall(env, limit));
   }
   if (url.pathname.startsWith('/api/')) return json({ ok: false, why: 'unknown endpoint' }, 404);
   return env.ASSETS ? env.ASSETS.fetch(request) : new Response('assets not bound', { status: 404 });

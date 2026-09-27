@@ -81,6 +81,7 @@ claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.j
 (231 tests total: 223 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 (215 tests total: 207 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 (212 tests total: 204 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(235 tests total: 227 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 (222 tests total: 214 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
 is pinned in EXPERIMENTS.md).

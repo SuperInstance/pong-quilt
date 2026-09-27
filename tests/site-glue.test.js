@@ -11,8 +11,18 @@ const crypto = require("node:crypto");
 const dist = (...a) => path.join(__dirname, "..", "site", "dist", ...a);
 const src = (...a) => path.join(__dirname, "..", ...a);
 
-test("build output exists (run: node tools/build-site.mjs)", () => {
-  assert.ok(fs.existsSync(dist("index.html")), "site/dist/index.html missing — build first");
+// R44 fix: the canonical suite command must be self-sufficient — if the
+// build output is absent (fresh checkout, dist/ is gitignored), seal it
+// here instead of failing. Deterministic either way: the build is a pure
+// copy + manifest of the working tree.
+if (!fs.existsSync(dist("index.html"))) {
+  require("node:child_process").execSync("node tools/build-site.mjs", {
+    cwd: path.join(__dirname, ".."), stdio: ["ignore", "pipe", "pipe"],
+  });
+}
+
+test("build output exists (site-glue self-seals when dist/ is absent)", () => {
+  assert.ok(fs.existsSync(dist("index.html")), "site/dist/index.html missing even after self-seal");
 });
 
 for (const f of ["index.html", "core.js", "qa.js"]) {
@@ -95,4 +105,95 @@ test("provenance endpoint serves the build receipt; unknown api 404s honestly", 
   const u = await jr(await call("GET", "/api/nope"));
   assert.equal(u.ok, false);
   assert.equal(u.why, "unknown endpoint");
+});
+
+// ---- R44: the Claim Wall (KV-backed verdict ledger) + widget wiring ----
+
+// In-memory KV stub with the surface the worker uses (get/put/list).
+function memKV(seedEntries = []) {
+  const store = new Map(seedEntries);
+  return {
+    store,
+    async get(k) { return store.has(k) ? store.get(k) : null; },
+    async put(k, v) { store.set(k, v); },
+    async list({ prefix } = {}) {
+      return { keys: [...store.keys()].filter((k) => !prefix || k.startsWith(prefix)).map((name) => ({ name })) };
+    },
+  };
+}
+const callEnv = async (method, p, body, env) => {
+  if (!handle) ({ handle } = await import("../site/worker.js"));
+  return handle(new Request(`http://t${p}`, {
+    method, headers: body ? { "content-type": "application/json" } : {},
+    body: body ? JSON.stringify(body) : undefined,
+  }), env);
+};
+
+test("wall abstains named when the CLAIMS KV is unbound", async () => {
+  const w = await jr(await call("GET", "/api/wall"));
+  assert.equal(w.ok, false);
+  assert.match(w.why, /abstain|not bound/i);
+});
+
+test("wall serves newest-first receipts from a bound KV", async () => {
+  const kv = memKV([
+    ["w:0000000000001:aaaaaaaaaaaa", JSON.stringify({ ts: 1, claim: "older", verdict: 0.5, digest: "a".repeat(64), level: "level1", seed: 1 })],
+    ["w:0000000000002:bbbbbbbbbbbb", JSON.stringify({ ts: 2, claim: "newer", verdict: null, abstain: "JEV key not bound — abstained (skipped, not condemned)", digest: "b".repeat(64), level: "level2", seed: 2 })],
+  ]);
+  const w = await jr(await callEnv("GET", "/api/wall", null, { CLAIMS: kv }));
+  assert.ok(w.ok && w.count === 2);
+  assert.equal(w.wall[0].claim, "newer", "newest entry first");
+  assert.equal(w.wall[1].claim, "older");
+  assert.equal(w.wall[0].verdict, null);
+  assert.match(w.wall[0].abstain, /abstain/i, "abstains are recorded as honestly as verdicts");
+});
+
+test("judge records every verdict (and every abstain) on the wall when KV is bound", async () => {
+  const kv = memKV();
+  const j = await jr(await callEnv("POST", "/api/judge", { level: "level1", seed: 777, claim: "at least 0 hits" }, { CLAIMS: kv }));
+  assert.ok(j.ok && j.wall.recorded === true, "verdict must be recorded when KV is bound");
+  const w = await jr(await callEnv("GET", "/api/wall", null, { CLAIMS: kv }));
+  assert.equal(w.count, 1);
+  const e = w.wall[0];
+  assert.equal(e.claim, "at least 0 hits");
+  assert.equal(e.level, "level1");
+  assert.equal(e.seed, 777);
+  assert.equal(e.verdict, null, "no JEV key bound -> recorded as an abstain, not faked");
+  assert.ok(/^[0-9a-f]{64}$/.test(e.digest));
+});
+
+const KNOWN_API = ["/api/claims", "/api/provenance", "/api/replay", "/api/judge", "/api/wall", "/api/moth"];
+
+test("widget wiring contract: every interactive mount exists and app.js only speaks to known endpoints", () => {
+  const html = fs.readFileSync(src("site", "index.html"), "utf8");
+  const app = fs.readFileSync(src("site", "app.js"), "utf8");
+  const mounts = ["engine-form", "engine-results", "sweep-results", "lineage", "coev-strip",
+    "judge-form", "judge-result", "wall", "moth", "wristband", "prov"];
+  for (const m of mounts)
+    assert.ok(html.includes(`id="${m}"`), `index.html missing mount #${m}`);
+  for (const m of mounts)
+    assert.ok(app.includes(`$('${m}')`), `app.js never wires mount #${m}`);
+  const calls = [...app.matchAll(/\/(api\/[a-z]+)/g)].map((x) => "/" + x[1]);
+  assert.ok(calls.length >= 6, "app.js must exercise the api");
+  for (const c of calls) assert.ok(KNOWN_API.includes(c), `app.js calls unknown endpoint ${c}`);
+  assert.ok(html.includes('src="/app.js"'), "index.html must load app.js");
+  // every artifact path app.js touches must actually ship in the build (F7: a
+  // wrong /demo/coev.js path shipped once and only a browser playtest caught it)
+  const artifactRefs = [...new Set([...app.matchAll(/['"`]\/(demo\/[a-z0-9./_-]+)['"`]/gi)].map((x) => x[1]))];
+  assert.ok(artifactRefs.length >= 3, `app.js must reference the committed artifacts, found: ${artifactRefs.join(", ")}`);
+  for (const ref of artifactRefs)
+    assert.ok(fs.existsSync(dist(ref)), `app.js references ${ref} but the build does not ship it`);
+  // R47: same guarantee for the demo page ITSELF — every script src its
+  // index.html declares must ship in the build (tools/wal-export.js 404'd
+  // live, F12; classic scripts don't halt on a sibling 404, but a referenced
+  // file that never ships is a wound we can pin shut at build time).
+  const demoHtml = fs.readFileSync(dist("demo", "index.html"), "utf8");
+  const demoSrcs = [...new Set([...demoHtml.matchAll(/<script\s+src="([^"]+)"/g)].map((x) => x[1]))]
+    .filter((s) => !s.startsWith("http"));
+  assert.ok(demoSrcs.length >= 5, `the demo must load its scripts from declared tags, found: ${demoSrcs.join(", ")}`);
+  for (const s of demoSrcs)
+    assert.ok(fs.existsSync(dist("demo", s)), `demo index.html loads ${s} but the build does not ship it`);
+  for (const form of ["engine-form", "judge-form"])
+    assert.ok(html.includes(`id="${form}"`) && new RegExp(`<form id="${form}"[^>]*action="/api/(replay|judge)"`).test(html),
+      `${form} must keep its no-JS fallback action`);
 });
