@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>pong-quilt — ML you can watch think</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --line:#30363d; --txt:#e6edf3; --dim:#8b949e;
+  --acc:#58a6ff; --green:#3fb950; --amber:#d29922; --red:#f85149; --violet:#bc8cff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+  font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+a{color:var(--acc);text-decoration:none} a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--line);padding:14px 20px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+header b{font-size:17px}
+main{max-width:1080px;margin:0 auto;padding:24px 20px 80px}
+h1{font-size:26px;margin:28px 0 6px}
+h2{font-size:18px;margin:34px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+p.sub{color:var(--dim);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.card h3{margin:0 0 8px;font-size:15px}
+.card .tag{display:inline-block;font-size:11px;border:1px solid var(--line);border-radius:10px;
+  padding:1px 8px;margin-right:6px;color:var(--dim)}
+.card p{margin:8px 0;color:var(--dim);font-size:13px}
+.card p b{color:var(--txt);font-weight:600}
+.play{display:inline-block;margin-top:8px;background:var(--green);color:#0d1117;border-radius:6px;
+  padding:6px 14px;font-weight:700;font-size:13px}
+.play:hover{text-decoration:none;filter:brightness(1.1)}
+.claim{border-left:3px solid var(--green);padding:6px 10px;margin:6px 0;font-size:12.5px;background:#161b22}
+.claim small{color:var(--dim)}
+#lab,#judge{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+select,input[type=text],input[type=number]{background:var(--bg);color:var(--txt);border:1px solid var(--line);
+  border-radius:6px;padding:6px 10px;font:inherit}
+button{background:var(--acc);color:#0d1117;border:0;border-radius:6px;padding:7px 16px;font-weight:700;
+  font:inherit;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+pre{background:#0d1117;border:1px solid var(--line);border-radius:6px;padding:10px;overflow:auto;
+  font-size:12.5px;color:var(--green);max-height:280px}
+.receipt{color:var(--dim);font-size:12px}
+.receipt b{color:var(--amber)}
+.wrist{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+summary{cursor:pointer;font-size:12.5px}
+summary .id{color:var(--violet)}
+footer{border-top:1px solid var(--line);margin-top:60px;padding:18px 20px;color:var(--dim);font-size:12px;
+  display:flex;gap:18px;flex-wrap:wrap}
+.ok{color:var(--green)} .bad{color:var(--red)} .dim{color:var(--dim)}
+</style>
+</head>
+<body>
+<header><b>pong-quilt</b> <small>ML you can watch think — every claim below is replayable, receipted, and falsifiable in your browser. The demo is the repo, byte-identical.</small></header>
+<main>
+
+<h1>Understand a neural net the way you understand a game:<br>by playing it.</h1>
+<p class="sub">pong-quilt is a zero-dependency browser Pong where a 6→10→3 tanh net learns by genetic
+algorithm — and everything it does is <b>seeded, receipted, and honest about what it isn't</b>.
+This site is the map. The territory is <a href="/demo/">one click away</a>.</p>
+
+<div class="row"><a class="play" href="/demo/">▶ play the demo (the repo itself)</a>
+<span class="receipt" id="prov">checking demo provenance…</span></div>
+
+<h2>Many forms of playing</h2>
+<div class="grid">
+  <div class="card"><h3>Classic L0 — noise at the origin</h3>
+    <span class="tag">train</span><span class="tag">watch learning start</span>
+    <p>Fresh random nets, seeded. Generation 0 mostly stares at the ball. <b>What to watch:</b>
+    the fitness strip — most nets die in seconds; the ring favors whoever survives longest.</p>
+    <a class="play" href="/demo/">play</a></div>
+  <div class="card"><h3>Classic L1/L2 — committed champions</h3>
+    <span class="tag">checkpoints</span><span class="tag">byte-reproducible</span>
+    <p>The repo ships <b>level1 (gen 60)</b> and <b>level2 (gen 240)</b>, evolved by
+    <code>tools/prerun.js</code>, md5-stable. Same seed → same bytes. <b>What to watch:</b>
+    hits carry 100× fitness weight — the champion returns the ball, not just dodges it.</p>
+    <a class="play" href="/demo/">play</a></div>
+  <div class="card"><h3>C1 · coevolution — a GAN pair of paddles</h3>
+    <span class="tag">adversarial</span><span class="tag">ledger</span>
+    <p>Two populations: a <b>survivor</b> that must return the ball, an <b>ender</b> that wins
+    by killing it. 121 receipted head-to-heads sealed in <code>checkpoints/coev.js</code>.
+    <b>What to watch:</b> the ledger strip — every generation plotted, kills bright.</p>
+    <a class="play" href="/demo/">play</a></div>
+  <div class="card"><h3>Advisors — micro-JEPA · QPAM · scratch tile</h3>
+    <span class="tag">L2 seams</span><span class="tag">named, not faked</span>
+    <p>Attach a learned 1-step world model, a quantum-audio imager (<b>labeled sim stand-in</b>;
+    a real endpoint slot exists and degrades honestly), or write your own advisor in the
+    scratch tile — every suggestion is receipted with its source and confidence.</p>
+    <a class="play" href="/demo/">play</a></div>
+  <div class="card"><h3>WAL export — receipts into the fleet quilt</h3>
+    <span class="tag">five-opcode</span><span class="tag">cross-tool receipt</span>
+    <p>The demo's receipt panel re-anchors into the fleet's quilt WAL (BIND/LINK/VIEW,
+    fnv1a-64 chained) and the export <b>passes quilt-doctor's own verify()</b> — a live
+    cross-tool receipt, not a demo row list.</p>
+    <a class="play" href="/demo/">play</a></div>
+  <div class="card"><h3>Seed Lab — determinism you can poke</h3>
+    <span class="tag">this site</span><span class="tag">worker-verified</span>
+    <p>Pick a checkpoint and a seed. This site's backend runs the <b>same core.js</b> and
+    returns the game it played — run it twice, same numbers. That's what
+    "seeded everywhere" means, felt in the hands.</p>
+    <a class="play" href="#lab">play below ↓</a></div>
+  <div class="card"><h3>Claim Judge — say something checkable</h3>
+    <span class="tag">this site</span><span class="tag">JEV-judged</span>
+    <p>Make a claim about a game ("level1 at seed 42 survives past 5000 frames").
+    The backend replays it and a live JEV judge scores whether your claim matched reality.
+    <b>Verified means replayable.</b></p>
+    <a class="play" href="#judge">play below ↓</a></div>
+  <div class="card"><h3>Quantum audio — stand-in vs engine</h3>
+    <span class="tag">moth</span><span class="tag">receipt-only</span>
+    <p>The demo's QPAM advisor is a labeled simulation. The real engine — moth-quantum,
+    IBM hardware behind <code>mode:"qpu"</code> — is reachable. This site reads its live
+    job ledger (no credits spent) and shows what a real receipt carries that a sim can't.</p>
+    <a class="play" href="#quantum">look below ↓</a></div>
+</div>
+
+<h2 id="lab">Seed Lab</h2>
+<p class="sub">Same code you just played, run server-side. The point isn't the numbers — it's that
+the numbers <i>cannot change</i> between runs.</p>
+<div id="lab">
+  <div class="row">
+    <label>checkpoint <select id="lab-level"><option>level0</option><option selected>level1</option><option>level2</option></select></label>
+    <label>seed <input id="lab-seed" type="number" value="20260928" min="0" max="2147483647"></label>
+    <button id="lab-run">replay on the worker</button>
+    <span class="receipt" id="lab-status"></span>
+  </div>
+  <pre id="lab-out" style="display:none"></pre>
+</div>
+
+<h2 id="judge">Claim Judge</h2>
+<p class="sub">A claim is only interesting if it could be wrong. Write one about the replay below;
+JEV judges whether your words matched the receipt.</p>
+<div id="judge">
+  <div class="row">
+    <label>checkpoint <select id="jg-level"><option>level0</option><option selected>level1</option><option>level2</option></select></label>
+    <label>seed <input id="jg-seed" type="number" value="777" min="0" max="2147483647"></label>
+  </div>
+  <div class="row">
+    <input id="jg-claim" type="text" size="72" placeholder="e.g. this game survives past 5000 frames and scores at least 10 hits">
+    <button id="jg-run">replay + judge my claim</button>
+  </div>
+  <pre id="jg-out" style="display:none"></pre>
+</div>
+
+<h2 id="quantum">Quantum audio: stand-in vs engine</h2>
+<div class="row"><button id="qt-look">read the live moth ledger (no credits)</button>
+<span class="receipt" id="qt-status"></span></div>
+<pre id="qt-out" style="display:none"></pre>
+
+<h2>The wristband</h2>
+<p class="sub">Every verified claim the repo wears, fetched live from this build. Amber = ships closed
+(named, never faked). Expand any claim to read it whole.</p>
+<div class="wrist" id="wrist"></div>
+
+</main>
+<footer>
+  <span>site + worker source: <code>site/</code> in the repo</span>
+  <span>demo files byte-identical — provenance above</span>
+  <span>backend: cloudflare workers · JEV (typesafe) · moth (read-only receipts)</span>
+  <span>zero dependencies · no build step · the repo is the product</span>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const show = (el, obj) => { el.style.display = 'block'; el.textContent = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2); };
+
+// provenance: compare demo bytes against this repo's own receipts
+(async () => {
+  try {
+    const r = await fetch('/api/provenance');
+    const p = await r.json();
+    $('prov').innerHTML = p.ok
+      ? `demo provenance <b class="ok">verified</b> — ${p.files} files, chain head ${p.head}`
+      : `demo provenance <b>unverified</b> — ${p.why || 'see /api/provenance'}`;
+  } catch { $('prov').textContent = 'provenance check offline (worker unreachable)'; }
+})();
+
+$('lab-run').onclick = async () => {
+  $('lab-status').textContent = 'replaying…';
+  try {
+    const r = await fetch('/api/replay', { method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ level: $('lab-level').value, seed: +$('lab-seed').value }) });
+    const p = await r.json();
+    $('lab-status').textContent = r.ok ? 'receipt ↓ run it again — same numbers' : `refused: ${p.why||r.status}`;
+    show($('lab-out'), p);
+  } catch (e) { $('lab-status').textContent = 'worker unreachable'; }
+};
+
+$('jg-run').onclick = async () => {
+  $('jg-out').style.display='none';
+  const claim = $('jg-claim').value.trim();
+  if (!claim) { $('jg-out').style.display='block'; $('jg-out').textContent = 'write a claim first — a judge needs something to check'; return; }
+  try {
+    const r = await fetch('/api/judge', { method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ level: $('jg-level').value, seed: +$('jg-seed').value, claim }) });
+    show($('jg-out'), await r.json());
+  } catch { $('jg-out').style.display='block'; $('jg-out').textContent = 'worker unreachable'; }
+};
+
+$('qt-look').onclick = async () => {
+  $('qt-status').textContent = 'reading…';
+  try {
+    const r = await fetch('/api/moth');
+    const p = await r.json();
+    $('qt-status').textContent = r.ok ? `live — ${p.jobs} jobs on the account` : `moth unreachable — ${p.why||r.status}`;
+    show($('qt-out'), p);
+  } catch { $('qt-status').textContent = 'worker unreachable'; }
+};
+
+(async () => {
+  try {
+    const r = await fetch('/api/claims');
+    const { claims } = await r.json();
+    $('wrist').innerHTML = claims.map(c =>
+      `<details><summary><span class="id">${c.id}</span> — ${c.claim.slice(0, 72)}${c.claim.length>72?'…':''}</summary>
+       <div class="claim">${c.claim.replace(/</g,'&lt;')}<br><small>proof: ${c.proofTest||'render claim (no pinned test)'}</small></div></details>`).join('');
+  } catch { $('wrist').textContent = 'claims ledger unreachable'; }
+})();
+</script>
+</body>
+</html>

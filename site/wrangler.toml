@@ -1,0 +1,8 @@
+# Cloudflare deploy for the pong-quilt site. The worker serves site/dist (static
+# assets); /api/* falls through to site/worker.js.
+name = "pong-quilt-site"
+main = "worker.js"
+compatibility_date = "2024-09-25"
+
+[assets]
+directory = "./dist"
