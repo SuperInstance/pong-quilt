@@ -139,7 +139,12 @@ What shipped:
     visible in the visitor's hands.
   - Play-here button embeds the byte-identical demo inline. Lineage bars,
     sparkline, wall (3 receipts), moth ledger, wristband all render.
-- Suite stays 227/227 through both fixes; PR #59; deploy v3 (2fab50c).
+- F9/F10 (same doctrine, next pass): the wall promised "re-runnable from
+  its game params" but made you type them — game cells are now links into
+  the Engine Room (verified live: wall row level1·777 → click → replay
+  digest c6f04cb49f50… == the recorded digest). Sweep rows where the
+  champion dies before maxFrames now render tinted with a death marker.
+- Suite stays 227/227 through both fixes; PR #59; deploy v4 (06d935f).
 
 ## Round 42 — the website: understand the repo by playing it, in many forms
 
