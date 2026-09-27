@@ -7,6 +7,8 @@ Every round is a receipted observation in the loop. Newest first.
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
 | R49 | 2026-09-28 | r49-readme-count-repair (vs main ea9dfbb, post-#62) | canonical |
+| R49 | 2026-09-28 | r49-count-bistability (vs main ea9dfbb, post-#62) | canonical |
+| R49 | 2026-09-28 | playtest-round-49 (vs main 166a1f2, post-#63) | canonical |
 | R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
 | R48 | 2026-09-28 | r48-main-repair (vs main 4c13b58, post-#61) | canonical |
 | R46 | 2026-09-28 | r46-main-repair (vs main 1da41be, post-#58) | canonical |
@@ -71,6 +73,123 @@ Every round is a receipted observation in the loop. Newest first.
   live-verified `243 = 235 in tests/ + 8 in tools/test-qa.js`; suite re-run
   green 235/235 + qa 8/8.
 
+## Round 49 — count bistability: the suite's pass count depended on an unmerged side branch
+
+**vs main ea9dfbb (post-#62) — branch r49-count-bistability.**
+
+- [finding] the readme-count pin went bistable 235↔237: two stone-v1 sign-live
+  pins (tests: signTip staples the prerun-shaped seal; ephemeral keypair
+  round-trips) PASS when /tmp/quilt-stone has the sign lane and honestly SKIP
+  ("named checkout has no signTip") when it does not. CI pins the stone clone
+  at 1f6036a (canonical, pre-sign main — verified quilt-stone main is 5081914
+  and the signTip merge 023edbe is NOT on it: it lives on side branches). This
+  box's /tmp/quilt-stone had drifted onto a side branch, so local runs passed
+  237 where CI ran 235 — R47's merged README claimed 237 and main went red on
+  the count pin the merge landed. Same freshness class R47 named for the
+  doctor lens; the count pin's "one value everywhere" (R35) holds only while
+  every lens sits at its pinned commit.
+- [named] PR #63's admin-merge comment claimed ONE inherited red; its gate
+  carried TWO (honesty + readme-count) — corrected in the PR #62 comment and
+  named here.
+- [fix] README count 245→243 (235 in tests/ + 8 qa) — the canonical,
+  pinned-lens number; local /tmp/quilt-stone reset to 1f6036a (lens hygiene,
+  same class as the R35 doctor-lens pinning). NOT "fixed" by pinning CI to the
+  side branch: an unmerged lane is not canonical, and following it would move
+  the lens the R39 pilot pins are written against without a quilt-stone main
+  merge to cite.
+- [suite] 235 pass + 2 honest-skip + qa 8/8 at the canonical lens state;
+  readme-count green in CI shape and locally.
+
+## Round 49 — playtest: the C1 artifact load freezes the demo on Train; classic learning re-verified live
+
+**vs main 166a1f2 (post-#63) — branch playtest-round-49. mode: SPECIFY
+(no previous round's spec is unfulfilled + compelling; R44–R48 all shipped).**
+
+- [finding, P1, confirmed by playing the shipped page headlessly] **load the
+  C1 artifact, press Train, and the demo freezes permanently.** Minimal repro
+  against verbatim shipped code: `loadCoev()` rebuilds `coev` from the
+  checkpoint artifact with champions ONLY — `Object.assign(coev||{},{sChamp,
+  eChamp,last:null,genC:cp.gens,evalS:null,evalE:null})` — no `popS`/`popE`.
+  `startGenC()` guards on `if(!coev)`, so any truthy coev counts as
+  initialized; the next Train tick dies at `coev.popS.length` (index.html:211,
+  TypeError: Cannot read properties of undefined). Severity is worse than a
+  console error: `requestAnimationFrame(tick)` is the LAST line of tick(), so
+  the throw kills the rAF loop itself — canvas, strips, and training all stop;
+  only a page reload recovers. The classic-mode twin is honest — loadLevel's
+  stats line says "training from here is real" and it is (verified); the C1
+  twin crashes instead of continuing. Coverage gap: no pin drives the
+  loadCoev→continueGenC journey (loadcoev-glue pins banner/ledger honesty;
+  coev-glue pins fresh-init). The deployed SITE is unaffected — its coev panel
+  is display-only (R44).
+- [finding, P3 provenance] commit e5444d0 (shipped via #59, R44's site-v2)
+  titles itself "R47 P1 fix" and the index.html comment on the frozen-serve
+  fix says "R47 playtest fix" — but canonical R47 is PR #62 (doctor-lens
+  freshness, still open). A dangling round pointer inside a receipt: the R22
+  phantom class at commit-message/comment depth. The fix itself is real —
+  re-verified live this round (next bullet).
+- [verified green] classic F11 fix re-verified by playing: ball frames
+  advance continuously (10→60 sampled), x/y track smoothly, exactly ONE
+  champGame reset across 60 generations (a real death), champion reaches 8800
+  = frames 6000 + 28 hits at speed ×3.47 — real learning, not a serve loop.
+  54 wristband badges render; coin-journal label "182 flips · 89 swaps ·
+  gens 0-260 · live:false throughout" matches prerun byte-for-byte; coev
+  strip renders the committed artifact (121 h2h · 120 ender-kills ·
+  1 survivor-cap · gens 0-120); WAL export from the live panel verifies ok
+  (empty panel → genesis-only chain, the R30 contract); L1 checkpoint pickup
+  honest ("level1: gen 60 · best 8700 … — training from here is real").
+- [verified green] live deployed site 9/9 via tools/site-playtest.mjs —
+  determinism (same seed → same digest, twice), 8-seed sweep distribution,
+  judge abstains NAMED (JEV HTTP 401, no key bound — the honest seam), claim
+  wall round-trip, served checkpoint byte-identical to this checkout,
+  provenance head 17eb2394a sealed at build = checkout 166a1f2 (deployed tip
+  IS current main).
+- [sibling studied] PR #62 (R47 doctor-lens freshness, tip f22f532): its
+  honesty-claim repair WORKS — honesty runs 9/9 on its tip, so the inherited
+  red genuinely closes there. The branch itself is red 3 on a stale pre-#61
+  base (dup index rows + README count stack + site-glue needing the build
+  step — all three already repaired on main via #61/#63, so a rebase onto
+  post-#63 main should clear them). Named, not double-fixed here per doctrine.
+- [deltas as shapes] d(learning)/d(version) is FLAT across R42–R48: L1 8700 /
+  L2 8800 / curve 182 flips — the same numbers the R22/R24-era receipts
+  recorded; six consecutive rounds moved only receipts/site/honesty layers,
+  zero core-engine drift. Failure-mode MIGRATION: R44's F11 was
+  alive-loop/frozen-GAME (a reset storm at the game layer, 10–30 fresh serves
+  per second while the scheduler kept breathing — physics could eventually
+  mask it) → R49's P1 is dead-loop/frozen-EVERYTHING (one throw at the
+  training layer ascends through tick() and kills the scheduler;
+  unrecoverable without reload). The demo's failure surface moved UP the
+  stack as the lower layers got pinned: the one un-pinned seam left is exactly
+  the user journey no pin drives — artifact-load → continue-training.
+- [spec for R50, five items, sized]
+  1. (small — the P1) startGenC treats a popS-less coev as uninitialized:
+     build popS/popE by mutating the loaded sChamp/eChamp nets so "continue
+     evolving from the pair" is literal. Verify: FAIL-first pin driving
+     verbatim loadCoev()→continueGenC() headlessly (fails today at line 211),
+     green after; assert ≥1 coev generation completes from the loaded pair
+     and the ledger re-anchors honestly (the R9 contract must survive).
+  2. (tiny) provenance repair: the index.html F11 comment (and any receipt
+     naming "R47" for the site fix) names R44, its canonical round; optional
+     grep-pin that code-comment round references resolve to canonical index
+     rows — the R22 class at comment depth.
+  3. (small) rebase PR #62 onto post-#63 main: expect the dup-index and
+     count reds to clear (already repaired on main), re-run the canonical
+     suite + site build, merge — main's one inherited red closes.
+  4. (small–medium) freeze-class pin: tick()'s rAF re-schedule must be
+     throw-safe — wrap the training step (or re-schedule first) and inject a
+     throwing continueGenC in a pin, asserting the loop survives. Pin the
+     CLASS (scheduler fault-isolation), not this one instance.
+  5. (medium) make the loaded C1 pair watchable without training: after
+     loadCoev, live() plays an h2h exhibition (sChamp vs eChamp driving
+     champGame) so the header's "watch a pair co-evolve" is cashable on load,
+     not only after Train works.
+- [suite] at origin/main 166a1f2: canonical suite (glob form) 234 run / 233
+  pass / 1 fail — the one red is the R48-named inherited honesty red
+  ("test file backs no claim: tests/coev-birth-seal.test.js"), fix verified
+  riding PR #62 — + qa 8/8. Prerun md5s byte-identical to committed
+  artifacts. Note: R48's suite line reads "233 run" where the live tap says
+  234 run (README binds the pass-count 233 and its pin is green, so this is
+  doc-precision only — P4 — but PLAYLOG suite lines are unpinned; state run
+  AND pass going forward).
 ## Round 47 — doctor-lens freshness: the receipt names the commit it read
 
 **vs main 822c850 (post-#60), rebased onto 166a1f2 (post-#63) — branch
