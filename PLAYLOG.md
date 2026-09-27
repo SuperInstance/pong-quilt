@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R45 | 2026-09-28 | r45-coev-birth-seal (vs main 1da41be, post-#58) | canonical |
 | R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) | canonical |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
 | R43 | 2026-09-28 | r43-seed-zero-honesty (vs main 2aa7901, post-R42 main-repair) | canonical |
@@ -53,6 +54,28 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 45 — coev birth seal: the fifth canonical artifact receipts its own birth rows (R40 finding 4)
+
+**vs main 1da41be (post-#58) — branch r45-coev-birth-seal.**
+
+### Played versions
+v1; the R37→R38→R43 provenance chain by diff + suite at the tip; R40 finding 4 replayed against `tools/prerun-coev.js` (zero seal code on the lane it names).
+
+### Deltas observed
+- d(provenance)/d(version): the R40 finding-4 shape, narrowed to one lane — `checkpoints/coev.js` was byte-reproducible and md5-printed, but the 121 ledger rows behind it were not chained at birth. A post-merge edit could move the artifact's receipt history while leaving only a printed md5 as provenance.
+
+### Built
+- `tools/prerun-coev.js` gains an async birth-seal tail: build `{op:'LINK', cell:'pq/prerun-coev-birth'}` rows one-for-one from the C1 ledger rows just written → `wal-export.js` `toStoneV1` (one stone dialect in the repo) → mirror `verifyStoneV1` BEFORE write → live `stone.verifyChain` when `QUILT_STONE_DIR` names a checkout → write `checkpoints/coev-stone-v1.json`. Refusal path: `stone: SEAL/REFUSED` + exit 1, no file. The stale seal is dropped before the run, the R37 stale-receipt lesson applied to the coev lane.
+- `tests/coev-birth-seal.test.js` — 7 pins: extraction, one-for-one mirror, byte determinism, canonical permutation invariance, exact-row tamper, committed artifact/seal agreement, and live `stone.mjs` accept/tamper vocabulary.
+- `checkpoints/coev-stone-v1.json` — committed birth receipt over the shipped artifact: header + 121 coev birth rows; verifies under the mirror and live at the local quilt-stone checkout.
+
+### Verify
+- `node tests/coev-birth-seal.test.js` 7/7; `tests/stone-prerun-glue.test.js` 5/5 and `tests/wal-session-stone.test.js` 7/7 as regression rails; README count corrected by the readme-count pin (207→214 in `tests/`, total 222); `node tools/receipt-completeness.js` OK.
+- No dynamics touched: the canonical five md5s are unchanged in this commit (`coev.js` remains `946e639a…`); the new file is a receipt, not a training artifact. Inherited red named, not fixed here: a full `node tools/prerun-coev.js` run at this tip regenerates `coev.js` as `2ab34b54…`, not the committed `946e639a…` — the canonical-drift class R43 named for `prerun.js`, present on the coev lane too. The regenerated artifact was restored; the committed seal is over the shipped `coev.js` ledger.
+
+### Verdict
+MERGEABLE — one small committable unit, branch + commit, never main.
 
 ## Round 42 — the website: understand the repo by playing it, in many forms
 
