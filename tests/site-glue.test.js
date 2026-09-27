@@ -183,6 +183,16 @@ test("widget wiring contract: every interactive mount exists and app.js only spe
   assert.ok(artifactRefs.length >= 3, `app.js must reference the committed artifacts, found: ${artifactRefs.join(", ")}`);
   for (const ref of artifactRefs)
     assert.ok(fs.existsSync(dist(ref)), `app.js references ${ref} but the build does not ship it`);
+  // R47: same guarantee for the demo page ITSELF — every script src its
+  // index.html declares must ship in the build (tools/wal-export.js 404'd
+  // live, F12; classic scripts don't halt on a sibling 404, but a referenced
+  // file that never ships is a wound we can pin shut at build time).
+  const demoHtml = fs.readFileSync(dist("demo", "index.html"), "utf8");
+  const demoSrcs = [...new Set([...demoHtml.matchAll(/<script\s+src="([^"]+)"/g)].map((x) => x[1]))]
+    .filter((s) => !s.startsWith("http"));
+  assert.ok(demoSrcs.length >= 5, `the demo must load its scripts from declared tags, found: ${demoSrcs.join(", ")}`);
+  for (const s of demoSrcs)
+    assert.ok(fs.existsSync(dist("demo", s)), `demo index.html loads ${s} but the build does not ship it`);
   for (const form of ["engine-form", "judge-form"])
     assert.ok(html.includes(`id="${form}"`) && new RegExp(`<form id="${form}"[^>]*action="/api/(replay|judge)"`).test(html),
       `${form} must keep its no-JS fallback action`);

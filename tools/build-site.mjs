@@ -22,17 +22,23 @@ mkdirSync(gen, { recursive: true });
 copyFileSync(path.join(site, 'index.html'), path.join(dist, 'index.html'));
 copyFileSync(path.join(site, 'app.js'), path.join(dist, 'app.js'));
 
-// 2. the demo, byte-identical (index.html + core.js + qa.js + checkpoints)
+// 2. the demo, byte-identical — every file the demo page references, so no
+// 404 can amputate the game loop (R47: tools/wal-export.js 404'd live while
+// the ball froze; the freeze had its own cause, but the 404 was real).
 const demoFiles = ['index.html', 'core.js', 'qa.js'];
+const demoToolFiles = ['tools/wal-export.js'];
 mkdirSync(path.join(dist, 'demo'), { recursive: true });
 mkdirSync(path.join(dist, 'demo', 'checkpoints'), { recursive: true });
+mkdirSync(path.join(dist, 'demo', 'tools'), { recursive: true });
 for (const f of demoFiles) copyFileSync(path.join(root, f), path.join(dist, 'demo', f));
+for (const f of demoToolFiles) copyFileSync(path.join(root, f), path.join(dist, 'demo', 'tools', path.basename(f)));
 for (const f of readdirSync(path.join(root, 'checkpoints')))
   copyFileSync(path.join(root, 'checkpoints', f), path.join(dist, 'demo', 'checkpoints', f));
 
 // 3. provenance receipt
 const manifest = [];
 for (const f of demoFiles) manifest.push({ file: `demo/${f}`, sha256: sha(path.join(root, f)) });
+for (const f of demoToolFiles) manifest.push({ file: `demo/${f}`, sha256: sha(path.join(root, f)) });
 for (const f of readdirSync(path.join(root, 'checkpoints')).sort())
   manifest.push({ file: `demo/checkpoints/${f}`, sha256: sha(path.join(root, 'checkpoints', f)) });
 let head = 'unknown';
