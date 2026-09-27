@@ -101,3 +101,18 @@ test('axis is derived from data: missing gens header cannot push ticks off-canva
   assert.ok(ticks[1].x > ticks[0].x, 'monotone in gen even without header gens');
   assert.strictEqual(ticks[1].x, 358, 'max-gen tick pins the right edge from data');
 });
+
+// R40 playtest finding 1: the label must agree with the axis it plots
+// against — renderCoinJournal already said `gens 0-${axis}` (R23), but
+// renderCoevStrip's label kept the raw `gens` header, so a header that
+// under-reports the data drew ticks at data positions while the label
+// counted the header (label/axis divergence, the R23 lesson half-applied).
+test('label reports the DATA-derived axis, not the raw gens header (R40 finding 1)', () => {
+  const calls = drive([
+    { gen: 10, outcome: 'SURVIVOR-CAP' },
+    { gen: 200, outcome: 'ENDER-KILL' },
+  ], 0); // header claims gens=0; data reaches gen 200
+  const label = calls.texts.map(t => t.t).join(' ');
+  assert.match(label, /gens 0-200/, `label must carry the data-derived axis, got: ${label}`);
+  assert.doesNotMatch(label, /gens 0-0(?!\d)/, 'label counting the raw header while ticks plot data is the R40 divergence');
+});
