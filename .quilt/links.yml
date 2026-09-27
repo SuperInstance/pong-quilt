@@ -1,0 +1,24 @@
+# .quilt/links.yml — the Reader's Fold manifest (jev-quilt Law 6).
+# This repo carries NO verdicts about its neighbors — only content-addressed
+# pointers each reader folds under its own weights. Edit this file; never edit
+# the generated block in README.md by hand.
+
+repo: pong-quilt
+family: quilt
+
+substrate:
+  - repo: quilt-edge-ml
+
+provides:
+  - id: coevolution-harness
+    what: PSRO-style GAN-pair coevolution (survivor vs ender) with a hash-chained, birth-sealed receipt ledger over every head-to-head
+
+consumes:
+  - repo: quilt-edge-ml
+    what: ring_buffer (bounded FIFO) and out_of_core (streaming, chunked-eval) patterns, ported into core.js as makeRing and makeEvaluator
+
+related:
+  - repo: eos-seed
+    why: sibling "learning without backprop" teaching artifact — genetic algorithm here, ternary coordinate-stepper there
+  - repo: cargo-line-tycoon
+    why: sibling "ML/substrate you can watch think" teaching artifact
