@@ -75,6 +75,14 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
   line produces a phantom mismatch (the R22 P3-process lie). The source of
   truth is a clean run at the tip you are testing — `node tools/prerun.js`,
   then read the md5s it actually printed.
+- **The post-R42 line** (R42 re-embed after the R41 maxSpeed-honesty metric
+  change): curve `63617065…`, L0 `8a49b0f6…`, L1 `cf08b000…`, L2 `c8ba57db…`,
+  coev `946e639a…`. Only L1/L2 moved, and only at the embedded `maxSpeed`
+  field (3.400 → 3.497 / 3.476, the moved-at values under R41 semantics);
+  the trained populations are byte-identical to the post-R21 line (verified by
+  field-by-field parse, R42). The R42 pin (`tests/artifact-maxspeed-lineage.test.js`)
+  holds this line: any future metric-semantics change that re-drifts the
+  artifacts trips it and forces a declared re-embed — never silent drift.
 - **Provenance is a chained receipt, not a promise (Round 37).** Every
   `node tools/prerun.js` run ends by sealing the four artifacts it just
   wrote into `checkpoints/stone-v1.json` — a stone-v1 forward chain
