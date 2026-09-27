@@ -11,8 +11,18 @@ const crypto = require("node:crypto");
 const dist = (...a) => path.join(__dirname, "..", "site", "dist", ...a);
 const src = (...a) => path.join(__dirname, "..", ...a);
 
-test("build output exists (run: node tools/build-site.mjs)", () => {
-  assert.ok(fs.existsSync(dist("index.html")), "site/dist/index.html missing — build first");
+// R44 fix: the canonical suite command must be self-sufficient — if the
+// build output is absent (fresh checkout, dist/ is gitignored), seal it
+// here instead of failing. Deterministic either way: the build is a pure
+// copy + manifest of the working tree.
+if (!fs.existsSync(dist("index.html"))) {
+  require("node:child_process").execSync("node tools/build-site.mjs", {
+    cwd: path.join(__dirname, ".."), stdio: ["ignore", "pipe", "pipe"],
+  });
+}
+
+test("build output exists (site-glue self-seals when dist/ is absent)", () => {
+  assert.ok(fs.existsSync(dist("index.html")), "site/dist/index.html missing even after self-seal");
 });
 
 for (const f of ["index.html", "core.js", "qa.js"]) {
