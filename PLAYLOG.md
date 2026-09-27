@@ -6,9 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R49 | 2026-09-28 | r49-readme-count-repair (vs main ea9dfbb, post-#62) | canonical |
-| R49 | 2026-09-28 | r49-count-bistability (vs main ea9dfbb, post-#62) | canonical |
-| R49 | 2026-09-28 | playtest-round-49 (vs main 166a1f2, post-#63) | canonical |
+| R49 | 2026-09-28 | r49-readme-count-repair + r49-count-bistability (both vs main ea9dfbb, post-#62) + playtest-round-49 (vs main 166a1f2, post-#63) — three canonical branches, one row (R2 branch-pair convention) | canonical — deduped by the R49 main-repair addendum below (R31/R2 convention) |
 | R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
 | R48 | 2026-09-28 | r48-main-repair (vs main 4c13b58, post-#61) | canonical |
 | R46 | 2026-09-28 | r46-main-repair (vs main 1da41be, post-#58) | canonical |
@@ -58,6 +56,30 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 49 — main-repair addendum: three R49 receipts, one round — the uniqueness pin named it
+
+**vs main b767404 (post-#66) — direct main repair (CI red since the PR #60 merge, #64–#66 each shipped one `| R49 |` index row).**
+
+- [finding] the PR #60 merge left the merge-gate red; the R46–R48 main-repairs
+  cleared two of the four original reds (site-glue file-level crash — no build
+  step; VERIFIED_CLAIMS proofTest drift), but CI stayed red through #64–#66
+  because each of those R49 branches appended its OWN `| R49 |` canonical-index
+  row — three receipts for one round, and the R19 uniqueness pin is absolute:
+  `duplicated index rows: R49, R49, R49`.
+- [cascade] the readme-count pin (235 claimed) ran red as COLLATERAL, not as a
+  second lie: its inner spawn excludes only itself, so the failing uniqueness
+  pin dropped the spawn's `# pass` by one (233, liveSuite 234) against the
+  correctly-verified 235. One root cause, two red pins — fix the row, both
+  heal. No count edit needed; the R49 count repair (#66) was correct all along.
+- [fix] the three rows consolidated into one R49 row by the R2 branch-pair
+  convention (precedent R24/R26/R27/R40/R42), every branch name and base kept;
+  receipt-completeness unaffected (it matches round NUMBERS, a Set). No code,
+  no test, no page change — docs-only repair, the pins did exactly their job.
+- [verify] node --test tests/*.test.js: 237 tests, 235 pass, 0 fail, 2 honest
+  skips (stone sign-lane live pins, pinned 1f6036a has no signTip — by
+  design); tools/test-qa.js 8/8; page-parse canary green; site build green;
+  receipt-completeness OK.
 
 ## Round 49 — main-repair: the #62 merge result red, one pin, named by the pin itself
 
