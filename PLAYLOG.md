@@ -6,7 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R40 | 2026-09-27 | playtest-round-40 (vs main 4bb0264, post-#52) | canonical |
+| R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
 | R37 | 2026-09-27 | r37-prerun-stone-seal (vs main dd7f858, post-#46) | canonical |
@@ -48,39 +48,37 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
-## Round 40 — k2d8 (cron pulse) — 2026-09-27 — mode: play-tester — vs main 4bb0264 (post-#52)
+## Round 40 — playtest: four P4 findings, first one repaired (coev label/axis divergence)
 
-*Receipt: PR to be posted — branch playtest-round-40, vs main 4bb0264, post-#52-merge (R39 canonical).*
+**vs main 4bb0264 (post-#52) — playtest round PR #53 (Casey), repair branch r40-coev-label-axis**
 
-**Played.** main 4bb0264 (R39 merged): suite 197/197 under the canonical glob + tools/test-qa.js 8/8, zero skips; README count 205 (197+8) matches live — the readme-count pin is green. `node tools/prerun.js` exit 0; the canonical five byte-identical for the **17th straight round** (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps / 93 keeps / 0 live); stone seal verified-before-write (mirror ok, links 5, tip ffe8abd8…), sign lane skipped labeled (QUILT_STONE_DIR unset). Receipt-completeness at the tip: **42 round-bearing merge PRs → 32 round numbers → all receipted**, exit 0. VERIFIED_CLAIMS: 48 registered (47 node-pinned, 1 amber browser-only `cells-render`), every proofTest file exists on disk. v1 (the only tag) → main: 118 commits, core.js +356/−9 — the quilt's entire honesty superstructure post-dates the tag.
+Play-tester round (PR #53): main verified green (suite 197/197 + qa 8/8,
+17th frozen canonical, receipt-completeness exit 0, stone seal mirror ok),
+four P4 findings, no P1–P3. Spec'd next version: 6 items.
 
-Zero open PRs at round start — the first clean-tree start since R28.
+Findings (from PR #53):
+1. [P4] Coev-strip label/axis divergence — coin journal label uses the
+   data-derived `axis`, coev strip label used the raw `gens` header. R23
+   lesson half-applied.
+2. [P4] L1 maxSpeed phantom hitBoost — metric records boosted speed the
+   ball never moves at (≤3% on hit frames).
+3. [P4] parseCliArgs seed-0 collapse — seed "0" parses to falsy 0,
+   silently defaults.
+4. [P4] prerun-coev.js has no birth seal — coev.js (5th canonical
+   artifact) carries md5 print only, no chained seal.
 
-### Deltas observed (shapes of change)
-- **d(learning)/d(version) = 0 — 17th consecutive frozen training round (R23→R40).** Every played artifact's prerun md5s identical; the paddle has not moved. All motion is in the receipt/provenance plane.
-- **d(trust-surface)/d(version): the plane of competition has migrated from "does it learn" to "can you prove what it learned."** R38 made receipt-absence structurally impossible (42 merges, all receipted — machine-enforced). R39 added producer signatures on the birth-seal tip. The training plane is frozen not because it is finished but because the experiment's frontier moved — the receipt plane is where the last 7 rounds (R33→R39) shipped exclusively.
-- **Failure-mode migration (39-round view):** the structural lie classes are all pinned — ghost hitbox (R3), silent degrades (R12/R16/R28), phantom receipts (R19/R38), split-brain counts (R19/R35), unanchored exports (R26/R30), unsigned seals (R37/R39). What survives is the **P4-precision class**: label/axis divergences and metric edge cases that only a close-reading play-tester catches (two booked below).
+### What shipped here (finding 1)
 
-### Lies hunted
-- **[P4, found by reading] `renderCoevStrip` label/axis divergence (the R23 lesson, half-applied).** The coin journal label reads `gens 0-${axis}` (data-derived); the coev strip label reads `gens 0-${gens}` (the passed-in header). The R23 pin taught "the axis derives from the DATA, not the gens header" and R25's coev strip applied it to tick positioning (`axis = Math.max(1, gens||0, …rows.map(r=>r.gen||0))`) — but the label still prints the raw header. If a coev artifact ever carries rows with `gen > gens`, the label under-reports the axis while ticks render correctly: an instrument claiming `gens 0-0` while showing data through gen 200. Latent today (max ledger gen == gens in the shipped artifact), but the divergence class is exactly what R23 pinned for its sibling. [grep-verified: `index.html:150` uses `axis`, `index.html:178` uses `gens`]
-- **[P4, found by running] L1 `maxSpeed` records one frame of phantom hitBoost.** `step()` multiplies `g.speedMul *= hitBoost` after ball movement/death-check; the next frame resets `speedMul = 1 + frames*ramp` before movement. The boost is dead code for dynamics (core.js documents this) but the `maxSpeed` metric — displayed in stats, recorded in checkpoints — captures the boosted value: the ball never moves at that speed. Reproduced by tracing a seeded run: maxReported 1.0652 > maxActual 1.0648. ≤3% inflation on hit frames, display-only, but "speed x3.40" overstates the ball's true max by exactly one hitBoost factor when the last frame is a hit. Not pinned by any test.
-- **[P4, found by reading] `parseCliArgs` seed-0 collapse.** `parseInt("0", 10) || 20260926` — seed "0" parses to 0, falsy, silently becomes the default. `node tools/wal-session.js 0 --out x.json` replays the default seed, not seed 0. Edge case (0 is a valid LCG seed), not user-facing in the page.
-- **[structural gap, found by reading] `prerun-coev.js` has no birth seal.** The R37 lane seals curve.json + L0/1/2 at birth (4 rows); R39 staples the tip. But `coev.js` — the 5th canonical artifact, md5-frozen 17 rounds — carries only a printed md5, no chained seal. The R37 entry documented this as "coev.js belongs to prerun-coev.js's own lane," but 7 rounds later that lane still has no seal while its sibling has seal + signature. Asymmetric provenance on artifacts of equal canonical status.
-- **[none P1–P3 found — crown claims re-verified live on main]** canonical five byte-identical; suite 197/197 + qa 8/8; readme-count 205 exact; receipt-completeness exit 0; honesty two-way 48/48 (47 node-pinned + 1 amber, all proofTest files exist); curve.json flips/swaps/keeps exact (182/89/93, 0 live); coev.js ledger real (121 rows, 120 kills / 1 cap, head 8663279a…); stone seal mirror-verified (5 links, tip ffe8abd8…); VERIFIED_CLAIMS ↔ tests/ two-way match green.
-
-### Next version spec (competitive improvements)
-- [small] **Coev-strip label/axis convergence:** label prints `axis` (data-derived) exactly like the coin journal; pin the divergence case (gens=0 header, data gen=200 → label must read "gens 0-200"). why: the R23 lesson should be uniform across both strip instruments; a label that under-reports its own axis is a precision lie. verify: extend `tests/coev-strip-glue.test.js` with the label-vs-data divergence pin (FAIL-first on main).
-- [small] **prerun-coev.js birth seal + sign staple:** extend the R37 lane + R39 pilot to `coev.js` — the same toStoneV1 → verify-before-write → write contract, the same signTip staple when the checkout ships it. why: asymmetric provenance on equal-canonical artifacts; the coev artifact is the one a fleet verifier would walk first (the GAN pair is the experiment's crown claim). verify: 6th seal row appears, mirror ok, sign-lane skip labeled when the checkout lacks signTip; FAIL-first on pristine main.
-- [small] **L1 maxSpeed metric honesty:** either (a) document the one-frame phantom-boost inclusion in the metric comment, or (b) move the metric to the pre-boost value and epoch the canonical set (preferred — the metric should mean what it says; the 17-round freeze makes the epoch cheap: one prerun + one md5-lineage pin update). why: "speed x3.40" that the ball never reached is a precision lie in the most visible number on the page. verify: post-fix, maxReported == maxActual on a traced run; canonical set updates with receipt.
-- [small, carried R35→R38] **lens-freshness pin** — unchanged from R38's spec; the merge-gate clones aa5a041 while quilt-doctor main advances.
-- [medium, carried R37→R38] **canonical-md5 lineage for the WAL session export** — verified on #48's merge: the session seal covers session rows only; the five canonical artifacts' md5s are not in the seal. Extend or close.
-- [large, carried R12→R39] **C1 scaling study; advice-aware GA.**
-
-### Siblings studied this round
-SuperInstance/quilt-doctor aa5a041 (the vendored lens the R29/R32 pins cite — re-confirmed loadable and shape-checked by tools/doctor-verdict.js), SuperInstance/quilt-stone (the birth-seal + sign-lane authority the R36/R37/R39 lanes cite). The sign-lane pilot's skip-when-closed behavior verified by running prerun with `QUILT_STONE_DIR` unset.
+- `index.html` renderCoevStrip: label `gens 0-${gens}` → `gens 0-${axis}`,
+  matching renderCoinJournal's R23 form — the label now counts exactly the
+  axis the ticks plot against.
+- Pin in tests/coev-strip-glue.test.js: header under-reporting the data
+  (gens=0, rows to gen 200) must render `gens 0-200`, never `gens 0-0`.
+  FAIL-first by construction: the raw-header label on main reads `gens 0-0`.
+- VERIFIED_CLAIMS +1 (coev-strip-label-axis, Round 40).
 
 ### Verdict
-ship (play-tester round; zero P1–P3 lies on main after 40 rounds — the structural pins are holding; the booked P4s are precision-class, all spec'd for a future builder).
+MERGEABLE (findings 2–4 remain open for the next lane).
 
 ## Round 39 — stone-sign-pilot: the producer staples the birth-seal chain's tip (STONE-V2-PILOTS first sign pilot)
 
