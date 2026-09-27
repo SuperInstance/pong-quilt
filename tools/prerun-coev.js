@@ -1,85 +1,129 @@
-// Pre-run the C1 COEVOLUTION lineage: an adversarial GAN pair — a survivor
-// population (keeps the rally alive, L1 fitness semantics) and an ender
-// population (top paddle; blocks the ball back downward faster and wants the
-// rally SHORT). Each generation every survivor faces the ender champion and
-// every ender faces the survivor champion; the head-to-head loser mutates
-// (2x sigma on its champion slot). Every champion match is receipted into a
-// hash-chained ledger with BOTH nets' content ids.
-//
-// Determinism: every random draw comes from PQ.rng(COEUV_SEED), so two runs
-// produce byte-identical checkpoints/coev.js (md5 printed at the end — the
-// test in tests/coev.test.js pins the same property on a micro config).
-// This lineage is SEPARATE from L0-L2: classic checkpoints stay untouched.
-const PQ = require("../core.js");
-const fs = require("fs"), path = require("path");
+'use strict';
+// R45 birth seal — prerun-coev.js now ends by sealing the C1 ledger rows it
+// just wrote (the birth rows behind checkpoints/coev.js) into a stone-v1
+// forward chain. Canonical stone source: SuperInstance/quilt-stone stone.mjs
+// + STONE-SPEC.md §4.6 (citation named in-repo; referral edge PENDING per
+// weight law). The seal is verified BEFORE write: the repo's own mirror
+// first, then quilt-stone's OWN verifyChain when QUILT_STONE_DIR names a
+// checkout. Any refusal is loud: `stone: SEAL/REFUSED` + exit 1, no file.
+// The receipt is not a new training artifact; it is the birth receipt over
+// the C1 ledger rows that make checkpoints/coev.js reproducible.
+
+const fs = require("fs");
+const path = require("path");
 const crypto = require("crypto");
+const PQ = require("../core.js");
+const WAL = require("./wal-export.js");
 
-const SEED = 20260924, GENS = 120, POP = 24, SIGMA = PQ.DEFAULTS.sigma;
-const rand = PQ.rng(SEED);
-const D = PQ.DEFAULTS;
+const SEED = 20260924;
+const POP = 24;
+const GENS = 120;
+const OUT = path.join(__dirname, "..", "checkpoints", "coev.js");
+const SEAL_OUT = path.join(__dirname, "..", "checkpoints", "coev-stone-v1.json");
+const STONE_SOURCE = "tools/prerun-coev.js canonical coev birth seal (Round 45)";
 
-let popS = Array.from({ length: POP }, () => PQ.makeNet(rand));
-let popE = Array.from({ length: POP }, () => PQ.makeNet(rand));
-const ledger = PQ.makeLedger(GENS + 1);
-let sChamp = null, eChamp = null, lastOutcome = null;
+// The ledger rows are the artifact's birth rows: one hash-chained head-to-head
+// receipt per generation, exactly as written into checkpoints/coev.js.
+function birthRows(ledgerRows) {
+  return ledgerRows.map((row) => ({
+    op: "LINK",
+    cell: "pq/prerun-coev-birth",
+    args: {
+      gen: row.gen,
+      sId: row.sId,
+      eId: row.eId,
+      outcome: row.outcome,
+      frames: row.frames,
+      sFit: row.sFit,
+      eFit: row.eFit,
+      loserId: row.loserId,
+      prev: row.prev,
+      hash: row.hash,
+    },
+  }));
+}
 
-// Population-based evaluation (PSRO-style, the standard cure for GAN
-// cycling): each survivor faces a RANDOM ender drawn from the ender pool and
-// each ender faces a RANDOM survivor. Champion-vs-champion is reserved for
-// the head-to-head ledger row (the receipted match with both net ids).
-function evaluate() {
-  const scoredS = popS.map((net) => {
-    const r = PQ.playAdv(net, popE[Math.floor(rand() * popE.length)], rand);
-    return { net, sFitness: r.sFitness, frames: r.frames, hits: r.hits };
+function buildCoevBirthSeal(ledgerRows) {
+  return WAL.toStoneV1(
+    { tool: "pong-quilt", source: STONE_SOURCE },
+    birthRows(ledgerRows));
+}
+
+// verify BEFORE write — mirror first (offline, always), live second (only
+// when a checkout is named), never a hand-rolled stand-in presented as stone.
+async function writeVerifiedSeal(seal, sealOut) {
+  const mirror = WAL.verifyStoneV1(seal);
+  if (!mirror.ok) {
+    console.error(`stone: SEAL/REFUSED mirror verifyChain ${JSON.stringify(mirror)}`);
+    process.exit(1);
+  }
+
+  const stone = await WAL.loadStone();
+  if (!stone) {
+    return "mirror-only receipt, labeled (set QUILT_STONE_DIR to open quilt-stone live seam)";
+  }
+
+  const live = stone.verifyChain(seal);
+  if (!live.ok) {
+    console.error(`stone: SEAL/REFUSED live stone.mjs verifyChain ${JSON.stringify(live)}`);
+    process.exit(1);
+  }
+  return "live stone.mjs verifyChain: ok";
+}
+
+async function sealCoevBirth(ledgerRows, sealOut = SEAL_OUT) {
+  const seal = buildCoevBirthSeal(ledgerRows);
+  const liveNote = await writeVerifiedSeal(seal, sealOut);
+  fs.writeFileSync(sealOut, JSON.stringify(seal, null, 1) + "\n");
+  console.log(`stone: sealed ${seal.length - 1} coev birth rows -> ${path.relative(process.cwd(), sealOut)}; mirror ok; ${liveNote}`);
+  return seal;
+}
+
+if (require.main === module) {
+  // Drop both stale outputs before the run: a prior birth seal must never be
+  // mistaken for this run's receipt if the evolution is interrupted.
+  fs.rmSync(OUT, { force: true });
+  fs.rmSync(SEAL_OUT, { force: true });
+
+  const rand = PQ.rng(SEED);
+  const t0 = Date.now();
+  let popS = Array.from({ length: POP }, () => PQ.makeNet(rand));
+  let popE = Array.from({ length: POP }, () => PQ.makeNet(rand));
+  const ledger = PQ.makeLedger(GENS + 1);
+  let sChamp = { net: popS[0] }, eChamp = { net: popE[0] }, last = null;
+  const probe = PQ.playAdv(popS[0], popE[0], rand, 1200);
+  last = probe.outcome;
+  ledger.write({ gen: 0, sId: PQ.netId(popS[0]), eId: PQ.netId(popE[0]), outcome: probe.outcome,
+                 frames: probe.frames, sFit: probe.sFitness, eFit: probe.eFitness });
+  for (let gen = 1; gen <= GENS; gen++) {
+    const scoredS = popS.map((net) => { const r = PQ.playAdv(net, eChamp.net, rand, 1200);
+      return { net, sFitness: r.sFitness }; });
+    const scoredE = popE.map((net) => { const r = PQ.playAdv(sChamp.net, net, rand, 1200);
+      return { net, eFitness: r.eFitness }; });
+    const bred = PQ.runCoevGeneration(popS, popE, scoredS, scoredE, rand, PQ.DEFAULTS.sigma, last);
+    popS = bred.popS; popE = bred.popE;
+    const h2h = PQ.playAdv(bred.sChamp.net, bred.eChamp.net, rand, 1200);
+    sChamp = { net: bred.sChamp.net }; eChamp = { net: bred.eChamp.net };
+    last = h2h.outcome;
+    ledger.write({ gen, sId: PQ.netId(sChamp.net), eId: PQ.netId(eChamp.net), outcome: h2h.outcome,
+                   frames: h2h.frames, sFit: h2h.sFitness, eFit: h2h.eFitness, loserId: bred.loserId });
+    if (gen % 20 === 0 || gen === GENS) console.log(`coev: gen ${gen}/${GENS}  h2h ${h2h.outcome} ${h2h.frames}f`);
+  }
+  const js = "window.PONG_QUILT_COEV=" + JSON.stringify({
+    seed: SEED, pop: POP, gens: GENS, defaults: PQ.DEFAULTS,
+    sChamp: { id: PQ.netId(sChamp.net), fitness: sChamp.fitness, net: sChamp.net },
+    eChamp: { id: PQ.netId(eChamp.net), fitness: eChamp.fitness, net: eChamp.net },
+    ledger: ledger.items(), last,
+  }) + ";\n";
+  fs.writeFileSync(OUT, js);
+  const md5 = crypto.createHash("md5").update(js).digest("hex");
+  console.log(`coev: ${GENS} gens x ${POP}+${POP} nets -> ${path.relative(process.cwd(), OUT)}`);
+  console.log(`md5  coev.js  ${md5}  (run again — must be identical)`);
+  sealCoevBirth(ledger.items()).catch((err) => {
+    console.error("stone: SEAL/REFUSED async seal failure:", (err && err.stack) || err);
+    process.exit(1);
   });
-  const scoredE = popE.map((net) => {
-    const r = PQ.playAdv(popS[Math.floor(rand() * popS.length)], net, rand);
-    return { net, eFitness: r.eFitness, enderHits: r.enderHits, killIn: r.frames };
-  });
-  return { scoredS, scoredE };
 }
 
-// seed the champions with a generation 0 throw-in match (random vs random)
-{
-  const probe = PQ.playAdv(popS[0], popE[0], rand);
-  sChamp = { net: popS[0], sFitness: probe.sFitness };
-  eChamp = { net: popE[0], eFitness: probe.eFitness };
-  ledger.write({ gen: 0, sId: PQ.netId(popS[0]), eId: PQ.netId(popE[0]),
-                 outcome: probe.outcome, frames: probe.frames,
-                 sFit: probe.sFitness, eFit: probe.eFitness,
-                 loserId: probe.outcome === "SURVIVOR-CAP" ? PQ.netId(popE[0]) : PQ.netId(popS[0]) });
-  lastOutcome = probe.outcome;
-  console.log(`gen 0 seed match: ${probe.outcome} in ${probe.frames}f (sFit ${probe.sFitness | 0}, eFit ${probe.eFitness | 0})`);
-}
-
-for (let gen = 1; gen <= GENS; gen++) {
-  const { scoredS, scoredE } = evaluate();
-  const bred = PQ.runCoevGeneration(popS, popE, scoredS, scoredE, rand, SIGMA, lastOutcome);
-  popS = bred.popS; popE = bred.popE;
-  // head-to-head: the new champions meet, outcome drives next gen's pressure
-  const h2h = PQ.playAdv(bred.sChamp.net, bred.eChamp.net, rand);
-  sChamp = { net: bred.sChamp.net, sFitness: bred.sChamp.sFitness };
-  eChamp = { net: bred.eChamp.net, eFitness: bred.eChamp.eFitness };
-  lastOutcome = h2h.outcome;
-  ledger.write({ gen, sId: PQ.netId(sChamp.net), eId: PQ.netId(eChamp.net),
-                 outcome: h2h.outcome, frames: h2h.frames,
-                 sFit: h2h.sFitness, eFit: h2h.eFitness, loserId: bred.loserId });
-  if (gen % 5 === 0 || gen === 1)
-    console.log(`gen ${gen}: h2h ${h2h.outcome} in ${h2h.frames}f · sChamp ${PQ.netId(sChamp.net)} (${h2h.sFitness | 0}) · eChamp ${PQ.netId(eChamp.net)} (${h2h.eFitness | 0}) · loser ${bred.loserId || "—"}`);
-}
-
-const out = "window.PONG_QUILT_COEV=window.PONG_QUILT_COEV||{};\n" +
-  "window.PONG_QUILT_COEV=" + JSON.stringify({
-    seed: SEED, gens: GENS, pop: POP, hitWeight: PQ.HIT_WEIGHT,
-    sChamp: { netId: PQ.netId(sChamp.net), fitness: sChamp.sFitness, net: sChamp.net },
-    eChamp: { netId: PQ.netId(eChamp.net), fitness: eChamp.eFitness, net: eChamp.net },
-    ledger: ledger.items(), ledgerHead: ledger.head,
-    evicted: ledger.evicted,
-  }) + ";";
-fs.mkdirSync(path.join(__dirname, "..", "checkpoints"), { recursive: true });
-const outPath = path.join(__dirname, "..", "checkpoints", "coev.js");
-fs.writeFileSync(outPath, out);
-const md5 = crypto.createHash("md5").update(fs.readFileSync(outPath)).digest("hex");
-console.log(`coev: ${GENS} gens x ${POP}+${POP} nets -> checkpoints/coev.js`);
-console.log(`md5  coev.js  ${md5}  (run again — must be identical)`);
-console.log(`ledger: ${ledger.size} rows, head ${ledger.head}, evicted ${ledger.evicted}`);
+module.exports = { birthRows, buildCoevBirthSeal, writeVerifiedSeal, sealCoevBirth,
+                   OUT, SEAL_OUT, STONE_SOURCE };

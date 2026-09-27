@@ -97,6 +97,15 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
   changed lineage re-emits the seal on the next run, and a seal whose md5s
   do not match the files it names fails verification instead of passing
   silently.
+- **The C1 birth ledger is receipted at birth too (Round 45).** Every
+  `node tools/prerun-coev.js` run ends by sealing the ledger rows it just
+  wrote — the 121 hash-chained head-to-head rows behind
+  `checkpoints/coev.js` — into `checkpoints/coev-stone-v1.json`, the same
+  stone-v1 dialect, verified BEFORE write (mirror first, quilt-stone live
+  when named) and refused loudly on mismatch. That seal is also a receipt,
+  not a new training artifact: the canonical training set remains the same
+  five files, and the C1 receipt covers the birth rows that make the fifth
+  file reproducible.
 - **The process is the product.** A beautiful demo with a dead loop is a
   cathedral; a humble demo with a living experiment chain is a shed that
   breeds. We build sheds that breed.
