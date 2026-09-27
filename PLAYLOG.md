@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R49 | 2026-09-28 | r49-count-bistability (vs main ea9dfbb, post-#62) | canonical |
 | R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
 | R48 | 2026-09-28 | r48-main-repair (vs main 4c13b58, post-#61) | canonical |
 | R46 | 2026-09-28 | r46-main-repair (vs main 1da41be, post-#58) | canonical |
@@ -55,6 +56,33 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 49 — count bistability: the suite's pass count depended on an unmerged side branch
+
+**vs main ea9dfbb (post-#62) — branch r49-count-bistability.**
+
+- [finding] the readme-count pin went bistable 235↔237: two stone-v1 sign-live
+  pins (tests: signTip staples the prerun-shaped seal; ephemeral keypair
+  round-trips) PASS when /tmp/quilt-stone has the sign lane and honestly SKIP
+  ("named checkout has no signTip") when it does not. CI pins the stone clone
+  at 1f6036a (canonical, pre-sign main — verified quilt-stone main is 5081914
+  and the signTip merge 023edbe is NOT on it: it lives on side branches). This
+  box's /tmp/quilt-stone had drifted onto a side branch, so local runs passed
+  237 where CI ran 235 — R47's merged README claimed 237 and main went red on
+  the count pin the merge landed. Same freshness class R47 named for the
+  doctor lens; the count pin's "one value everywhere" (R35) holds only while
+  every lens sits at its pinned commit.
+- [named] PR #63's admin-merge comment claimed ONE inherited red; its gate
+  carried TWO (honesty + readme-count) — corrected in the PR #62 comment and
+  named here.
+- [fix] README count 245→243 (235 in tests/ + 8 qa) — the canonical,
+  pinned-lens number; local /tmp/quilt-stone reset to 1f6036a (lens hygiene,
+  same class as the R35 doctor-lens pinning). NOT "fixed" by pinning CI to the
+  side branch: an unmerged lane is not canonical, and following it would move
+  the lens the R39 pilot pins are written against without a quilt-stone main
+  merge to cite.
+- [suite] 235 pass + 2 honest-skip + qa 8/8 at the canonical lens state;
+  readme-count green in CI shape and locally.
 
 ## Round 47 — doctor-lens freshness: the receipt names the commit it read
 
