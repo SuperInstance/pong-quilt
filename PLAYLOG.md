@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R49 | 2026-09-28 | r49-readme-count-repair (vs main ea9dfbb, post-#62) | canonical |
 | R49 | 2026-09-28 | r49-count-bistability (vs main ea9dfbb, post-#62) | canonical |
 | R49 | 2026-09-28 | playtest-round-49 (vs main 166a1f2, post-#63) | canonical |
 | R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
@@ -57,6 +58,20 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 49 — main-repair: the #62 merge result red, one pin, named by the pin itself
+
+**vs main ea9dfbb (post-#62) — branch r49-readme-count-repair.**
+
+- [finding] exactly one red on the #62 merge run (CI 36350039211):
+  readme-count — README claimed `245 = 237 in tests/ + 8 in qa` while the
+  live suite runs 235. The #62 bump (+4 over R48's 233) overshot: it added
+  3 freshness pins on a base that had already moved under it and counted
+  +4. The merge-gate did its job — the pin named the rot at the merge tip,
+  nothing else was red (canonical-index green, qa 8/8 green).
+- [fix] docs only, no code touched. README count line set to the
+  live-verified `243 = 235 in tests/ + 8 in tools/test-qa.js`; suite re-run
+  green 235/235 + qa 8/8.
 
 ## Round 49 — count bistability: the suite's pass count depended on an unmerged side branch
 
