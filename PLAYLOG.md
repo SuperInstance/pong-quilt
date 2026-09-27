@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R46 | 2026-09-28 | r46-main-repair (vs main 1da41be, post-#58) | canonical |
 | R44 | 2026-09-28 | r44-site-v2 (vs main 1da41be, post-#58) | canonical |
 | R43 | 2026-09-28 | r43-seed-zero-honesty (PR #57, vs main 2aa7901, post-R42 main-repair) | canonical |
 | R42 | 2026-09-28 | r42-site (PR #58, vs main 4d447ed, post-#55) + playtest-round-42 (PR #56 main-repair, vs main 4d447ed, post-#55) — two canonical branches; the #58 merge concatenated both stacks (index + entries + README counts) | canonical — deduped by R44 (R31/R2 convention) |
@@ -14,9 +15,8 @@ Every round is a receipted observation in the loop. Newest first.
 | R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) | canonical |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
 | R43 | 2026-09-28 | r43-seed-zero-honesty (vs main 2aa7901, post-R42 main-repair) | canonical |
-| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, R40 finding 2) | canonical — index row + entry restored by R42 repair (lost in the #55 merge conflict resolution, same class as R34) |
-| R42 | 2026-09-28 | playtest-round-42 (vs main 4d447ed, post-#55) | canonical |
-| R41 | 2026-09-27 | r41-maxspeed-honesty (vs main 4bb0264, post-#52) | canonical — entry + index row restored by R42 (lost in the #55 conflict resolution; verified against 9c701d2) |
+| R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) + playtest-round-42 (vs main 4d447ed, post-#55) — two canonical branches, one row (R2 branch-pair convention) | canonical — site v2; entry + index row restored by R42 repair (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
+| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main 4bb0264→bd91026, post-#52/#53) | canonical — R40 playtest finding 2; entry + index row restored by R42 (lost in the #55 merge conflict resolution, same class as R34; verified against 9c701d2) |
 | R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
@@ -59,6 +59,24 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 46 — main-repair: CI never built the site; index + count rot at the #58 tip
+
+**vs main 1da41be (post-#58) — branch r46-main-repair.**
+
+- The R42 site-v2 merge (#58) left main CI RED: `site-glue` reads
+  `site/dist` + `site/generated/provenance.json`, which are GITIGNORED
+  build output, and no workflow step ever ran the builder — the suite job
+  crashed at file level (exit 7) on every run since (gh run list verified:
+  #55-#58 merges all red). merge-gate now runs `node tools/build-site.mjs`
+  before the suite (deterministic, <2s, seals 9 demo files) — the R39
+  shallow-checkout lesson, one job later.
+- Canonical index: the #52-#58 merge burst stacked THREE R41 rows + TWO R42
+  rows (restoration entries appended instead of merged) — collapsed to one
+  row per round per the R2 branch-pair convention; no heading lost.
+- README count rot: claimed 216 in `tests/`, live 223 — the readme-count
+  pin named it, corrected to 223 (+8 qa = 231).
+- Docs + workflow only; training path untouched. Suite 223/223 + qa 8/8
+  green with the site build present (the CI shape from now on).
 ## Round 44 — site v2: play without leaving the page (+ the #58 merge-wound repair)
 
 **vs main 1da41be (post-#58) — r44-site-v2**
