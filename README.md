@@ -60,8 +60,8 @@ script prints the md5 of every emitted file):
 
 Reproduce any row: `node tools/prerun.js` (≈40 s) regenerates all three levels
 plus `checkpoints/curve.json` and prints their md5s. Current artifacts:
-`level0.js 8a49b0f6…`, `level1.js aa4d7c4b…`, `level2.js 63b7fdd5…`,
-`curve.json ba1c919a…` (truncated; the script prints full digests).
+`level0.js bc15d414…`, `level1.js 1125d59c…`, `level2.js 50137ceb…`,
+`curve.json f9b20e7d…` (the post-R50 line; EXPERIMENTS.md keeps the earlier lines)
 
 Two honest notes on the shape: **L1 > L2** under the new weights — the gen-60
 champion hit 28 times where the gen-260 one hit 27, and one more hit outweighs
@@ -79,6 +79,7 @@ browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
 (245 tests total: 237 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(255 tests total: 247 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
 is pinned in EXPERIMENTS.md).
 
@@ -210,6 +211,32 @@ slider from mild suggestion to strict override**:
   decoded waveform live. Spec: `research/2026-09-24-quantum-audio-L2.md`.
   Verified by running: `node tools/test-qa.js` (8 tests).
 
+## What a reader learns
+
+- **A genetic algorithm is a legitimate alternative to backprop** — no
+  gradients, no loss function to differentiate, just breed-the-fittest over
+  generations. It is slower per-step than backprop but needs nothing
+  differentiable: fitness can be a raw game outcome (`frames + hits×100`),
+  not a smooth function of the weights.
+- **Fitness functions can lie by construction, not just by bug.** Under the
+  old `×25` hit weight, a champion that merely survived (0 hits) beat a
+  champion that fought and died sooner — the fitness function itself
+  rewarded luck over skill. Fixing it wasn't a bug fix in the training loop;
+  it was rewriting what "winning" means, then re-evolving from scratch.
+- **A drawn hitbox and a registered hitbox can silently diverge.** A 12.5%
+  ghost margin existed for as long as nobody made the draw call and the
+  physics call reference the same function — `PQ.effectivePaddle(px)` fixes
+  the class of bug, not just the instance.
+- **Coevolution (a GAN pair trained as adversaries) needs population-based
+  training to avoid cycling** — each side facing a *random* opponent from a
+  pool, not always the current best, is the standard cure, and the ledger
+  here shows it working: a losing side that mutates harder (2×σ) can flip a
+  110-generation-long losing streak in one generation.
+- **A wristband/ledger is worth more than a claim.** Every verified number in
+  this README is backed by a named test file a reader can run themselves
+  (`tests/honesty.test.js` and friends) — the honesty is falsifiable, not
+  asserted.
+
 ## Doctrine
 
 Numbers are verified by running (`tools/prerun.js`, `tools/prerun-coev.js`;
@@ -222,3 +249,23 @@ training is the colony; the receipts are the memory; the wristband says which
 claims have proofs. *Shape is what time does to signal — here, the signal is
 a ball, and the shape is a paddle that learned to wait where the future
 arrives.*
+
+<!-- QUILT:LINKS:START — generated from .quilt/links.yml by quilt-links.mjs. Do not edit by hand. -->
+## Cross-pollination — the Reader's Fold
+
+*Part of the **quilt** family. Under [Law 6](https://github.com/SuperInstance/jev-quilt), this repo carries no verdicts about its neighbors — only content-addressed pointers you fold under your own weights.*
+
+**Grown on** — [quilt-edge-ml](https://github.com/SuperInstance/quilt-edge-ml)
+
+**Provides** (fold these from here)
+- `coevolution-harness` — PSRO-style GAN-pair coevolution (survivor vs ender) with a hash-chained, birth-sealed receipt ledger over every head-to-head
+
+**Consumes** (folded from elsewhere)
+- [quilt-edge-ml](https://github.com/SuperInstance/quilt-edge-ml) — ring_buffer (bounded FIFO) and out_of_core (streaming, chunked-eval) patterns, ported into core.js as makeRing and makeEvaluator
+
+**Related** (1-hop siblings — Law 7)
+- [eos-seed](https://github.com/SuperInstance/eos-seed) — sibling "learning without backprop" teaching artifact — genetic algorithm here, ternary coordinate-stepper there
+- [cargo-line-tycoon](https://github.com/SuperInstance/cargo-line-tycoon) — sibling "ML/substrate you can watch think" teaching artifact
+
+<sub>Regenerate: `node quilt-links.mjs` · Fleet map: [FLEET.md](https://github.com/SuperInstance/fleet-seeds/blob/main/FLEET.md)</sub>
+<!-- QUILT:LINKS:END -->

@@ -7,6 +7,9 @@ Every round is a receipted observation in the loop. Newest first.
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
 | R51 | 2026-09-28 | r51-playlog-newest-first (vs main 629bfd8, post-#67) | canonical |
+| R50 | 2026-09-28 | r50-main-repair (vs main b767404, post-#66) | canonical |
+| R49 | 2026-09-28 | r49-readme-count-repair (PR #66, vs main ea9dfbb, post-#62) + r49-count-bistability (PR #65, vs main ea9dfbb, post-#62) + playtest-round-49 (PR #64, vs main 166a1f2, post-#63) — three canonical branches, one round; the #64/#65/#66 merges stacked three index rows on R49 | canonical — deduped by R50 (R42/R31/R2 convention) |
+| R50 | 2026-09-28 | r50-difficulty-escalation (vs main 629bfd8, post-#67; stacked on r49c #69) | canonical |
 | R49 | 2026-09-28 | r49-readme-count-repair + r49-count-bistability (both vs main ea9dfbb, post-#62) + playtest-round-49 (vs main 166a1f2, post-#63) — three canonical branches, one row (R2 branch-pair convention) | canonical — deduped by the R49 main-repair addendum below (R31/R2 convention) |
 | R48 | 2026-09-28 | r48-main-repair (vs main 4c13b58, post-#61) | canonical |
 | R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
@@ -91,6 +94,90 @@ Branch `r51-playlog-newest-first`. Docs + pins only; no code touched.
   skips (stone sign-lane live pins, pinned 1f6036a has no signTip — by
   design); tools/test-qa.js 8/8; page-parse canary green; site build green;
   receipt-completeness OK.
+## Round 50 — main-repair: the #66 merge result red on two pins, one root cause
+
+**vs main b767404 (post-#66) — branch r50-main-repair.**
+
+Casey's #64/#65/#66 merge stack landed all three R49 branches, and each branch
+had written its own canonical-index row — three `| R49 |` rows where the R2
+convention allows exactly one per round (multiple `## Round 49` headings below
+are legitimate; multiple index rows are the drift class R31/R42/R44 deduped
+before). Both red pins were the same root: the uniqueness pin named the dup
+rows directly, and the readme-count pin counted the suite as 234 (its spawn
+sees the index test fail) against README's live-verified 235. Fix: one merged
+R49 row naming all three branches (R42 row form), no count change — with the
+index green the spawn passes 234, +1 for this file = 235 = README's claim
+(243 = 235 + 8, re-verified by running). FAIL-first: both pins RED on pristine
+main b767404 (CI run at the #66 merge), green only here. Docs only.
+## Round 50 — difficulty escalation: the game hardens until a perfect oracle dies
+
+Branch `r50-difficulty-escalation` (vs main b767404, post-#66). The user's ask: the demo
+game "needs to have more parameters to make the game hard over time like the
+ball getting faster so that the model always eventually fails but it gets
+better at predicting where to be as it needs to think more about the eventual
+position than the current position."
+
+**What changed (all in `DEFAULTS`, no opts layer exists):**
+- `accel: 8e-7` + `maxSpeedMul: 6` — new speed law:
+  `speedMul = min((1+frames·ramp)·hitBoost^hits + accel·frames², maxSpeedMul)`.
+- `hitBoost` REVIVED in L1: it used to multiply speedMul for exactly one
+  frame after the ramp reset (dead code, its own comment admitted it). It now
+  compounds persistently through `hitBoost^hits` — every return makes the ball
+  permanently faster, the same shape C1 documents for `boost`. The old
+  post-hit `speedMul *= hitBoost` line is gone; the boost enters next frame's
+  law via the hit count. Metric honesty is preserved: `maxSeen` still samples
+  the moved-at value at frame start, so no phantom is ever reported (the
+  maxspeed-honesty pins were re-pinned to the new law, FAIL-first red on the
+  old expectations).
+- `shrink: 0.999` + `paddleMin: 0.06` — `effectivePaddle(g)` is now
+  time-varying: width = `max(paddleMin, paddleW·shrink^frames) + 2·margin`,
+  px still the drawn paddle's left edge. ONE law for draw AND death-check in
+  L1 and C1 (a C1-only divergence would have been a ghost-hitbox class).
+- `decisionDrift: 0.05` + `decisionCap: 16` — `decisionIntervalAt(g)`: the
+  model's decision cadence slows as the game hardens (4f → 16f). L1 only;
+  C1 keeps its fixed `decisionInterval` cadence by contract.
+- `swanGrow: 2` — black-swan probability is now `min(1, swanP·speedMul²)` in
+  both lanes (was linear).
+- **Regression lock**: with `accel=0, hitBoost=1, shrink=1, decisionDrift=0,
+  swanGrow=1` the physics is BYTE-IDENTICAL to the pre-R50 law (pinned by a
+  400-frame staged trace against a local mirror).
+
+**The guarantee (the user's core ask), pinned empirically:** a perfect-
+intercept oracle (reflection-aware projection to the paddle row, paddle
+steered to the intercept EVERY frame) dies before frame 3000 on seeds 1..10
+with escalation on — and survives to the 6000-frame cap on seeds 1..3 with
+escalation off. Survival under the old law + guaranteed death under the new
+law = the difficulty curve, not luck. A model that only tracks the current
+position cannot survive; selection now rewards predicting the ball's eventual
+position across a growing decision horizon.
+
+**Demo wiring:** the drawn paddle already reads `effectivePaddle` (auto-
+shrinks); the decision countdown now reads `decisionIntervalAt` (honest); the
+stats line prints live paddle width + sense cadence; C1's ender paddle uses
+the same law at `ex`.
+
+**Canonical re-embed (declared):** curve `f9b20e7d…`, L0 `bc15d414…`, L1
+`1125d59c…`, L2 `50137ceb…`, **coev `946e639a…` byte-UNCHANGED** (escalation
+defaults are inert at coev horizons — no seeded swan draw crosses either
+threshold differently and no coev game lives long enough for shrink to flip an
+outcome). L1/L2 `maxSpeed` → 4.443 / 3.411 (R50 law raises the honest moved-at
+ceiling). The tie journal collapses 182 flips / 89 swaps → **5 flips / 3
+swaps** (escalation spreads fitness values; exact ties become rare). EXPERIMENTS.md
+carries the post-R50 line; the R42 pin now anchors it.
+
+**FAIL-first evidence:** `tests/escalation.test.js` (9 pins) was RED 7/9 on
+the pristine core (byte-regression + control pins pass pre-implementation by
+design), and the two rewritten honesty pins (effectivePaddle geometry, the
+game-ending-hit-frame semantics) were RED on the old expectations.
+
+**Receipt corrections:** README's "Current artifacts" named the pre-R21 set
+(stale since R21 — three lines old); updated to the post-R50 set. The
+maxspeed-honesty header comment still described the R41 one-frame boost
+semantics; rewritten. No prior *test* claims were silently edited — every
+re-pin is declared above.
+
+[suite] 245/245 tests + qa 8/8 green at tip (canonical env, 2 honest signTip
+skips); README count 243→253 (245 in tests/ + 8 qa, pin-verified).
 
 ## Round 49 — main-repair: the #62 merge result red, one pin, named by the pin itself
 

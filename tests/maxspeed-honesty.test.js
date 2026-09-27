@@ -30,29 +30,42 @@ test("newGame initializes maxSeen to the real initial speed (1x)", () => {
   assert.equal(g.maxSeen, 1);
 });
 
-test("a game-ending hit frame: speedMul carries the boost, the metric excludes the phantom", () => {
+test("a game-ending hit frame: speedMul carries NO phantom — the boost enters the law via hitBoost^hits (R50)", () => {
   const g = stageHitFrame();
-  const movedAt = 1 + 10 * RAMP;
+  const movedAt = 1 + 10 * RAMP;                    // value the ball moved at this frame (staged)
+  const lawNext = movedAt + PQ.DEFAULTS.accel * 10 * 10; // R50 law at frames=10, hits=0 — boost term still 1.03^0
   assert.equal(PQ.step(g, 0, noSwan), true, "staged frame must be a hit, not a death");
   assert.equal(g.hits, 1);
-  // dynamics kept: the trailing boost still lands on speedMul (it feeds
-  // sense()/swanP on any subsequent frame — the input law is unchanged)
-  assert.ok(Math.abs(g.speedMul - movedAt * BOOST) < 1e-12,
-    "speedMul itself must still carry hitBoost");
+  // R50: the hit no longer multiplies speedMul on its own frame — the boost
+  // enters PERSISTENTLY through the next frame's law as hitBoost^hits
+  assert.ok(Math.abs(g.speedMul - lawNext) < 1e-12,
+    "no trailing phantom on the hit frame — just the honest accel term");
   // the metric must report only what the ball moved at
   assert.ok(g.maxSeen >= 1, "maxSeen must exist (Round 41 metric)");
   assert.ok(Math.abs(g.maxSeen - movedAt) < 1e-12,
-    "maxSeen records the moved-at speed, not the trailing phantom boost");
-  assert.ok(g.maxSeen < g.speedMul, "phantom boost excluded from the metric");
+    "maxSeen records the moved-at speed");
+  assert.ok(g.maxSeen < g.speedMul, "moved-at metric excludes what the ball never moved at");
+  // and the boost is REAL on the very next frame — persistent, compounding
+  const next = PQ.step(g, 0, noSwan);
+  assert.equal(next, true);
+  const expectedNext = Math.min((1 + 11 * RAMP) * BOOST + PQ.DEFAULTS.accel * 11 * 11, PQ.DEFAULTS.maxSpeedMul);
+  assert.ok(Math.abs(g.speedMul - expectedNext) < 1e-12,
+    "the boost the ball now ACTUALLY moves at (hitBoost^1 in the law)");
 });
 
 test("a boost the next frame ACTUALLY moves at is captured", () => {
   const g = stageHitFrame();
-  PQ.step(g, 0, noSwan); // hit: speedMul now boosted, ball rising
-  const boosted = g.speedMul;
-  assert.ok(boosted > g.maxSeen, "staged: boost not yet moved at");
+  PQ.step(g, 0, noSwan); // hit frame: hits=1, no phantom — ball moved at the staged value
+  const lawNext = (1 + 10 * RAMP) + PQ.DEFAULTS.accel * 10 * 10;
+  assert.ok(Math.abs(g.speedMul - lawNext) < 1e-12, "staged: hit frame carries only the honest law");
   g.y = 0.5; g.vy = -0.5; g.x = 0.5; // away from both paddle lines
-  PQ.step(g, 0, noSwan);
+  PQ.step(g, 0, noSwan);            // this frame MOVES at lawNext...
+  assert.ok(Math.abs(g.maxSeen - lawNext) < 1e-12, "...and maxSeen records that moved-at value");
+  const boosted = Math.min((1 + 11 * RAMP) * BOOST + PQ.DEFAULTS.accel * 11 * 11, PQ.DEFAULTS.maxSpeedMul);
+  assert.ok(Math.abs(g.speedMul - boosted) < 1e-12, "the frame's law now carries hitBoost^1 — a real boost");
+  assert.ok(boosted > lawNext, "boost is a real speedup, not a phantom");
+  g.y = 0.5; g.vy = -0.5; // keep it away from the lines
+  PQ.step(g, 0, noSwan);  // this frame MOVES AT the boosted value
   assert.ok(Math.abs(g.maxSeen - boosted) < 1e-12,
     "the boosted multiplier the next frame moved at is recorded");
 });
@@ -63,8 +76,10 @@ test("playOne reports a maxSpeed the ball really moved at (seeded smoke)", () =>
   const net = PQ.makeNet(rand);
   const r = PQ.playOne(net, rand);
   assert.ok(r.maxSpeed >= 1, "moved at least the initial speed");
-  // loose physical ceiling: every moved-at value is a frame-start speedMul,
-  // which is at most (1 + frames*ramp) scaled by one hit boost ceiling
-  assert.ok(r.maxSpeed <= (1 + r.frames * RAMP) * BOOST + 1e-9,
-    "no reported speed exceeds anything the ball could have moved at");
+  // R50 ceiling: every moved-at value is a frame-start speedMul, which under
+  // the R50 law is at most min((1+frames*ramp)·hitBoost^hits + accel·frames², maxSpeedMul)
+  const ceil = Math.min((1 + r.frames * RAMP) * Math.pow(BOOST, r.hits || 0) +
+                        PQ.DEFAULTS.accel * r.frames * r.frames, PQ.DEFAULTS.maxSpeedMul);
+  assert.ok(r.maxSpeed <= ceil + 1e-9,
+    "no reported speed exceeds anything the ball could have moved at (R50 law)");
 });
