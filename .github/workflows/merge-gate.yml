@@ -65,6 +65,14 @@ jobs:
           git clone https://github.com/SuperInstance/quilt-stone.git /tmp/quilt-stone
           git -C /tmp/quilt-stone checkout 1f6036a
           test -f /tmp/quilt-stone/stone.mjs
+      # R43 main-repair: the site glue pins (R42 site v2) read site/dist +
+      # site/generated/provenance.json — GITIGNORED build output (main CI went
+      # RED on the #58 merge: site-glue crashed at file level, exit 7, because
+      # no step ever ran the builder). The build is deterministic (9 demo
+      # files sealed, provenance sha256s) and takes <2s; without it every run
+      # is red by construction, same class as the R39 shallow-checkout fix.
+      - name: build the site (opens the site lens)
+        run: node tools/build-site.mjs
       - name: node --test tests/*.test.js
         run: node --test tests/*.test.js
 

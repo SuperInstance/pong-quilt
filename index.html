@@ -279,7 +279,9 @@ function continueGen(){
   if(!snap.done)break;
   lastSnap=snap;
   pop=PQ.runGeneration(pop,snap.elites,randPQ,$("sig").value/100);
-  champNet=snap.elites[0].net;champGame=PQ.newGame(randPQ);gameId++;gen++;
+  champNet=snap.elites[0].net;
+  if(!champGame)champGame=PQ.newGame(randPQ); // R47 playtest fix (Casey 2026-09-28: "the ball isn't moving"): the streaming evaluator completes a generation in 1-2 RAF frames, so the old unconditional reset restarted the visible game ~10-30x/sec — always a fresh serve, pixel-frozen. live() owns the rally now: new champNet takes over the ongoing ball; reset only on death or when no game exists.
+  gameId++;gen++;
   champRing.write({gen,fitness:snap.best.fitness});
   $("stats").textContent=PQ.formatStats(gen,games,snap.best);
   evalGen=null;}}
@@ -320,7 +322,7 @@ function continueGenC(){
   coev.last=h2h.outcome;coev.genC++;
   const row=coev.ledger.write({gen:coev.genC,sId:PQ.netId(bred.sChamp.net),eId:PQ.netId(bred.eChamp.net),
    outcome:h2h.outcome,frames:h2h.frames,sFit:h2h.sFitness|0,eFit:h2h.eFitness|0,loserId:bred.loserId});
-  champNet=bred.sChamp.net;champGame=PQ.newAdvGame(randPQ);gameId++;gen=coev.genC;
+  champNet=bred.sChamp.net;if(!champGame)champGame=PQ.newAdvGame(randPQ);gameId++;gen=coev.genC; // R47: same frozen-serve fix as classic mode
   champRing.write({gen:coev.genC,fitness:h2h.sFitness});
   $("stats").textContent=`COEV gen ${coev.genC} · games ${games} · h2h ${h2h.outcome} in ${h2h.frames}f · sChamp ${h2h.sFitness|0} (${h2h.hits}h) · eChamp ${h2h.eFitness|0} (${h2h.enderHits}b) · loser ${bred.loserId||"—"}${coev.ledger.evicted?` · ledger evicted ${coev.ledger.evicted}`:""}`;
   receipt(`COEV g${coev.genC} ${h2h.outcome} ${h2h.frames}f`,0,0);
