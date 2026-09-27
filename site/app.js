@@ -143,8 +143,10 @@
       }).join(' ');
       const swaps = curve.tiebreaks.filter((t) => t.swap).length;
       mount.innerHTML =
-        '<p class="dim">one survivor paddle, one ender paddle, ' + fmt(cv.gens) + ' generations of adversarial co-training. ' +
-        'Below: the survivor champion’s fitness across the committed curve artifact (every ' +
+        '<p class="dim">adversarial survivor-vs-ender training, read from the committed artifacts — ' +
+        '<code>coev.js</code> records seed ' + cv.seed + ' · ' + fmt(cv.gens) + ' gens · pop ' + cv.pop + '; ' +
+        '<code>curve.json</code> is the champion ring: ' + fmt(curve.gens) + ' gens · ' + fmt(curve.ringWrites) +
+        ' writes. Below: the survivor champion’s fitness across the curve artifact (sampled every ' +
         Math.round(curve.gens / Math.max(1, samples.length - 1)) + ' gens), then the quantum coin journal.</p>' +
         '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" data-testid="coev-spark" role="img" aria-label="survivor fitness over generations">' +
         '<line x1="' + pad + '" y1="' + (h - pad) + '" x2="' + (w - pad) + '" y2="' + (h - pad) + '" class="axis"/>' +
