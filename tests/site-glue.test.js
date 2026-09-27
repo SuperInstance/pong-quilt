@@ -177,6 +177,12 @@ test("widget wiring contract: every interactive mount exists and app.js only spe
   assert.ok(calls.length >= 6, "app.js must exercise the api");
   for (const c of calls) assert.ok(KNOWN_API.includes(c), `app.js calls unknown endpoint ${c}`);
   assert.ok(html.includes('src="/app.js"'), "index.html must load app.js");
+  // every artifact path app.js touches must actually ship in the build (F7: a
+  // wrong /demo/coev.js path shipped once and only a browser playtest caught it)
+  const artifactRefs = [...new Set([...app.matchAll(/['"`]\/(demo\/[a-z0-9./_-]+)['"`]/gi)].map((x) => x[1]))];
+  assert.ok(artifactRefs.length >= 3, `app.js must reference the committed artifacts, found: ${artifactRefs.join(", ")}`);
+  for (const ref of artifactRefs)
+    assert.ok(fs.existsSync(dist(ref)), `app.js references ${ref} but the build does not ship it`);
   for (const form of ["engine-form", "judge-form"])
     assert.ok(html.includes(`id="${form}"`) && new RegExp(`<form id="${form}"[^>]*action="/api/(replay|judge)"`).test(html),
       `${form} must keep its no-JS fallback action`);

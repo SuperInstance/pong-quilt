@@ -129,7 +129,7 @@
     const mount = $('coev-strip');
     if (!mount) return;
     try {
-      await loadScript('/demo/coev.js');
+      await loadScript('/demo/checkpoints/coev.js');
       const cv = window.PONG_QUILT_COEV;
       const curve = await fetch('/demo/checkpoints/curve.json').then((r) => r.json());
       if (!cv || !curve) { mount.innerHTML = abstain('coev artifacts missing'); return; }
