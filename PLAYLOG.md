@@ -144,7 +144,23 @@ What shipped:
   the Engine Room (verified live: wall row level1·777 → click → replay
   digest c6f04cb49f50… == the recorded digest). Sweep rows where the
   champion dies before maxFrames now render tinted with a death marker.
-- Suite stays 227/227 through both fixes; PR #59; deploy v4 (06d935f).
+- **F11 [P1, Casey live report]**: "/demo/ game isn't actually playing —
+  the ball isn't moving." Diagnosed live in a real browser: training was
+  BLAZING (gen 161→675, 1,152 games in 2.5s) while the canvas pixels were
+  bit-frozen and zero exceptions fired. Root cause: `continueGen()` reset
+  `champGame` to a fresh serve EVERY generation, and the streaming evaluator
+  completes a generation in 1-2 RAF frames — the visible game restarted
+  ~10-30×/sec and never left the serve position. Fix (canonical repo demo,
+  byte-identical copy redeployed): `live()` owns the rally — a new champion
+  net takes over the ongoing ball; reset only on death or when no game
+  exists. Same fix in the C1 branch. Verified live: ball centroid moved
+  34px between samples, display game lived 52+ frames (was ~2).
+- **F12 [P2]**: the demo's own `tools/wal-export.js` 404'd on the site
+  (never copied by build-site.mjs) — the WAL export button was dead.
+  Shipped in the build now; `window.QUILT_WAL` present live. New pin:
+  every `<script src>` in demo/index.html must exist in dist (same class as
+  the F7 pin, one level deeper).
+- Suite stays 227/227 through both fixes; PR #59; deploy v5 (e5444d0).
 
 ## Round 42 — the website: understand the repo by playing it, in many forms
 
