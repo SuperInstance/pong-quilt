@@ -6,7 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R41 | 2026-09-27 | r41-maxspeed-honesty (vs main 4bb0264, post-#52) | canonical |
+| R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
 | R37 | 2026-09-27 | r37-prerun-stone-seal (vs main dd7f858, post-#46) | canonical |
@@ -48,12 +48,37 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
-## Round 41 — maxspeed honesty: the metric reports the moved-at speed, never the trailing phantom boost (R40 playtest finding 2)
+## Round 40 — playtest: four P4 findings, first one repaired (coev label/axis divergence)
 
-- [found] playtest PR #53 (R40) traced the L1 `maxSpeed` metric: `playOne()` returned the FINAL-frame `speedMul`, so a game ending on a hit frame reported `(1+frames*ramp)×hitBoost` — a boosted value the ball never moved at (trace: maxReported 1.0652 vs maxActual 1.0648). The metric was a phantom on exactly the frames that end games.
-- [built] `g.maxSeen`: sampled at frame START (the multiplier the frame's ball movement actually used), before the ramp reset and before any hitBoost application. Dynamics untouched — `speedMul` still carries the boost into `sense()`/`swanP` for the next frame; only the reported metric changed. `newGame` initializes `maxSeen=1`; `playOne` reports `maxSeen`. VERIFIED_CLAIMS +1 (`maxspeed-honesty`).
-- [pinned] `tests/maxspeed-honesty.test.js` (4 pins, FAIL-first: `g.maxSeen` absent on pre-R41 main — every assertion trips): game-ending hit frame keeps the boost on `speedMul` but excludes it from the metric; a boost the NEXT frame actually moves at IS captured; seeded `playOne` smoke bounded by the physical ceiling.
-- [verified live] suite 201/201 + qa 8/8; readme-count pin named my own bump (197→201, README corrected 205→209); no canonical artifact touched (md5 set byte-frozen, untouched this round).
+**vs main 4bb0264 (post-#52) — playtest round PR #53 (Casey), repair branch r40-coev-label-axis**
+
+Play-tester round (PR #53): main verified green (suite 197/197 + qa 8/8,
+17th frozen canonical, receipt-completeness exit 0, stone seal mirror ok),
+four P4 findings, no P1–P3. Spec'd next version: 6 items.
+
+Findings (from PR #53):
+1. [P4] Coev-strip label/axis divergence — coin journal label uses the
+   data-derived `axis`, coev strip label used the raw `gens` header. R23
+   lesson half-applied.
+2. [P4] L1 maxSpeed phantom hitBoost — metric records boosted speed the
+   ball never moves at (≤3% on hit frames).
+3. [P4] parseCliArgs seed-0 collapse — seed "0" parses to falsy 0,
+   silently defaults.
+4. [P4] prerun-coev.js has no birth seal — coev.js (5th canonical
+   artifact) carries md5 print only, no chained seal.
+
+### What shipped here (finding 1)
+
+- `index.html` renderCoevStrip: label `gens 0-${gens}` → `gens 0-${axis}`,
+  matching renderCoinJournal's R23 form — the label now counts exactly the
+  axis the ticks plot against.
+- Pin in tests/coev-strip-glue.test.js: header under-reporting the data
+  (gens=0, rows to gen 200) must render `gens 0-200`, never `gens 0-0`.
+  FAIL-first by construction: the raw-header label on main reads `gens 0-0`.
+- VERIFIED_CLAIMS +1 (coev-strip-label-axis, Round 40).
+
+### Verdict
+MERGEABLE (findings 2–4 remain open for the next lane).
 
 ## Round 39 — stone-sign-pilot: the producer staples the birth-seal chain's tip (STONE-V2-PILOTS first sign pilot)
 
