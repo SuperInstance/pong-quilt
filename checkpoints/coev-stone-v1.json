@@ -1,0 +1,2309 @@
+[
+ {
+  "kind": "stone.header",
+  "alg": "stone-v1",
+  "genesis": "STONE-GENESIS-1",
+  "tool": "pong-quilt",
+  "source": "tools/prerun-coev.js canonical coev birth seal (Round 45)",
+  "row_hash": "3cc07aa843e53a29eddf55f27063558b08b7e56037338e6affff9a3d14af0f52"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 1,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 0,
+   "sId": "915c4d8a",
+   "eId": "c23af382",
+   "outcome": "ENDER-KILL",
+   "frames": 197,
+   "sFit": 197,
+   "eFit": 5803,
+   "loserId": "915c4d8a",
+   "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+   "hash": "2954c859"
+  },
+  "row_hash": "52512c591d697fa058b913124214ae6850b86cb44aacd7575fd3effb97063f80"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 2,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 1,
+   "sId": "e4ec7657",
+   "eId": "c1580c7c",
+   "outcome": "ENDER-KILL",
+   "frames": 680,
+   "sFit": 780,
+   "eFit": 5320,
+   "loserId": "e4ec7657",
+   "prev": "2954c859",
+   "hash": "39d85f99"
+  },
+  "row_hash": "d3aae76a57546618ea9229125b25ef6de7534a8a6f6a1a3e6cf19804a15cbfe8"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 3,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 2,
+   "sId": "e8870ea2",
+   "eId": "5abb1e61",
+   "outcome": "ENDER-KILL",
+   "frames": 172,
+   "sFit": 172,
+   "eFit": 5828,
+   "loserId": "e8870ea2",
+   "prev": "39d85f99",
+   "hash": "93be039a"
+  },
+  "row_hash": "787c88f3c0b23998d5ea6d47506d936cbdd906608fe9faa4bde137e16e8a1644"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 4,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 3,
+   "sId": "fd3c598a",
+   "eId": "d406474c",
+   "outcome": "ENDER-KILL",
+   "frames": 633,
+   "sFit": 733,
+   "eFit": 5367,
+   "loserId": "fd3c598a",
+   "prev": "93be039a",
+   "hash": "c4721c59"
+  },
+  "row_hash": "5e16cd981e58ef0c9d644168bf4018904176a088de91ba8f5134e2907f28ded9"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 5,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 4,
+   "sId": "6cc80cd9",
+   "eId": "46fdf3e8",
+   "outcome": "ENDER-KILL",
+   "frames": 687,
+   "sFit": 787,
+   "eFit": 5313,
+   "loserId": "6cc80cd9",
+   "prev": "c4721c59",
+   "hash": "096154ca"
+  },
+  "row_hash": "a14ee69cd32ac9c8e8551a68c1cabaabe670aea574c129847a2a11d544421057"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 6,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 5,
+   "sId": "ee7af354",
+   "eId": "2d856509",
+   "outcome": "ENDER-KILL",
+   "frames": 983,
+   "sFit": 1083,
+   "eFit": 5017,
+   "loserId": "ee7af354",
+   "prev": "096154ca",
+   "hash": "b83f2e44"
+  },
+  "row_hash": "452199809b695125ba480c057d4a75cde779fbbf2ee64b0d7b4b1823e908c3d2"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 7,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 6,
+   "sId": "35110737",
+   "eId": "aadd165e",
+   "outcome": "ENDER-KILL",
+   "frames": 141,
+   "sFit": 141,
+   "eFit": 5859,
+   "loserId": "35110737",
+   "prev": "b83f2e44",
+   "hash": "5a5ec43b"
+  },
+  "row_hash": "a191ef327bd10b05fd1a905cdf80a1d0d7dea8fa6e6746615add81a23d373e45"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 8,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 7,
+   "sId": "6caf8481",
+   "eId": "83112521",
+   "outcome": "ENDER-KILL",
+   "frames": 494,
+   "sFit": 594,
+   "eFit": 5506,
+   "loserId": "6caf8481",
+   "prev": "5a5ec43b",
+   "hash": "60658f81"
+  },
+  "row_hash": "6ab1f4981ebf0653a3ae0765d3b1fc34e883c7f050d97f51b96f07474ef464fe"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 9,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 8,
+   "sId": "e6d8c03e",
+   "eId": "e95c8885",
+   "outcome": "ENDER-KILL",
+   "frames": 597,
+   "sFit": 697,
+   "eFit": 5433,
+   "loserId": "e6d8c03e",
+   "prev": "60658f81",
+   "hash": "e9b22e5e"
+  },
+  "row_hash": "32210140bea0c911bdf7243adf4bcd7ad369119e693963bf9cbfa99c85741862"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 10,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 9,
+   "sId": "15c92eed",
+   "eId": "1473fce5",
+   "outcome": "ENDER-KILL",
+   "frames": 119,
+   "sFit": 119,
+   "eFit": 5881,
+   "loserId": "15c92eed",
+   "prev": "e9b22e5e",
+   "hash": "ebaeb20c"
+  },
+  "row_hash": "6c6d3e5ab74450d8ca0d75cae5a8f2c2d1d45ca2345024ec7360182f611833b9"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 11,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 10,
+   "sId": "a5163110",
+   "eId": "80e440ec",
+   "outcome": "ENDER-KILL",
+   "frames": 133,
+   "sFit": 133,
+   "eFit": 5867,
+   "loserId": "a5163110",
+   "prev": "ebaeb20c",
+   "hash": "89cf172a"
+  },
+  "row_hash": "a136fa890c2066c67af469d8a67ba979b901589da988cf01766036aa7915a60c"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 12,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 11,
+   "sId": "f1012130",
+   "eId": "aa43cd87",
+   "outcome": "ENDER-KILL",
+   "frames": 738,
+   "sFit": 838,
+   "eFit": 5292,
+   "loserId": "f1012130",
+   "prev": "89cf172a",
+   "hash": "435e5eee"
+  },
+  "row_hash": "28f1dc8226b6e226acea751cdf3fd74c1c1e1e929a7aa4f8fc38b22e484442e0"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 13,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 12,
+   "sId": "7910b31f",
+   "eId": "11b51a60",
+   "outcome": "ENDER-KILL",
+   "frames": 220,
+   "sFit": 220,
+   "eFit": 5780,
+   "loserId": "7910b31f",
+   "prev": "435e5eee",
+   "hash": "c2dadf33"
+  },
+  "row_hash": "7a1627f59a29b2f01061c5f1abc57572249ae134cf1a23519829c94482569710"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 14,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 13,
+   "sId": "76bd900c",
+   "eId": "d287ce0a",
+   "outcome": "ENDER-KILL",
+   "frames": 2459,
+   "sFit": 2559,
+   "eFit": 3541,
+   "loserId": "76bd900c",
+   "prev": "c2dadf33",
+   "hash": "6d8e9675"
+  },
+  "row_hash": "83c7c9d270a9867abd4c75f86a64a5f8e7aed9f5d22c6e42c65ab59cd13ab684"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 15,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 14,
+   "sId": "47f9f2f4",
+   "eId": "d99b0c22",
+   "outcome": "ENDER-KILL",
+   "frames": 826,
+   "sFit": 826,
+   "eFit": 5174,
+   "loserId": "47f9f2f4",
+   "prev": "6d8e9675",
+   "hash": "9a729ad7"
+  },
+  "row_hash": "f1911912251005b6655e58c0ca0993dab678f8684784142e6051ad09ee3cbd6e"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 16,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 15,
+   "sId": "337dd3e7",
+   "eId": "df758198",
+   "outcome": "ENDER-KILL",
+   "frames": 824,
+   "sFit": 924,
+   "eFit": 5176,
+   "loserId": "337dd3e7",
+   "prev": "9a729ad7",
+   "hash": "bc671e75"
+  },
+  "row_hash": "1bf77525cc43eaeebbe9c471ce658cec461051026eb8d8a4f148c8df19d007f6"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 17,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 16,
+   "sId": "27f17ee6",
+   "eId": "388cccf7",
+   "outcome": "ENDER-KILL",
+   "frames": 827,
+   "sFit": 927,
+   "eFit": 5173,
+   "loserId": "27f17ee6",
+   "prev": "bc671e75",
+   "hash": "5ddacb85"
+  },
+  "row_hash": "1832ae26247066a7b6868a360a230ea2338d3cd840800aaaf71571cc62139248"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 18,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 17,
+   "sId": "668580cd",
+   "eId": "dfdfee6f",
+   "outcome": "ENDER-KILL",
+   "frames": 149,
+   "sFit": 149,
+   "eFit": 5851,
+   "loserId": "668580cd",
+   "prev": "5ddacb85",
+   "hash": "a83ea020"
+  },
+  "row_hash": "067c059449bfdfb69234e357bdc6e6380be142c709a2f3ed5e0eaa2faa26856e"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 19,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 18,
+   "sId": "caa6daed",
+   "eId": "efe952fd",
+   "outcome": "ENDER-KILL",
+   "frames": 170,
+   "sFit": 170,
+   "eFit": 5830,
+   "loserId": "caa6daed",
+   "prev": "a83ea020",
+   "hash": "a1a134b1"
+  },
+  "row_hash": "bb8f79c850bad26cbafa28439764f3c3585812de503607d85534885b6b5fc1ed"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 20,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 19,
+   "sId": "d88e47bc",
+   "eId": "c4db4f42",
+   "outcome": "ENDER-KILL",
+   "frames": 680,
+   "sFit": 780,
+   "eFit": 5350,
+   "loserId": "d88e47bc",
+   "prev": "a1a134b1",
+   "hash": "138940a2"
+  },
+  "row_hash": "5c2cdb4644dda158ad9d592f3e7946d56f4080b01fc87ebdc8b55964913bd65f"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 21,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 20,
+   "sId": "01e9893c",
+   "eId": "47588772",
+   "outcome": "ENDER-KILL",
+   "frames": 1256,
+   "sFit": 1356,
+   "eFit": 4744,
+   "loserId": "01e9893c",
+   "prev": "138940a2",
+   "hash": "992d78db"
+  },
+  "row_hash": "493f4051fa78e3203afd074facac081ba51809b52f35e4c76da8589d7aa9b4c0"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 22,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 21,
+   "sId": "830301db",
+   "eId": "9703f547",
+   "outcome": "ENDER-KILL",
+   "frames": 1000,
+   "sFit": 1200,
+   "eFit": 5000,
+   "loserId": "830301db",
+   "prev": "992d78db",
+   "hash": "73da4a36"
+  },
+  "row_hash": "24fc44f1399219de85659106f8c97ad2638c5cd6d54e3d4b8ccf431afbd8649f"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 23,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 22,
+   "sId": "23b62eb3",
+   "eId": "05092036",
+   "outcome": "ENDER-KILL",
+   "frames": 1127,
+   "sFit": 1327,
+   "eFit": 4903,
+   "loserId": "23b62eb3",
+   "prev": "73da4a36",
+   "hash": "155521b9"
+  },
+  "row_hash": "c19c38b6204da32a7a48862825771a03b101428c66ea1a886a8758b9640d53a5"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 24,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 23,
+   "sId": "d110b4a7",
+   "eId": "949433da",
+   "outcome": "ENDER-KILL",
+   "frames": 298,
+   "sFit": 298,
+   "eFit": 5702,
+   "loserId": "d110b4a7",
+   "prev": "155521b9",
+   "hash": "718be0ae"
+  },
+  "row_hash": "7a46c7c80f1f2b23ff644b72a40e90573342735794ceea4124990b3c46ecb17a"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 25,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 24,
+   "sId": "af314cdf",
+   "eId": "b1e91804",
+   "outcome": "ENDER-KILL",
+   "frames": 1375,
+   "sFit": 1575,
+   "eFit": 4625,
+   "loserId": "af314cdf",
+   "prev": "718be0ae",
+   "hash": "bfa53991"
+  },
+  "row_hash": "d0a1fd60e7b5612688c84c3cff98ad10f2f4aff7b0d32f2484e73df4c1112195"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 26,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 25,
+   "sId": "4dff62bc",
+   "eId": "7ab311a2",
+   "outcome": "ENDER-KILL",
+   "frames": 127,
+   "sFit": 127,
+   "eFit": 5873,
+   "loserId": "4dff62bc",
+   "prev": "bfa53991",
+   "hash": "9f1746d6"
+  },
+  "row_hash": "1ed98ea2e81da7fcf577624b3e8ea5dcd49b601ab3a71a600a869f8d6c4f2468"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 27,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 26,
+   "sId": "e957c4c2",
+   "eId": "25b2735f",
+   "outcome": "ENDER-KILL",
+   "frames": 606,
+   "sFit": 706,
+   "eFit": 5394,
+   "loserId": "e957c4c2",
+   "prev": "9f1746d6",
+   "hash": "3471beb8"
+  },
+  "row_hash": "2b71ead8c522e017f67414ca39d120564a3162abe2fd0d0c9669e8c7983bf736"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 28,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 27,
+   "sId": "cefa2f76",
+   "eId": "f1038e97",
+   "outcome": "ENDER-KILL",
+   "frames": 3721,
+   "sFit": 5021,
+   "eFit": 2669,
+   "loserId": "cefa2f76",
+   "prev": "3471beb8",
+   "hash": "96760e8a"
+  },
+  "row_hash": "c34ae2117ef83e71578e8d93d28a593de871a64a2b2c126f5576ec580c25f3e3"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 29,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 28,
+   "sId": "0b6eb01c",
+   "eId": "9e8ae0ad",
+   "outcome": "ENDER-KILL",
+   "frames": 655,
+   "sFit": 755,
+   "eFit": 5345,
+   "loserId": "0b6eb01c",
+   "prev": "96760e8a",
+   "hash": "9b4c7062"
+  },
+  "row_hash": "65b83429e18501f7923745edf0744d63fda13f1850ef32c363c4af7777ffd425"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 30,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 29,
+   "sId": "e52779c9",
+   "eId": "f1e0e75d",
+   "outcome": "ENDER-KILL",
+   "frames": 1947,
+   "sFit": 2447,
+   "eFit": 4083,
+   "loserId": "e52779c9",
+   "prev": "9b4c7062",
+   "hash": "5afc9bc2"
+  },
+  "row_hash": "ac14e44d4c634e2644ebc23bf3ae952859afa55ad3da1a0572053c6ffc7e87c6"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 31,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 30,
+   "sId": "260cd41c",
+   "eId": "7b578e8c",
+   "outcome": "ENDER-KILL",
+   "frames": 773,
+   "sFit": 873,
+   "eFit": 5227,
+   "loserId": "260cd41c",
+   "prev": "5afc9bc2",
+   "hash": "e0029be4"
+  },
+  "row_hash": "c0f54304195d124dbbcc77d8bee4ae613944419cf7765e14440461d6de1ab6ac"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 32,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 31,
+   "sId": "6888ab33",
+   "eId": "79854ad2",
+   "outcome": "ENDER-KILL",
+   "frames": 110,
+   "sFit": 110,
+   "eFit": 5890,
+   "loserId": "6888ab33",
+   "prev": "e0029be4",
+   "hash": "462288dc"
+  },
+  "row_hash": "08aaa340de33a7c3b3619b54c3c62d99b796bf91f927937452d8a4c65c9fbf1b"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 33,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 32,
+   "sId": "3c45f2e1",
+   "eId": "5ddd4273",
+   "outcome": "ENDER-KILL",
+   "frames": 638,
+   "sFit": 738,
+   "eFit": 5362,
+   "loserId": "3c45f2e1",
+   "prev": "462288dc",
+   "hash": "502f6e08"
+  },
+  "row_hash": "c8ddee58643ba0deae5530b0d661dbc7350a8f36b94175ec6180f17a1b40991c"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 34,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 33,
+   "sId": "719168fc",
+   "eId": "c123cf74",
+   "outcome": "ENDER-KILL",
+   "frames": 124,
+   "sFit": 124,
+   "eFit": 5876,
+   "loserId": "719168fc",
+   "prev": "502f6e08",
+   "hash": "961c6da0"
+  },
+  "row_hash": "ecb203d36dbfc715bb1f30c76dabc53a49d7dfaf0e56b45666f710597f06beeb"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 35,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 34,
+   "sId": "e3e45dde",
+   "eId": "10de1ccb",
+   "outcome": "ENDER-KILL",
+   "frames": 2110,
+   "sFit": 2310,
+   "eFit": 3920,
+   "loserId": "e3e45dde",
+   "prev": "961c6da0",
+   "hash": "23a4a40c"
+  },
+  "row_hash": "4c83a8375aead444c3219584e337e855f404d3f4319024e13143bdb7f2d9dbc2"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 36,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 35,
+   "sId": "9022e153",
+   "eId": "87662dc9",
+   "outcome": "ENDER-KILL",
+   "frames": 528,
+   "sFit": 528,
+   "eFit": 5472,
+   "loserId": "9022e153",
+   "prev": "23a4a40c",
+   "hash": "b7899104"
+  },
+  "row_hash": "f26eec0c83222cc66d6e56cacf940e9c0d6a799976223135b474acf33deb2b64"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 37,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 36,
+   "sId": "3ff9355a",
+   "eId": "7af72588",
+   "outcome": "ENDER-KILL",
+   "frames": 1121,
+   "sFit": 1321,
+   "eFit": 4909,
+   "loserId": "3ff9355a",
+   "prev": "b7899104",
+   "hash": "682a8279"
+  },
+  "row_hash": "60648f52800b3c85ef92c8d402821a4fe8ab12fd7bf5e275dfe299c4ae19359f"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 38,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 37,
+   "sId": "41fcec74",
+   "eId": "f10a413d",
+   "outcome": "ENDER-KILL",
+   "frames": 2354,
+   "sFit": 2754,
+   "eFit": 3646,
+   "loserId": "41fcec74",
+   "prev": "682a8279",
+   "hash": "4c2802ad"
+  },
+  "row_hash": "20742ba17605478600b689edcf3a0c6add907e5e675b54f0fbcab21f46a8d282"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 39,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 38,
+   "sId": "cb141603",
+   "eId": "82e537ca",
+   "outcome": "ENDER-KILL",
+   "frames": 127,
+   "sFit": 127,
+   "eFit": 5873,
+   "loserId": "cb141603",
+   "prev": "4c2802ad",
+   "hash": "83dab49a"
+  },
+  "row_hash": "ba29ae1424cc3a1f64c1b81b809edded4300cc5344e686f1033280963f679737"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 40,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 39,
+   "sId": "8f77f07e",
+   "eId": "7fc91140",
+   "outcome": "ENDER-KILL",
+   "frames": 130,
+   "sFit": 130,
+   "eFit": 5870,
+   "loserId": "8f77f07e",
+   "prev": "83dab49a",
+   "hash": "18511180"
+  },
+  "row_hash": "fc4050eb994cc44c5373ec49c7adc6b9a3724a9d9aa124683b204123d4952ecd"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 41,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 40,
+   "sId": "2174b552",
+   "eId": "b11132bc",
+   "outcome": "ENDER-KILL",
+   "frames": 3457,
+   "sFit": 4457,
+   "eFit": 2543,
+   "loserId": "2174b552",
+   "prev": "18511180",
+   "hash": "2bf21f78"
+  },
+  "row_hash": "ecb90dec49f1987733810ed3b8ed6b0e094df3a99488f015c41ea2fa9311533d"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 42,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 41,
+   "sId": "84fb8127",
+   "eId": "aa8ed148",
+   "outcome": "ENDER-KILL",
+   "frames": 5962,
+   "sFit": 6062,
+   "eFit": 38,
+   "loserId": "84fb8127",
+   "prev": "2bf21f78",
+   "hash": "0607ab2c"
+  },
+  "row_hash": "ea37fafc4848564f501624c189a338e24914b64cc1287781cf820856ab797b36"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 43,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 42,
+   "sId": "9390045a",
+   "eId": "4c684352",
+   "outcome": "ENDER-KILL",
+   "frames": 231,
+   "sFit": 231,
+   "eFit": 5769,
+   "loserId": "9390045a",
+   "prev": "0607ab2c",
+   "hash": "87fccc38"
+  },
+  "row_hash": "8e91ecc908eff43f33cf201d0c135da12e83b6b6ebb1743b0acc614208f4a6e0"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 44,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 43,
+   "sId": "bc431230",
+   "eId": "79ee9d3a",
+   "outcome": "ENDER-KILL",
+   "frames": 2196,
+   "sFit": 2296,
+   "eFit": 3804,
+   "loserId": "bc431230",
+   "prev": "87fccc38",
+   "hash": "c415ad57"
+  },
+  "row_hash": "68745f458e19f0c825145cd2ecd8a43ab729395740e63c168a25325ec0b82df6"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 45,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 44,
+   "sId": "2919c504",
+   "eId": "5a09bed1",
+   "outcome": "ENDER-KILL",
+   "frames": 109,
+   "sFit": 109,
+   "eFit": 5891,
+   "loserId": "2919c504",
+   "prev": "c415ad57",
+   "hash": "47ad61c5"
+  },
+  "row_hash": "a8efc7873caffe41cc549d1f0e9b8bad60ee1cad52f4cdda145bd5b0583ac1a6"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 46,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 45,
+   "sId": "482c1913",
+   "eId": "7991d1d3",
+   "outcome": "ENDER-KILL",
+   "frames": 996,
+   "sFit": 1196,
+   "eFit": 5004,
+   "loserId": "482c1913",
+   "prev": "47ad61c5",
+   "hash": "fa7596ee"
+  },
+  "row_hash": "3340de5c361db1f02317830ea3339e253fc1fd6b42c35b4493717587a2d352a3"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 47,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 46,
+   "sId": "482c1913",
+   "eId": "6d340d71",
+   "outcome": "ENDER-KILL",
+   "frames": 117,
+   "sFit": 117,
+   "eFit": 5883,
+   "loserId": "482c1913",
+   "prev": "fa7596ee",
+   "hash": "e41bf026"
+  },
+  "row_hash": "1793b9f278dc97cbaeba8c1277034892598a8696a4dd573e31c9a3ae58d7b810"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 48,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 47,
+   "sId": "a27bdb54",
+   "eId": "881a8403",
+   "outcome": "ENDER-KILL",
+   "frames": 124,
+   "sFit": 124,
+   "eFit": 5876,
+   "loserId": "a27bdb54",
+   "prev": "e41bf026",
+   "hash": "a1c54328"
+  },
+  "row_hash": "cca3e41c045213f3c52b35e224775a1e2451d44886b2471dd9f30c699c33c8ea"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 49,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 48,
+   "sId": "5bd719c7",
+   "eId": "71057824",
+   "outcome": "ENDER-KILL",
+   "frames": 626,
+   "sFit": 726,
+   "eFit": 5374,
+   "loserId": "5bd719c7",
+   "prev": "a1c54328",
+   "hash": "a5ffd794"
+  },
+  "row_hash": "65c3650ebc6c389a0216953be75c0afab5b2c1c68969ebe6adc54fea4bef1170"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 50,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 49,
+   "sId": "7269f941",
+   "eId": "71057824",
+   "outcome": "ENDER-KILL",
+   "frames": 1196,
+   "sFit": 1396,
+   "eFit": 4834,
+   "loserId": "7269f941",
+   "prev": "a5ffd794",
+   "hash": "a8276392"
+  },
+  "row_hash": "93d6c1b2d1a661abde3ff37f9bcdc84dd525a56384ee2fd21842048c070fa5fa"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 51,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 50,
+   "sId": "bcf14173",
+   "eId": "1411b783",
+   "outcome": "ENDER-KILL",
+   "frames": 120,
+   "sFit": 120,
+   "eFit": 5880,
+   "loserId": "bcf14173",
+   "prev": "a8276392",
+   "hash": "6f4a1caf"
+  },
+  "row_hash": "0e06a352900d7b7c6b2b589452d8fe7ca55b6cfc24950ef8771cfc9d664ec0f4"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 52,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 51,
+   "sId": "41caff9a",
+   "eId": "bf6555f2",
+   "outcome": "ENDER-KILL",
+   "frames": 300,
+   "sFit": 300,
+   "eFit": 5700,
+   "loserId": "41caff9a",
+   "prev": "6f4a1caf",
+   "hash": "f709ec4e"
+  },
+  "row_hash": "6326de42a5e8c46aff49b9cdf5889b7b9f99baee2d445d719e4b1a7ee01078cf"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 53,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 52,
+   "sId": "966ba3ff",
+   "eId": "479a9299",
+   "outcome": "ENDER-KILL",
+   "frames": 128,
+   "sFit": 128,
+   "eFit": 5872,
+   "loserId": "966ba3ff",
+   "prev": "f709ec4e",
+   "hash": "5dbc3872"
+  },
+  "row_hash": "8f1f72104c2fa1427ff142329e44465a8d093b6fc0b4fbc83a9da45630280379"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 54,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 53,
+   "sId": "be47770a",
+   "eId": "479a9299",
+   "outcome": "ENDER-KILL",
+   "frames": 111,
+   "sFit": 111,
+   "eFit": 5889,
+   "loserId": "be47770a",
+   "prev": "5dbc3872",
+   "hash": "6668c193"
+  },
+  "row_hash": "4c26990256ca68375aafcf05c8ca53bd2a0df6339fc75bf35cd33aabb2ae34f2"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 55,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 54,
+   "sId": "88b4f26e",
+   "eId": "54544748",
+   "outcome": "ENDER-KILL",
+   "frames": 775,
+   "sFit": 875,
+   "eFit": 5225,
+   "loserId": "88b4f26e",
+   "prev": "6668c193",
+   "hash": "fb08ca2f"
+  },
+  "row_hash": "edf66d84b89b1008ab54ba86499a74d41a37d7e6f4c47b25a68f4be8611c4393"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 56,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 55,
+   "sId": "e15f060d",
+   "eId": "5bb186b4",
+   "outcome": "ENDER-KILL",
+   "frames": 975,
+   "sFit": 1075,
+   "eFit": 5025,
+   "loserId": "e15f060d",
+   "prev": "fb08ca2f",
+   "hash": "31ae67d9"
+  },
+  "row_hash": "226d11bac62f7eeffbbb4ed8409d18b782cf8aa4d3dc4331b40bad6018ead2ad"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 57,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 56,
+   "sId": "b794a047",
+   "eId": "595896ff",
+   "outcome": "ENDER-KILL",
+   "frames": 2276,
+   "sFit": 2976,
+   "eFit": 3754,
+   "loserId": "b794a047",
+   "prev": "31ae67d9",
+   "hash": "49cfad1f"
+  },
+  "row_hash": "c8176d0027d2cef4373ded3164faccd421e1b0536c98d76d9f20215e1e8dc8bc"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 58,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 57,
+   "sId": "eed9b150",
+   "eId": "fd1256bd",
+   "outcome": "ENDER-KILL",
+   "frames": 116,
+   "sFit": 116,
+   "eFit": 5884,
+   "loserId": "eed9b150",
+   "prev": "49cfad1f",
+   "hash": "34f9c62a"
+  },
+  "row_hash": "26c082a02c034147e68cef61032fa9fe4bf2a08f6118818451b154334704fa41"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 59,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 58,
+   "sId": "21ed1c58",
+   "eId": "26dabde8",
+   "outcome": "ENDER-KILL",
+   "frames": 555,
+   "sFit": 655,
+   "eFit": 5445,
+   "loserId": "21ed1c58",
+   "prev": "34f9c62a",
+   "hash": "fc49412a"
+  },
+  "row_hash": "56a7b969183278c106976892b23f2e98eeee7ab8cb9819fbbb049709882cf035"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 60,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 59,
+   "sId": "8c960dfa",
+   "eId": "3062fa7b",
+   "outcome": "ENDER-KILL",
+   "frames": 628,
+   "sFit": 728,
+   "eFit": 5372,
+   "loserId": "8c960dfa",
+   "prev": "fc49412a",
+   "hash": "48ae55c0"
+  },
+  "row_hash": "109975dfe894b0b76f9146887ab1bb6d07de2c659e70f6d8a8228c112aef14d3"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 61,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 60,
+   "sId": "e76ceda8",
+   "eId": "7ebc580b",
+   "outcome": "ENDER-KILL",
+   "frames": 665,
+   "sFit": 765,
+   "eFit": 5335,
+   "loserId": "e76ceda8",
+   "prev": "48ae55c0",
+   "hash": "be936f5b"
+  },
+  "row_hash": "1e1390f03208ade5fb4ac61f2880f83bb8067e70c98997a6ef0215260f66ec08"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 62,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 61,
+   "sId": "51ce5a48",
+   "eId": "dc4b8107",
+   "outcome": "ENDER-KILL",
+   "frames": 119,
+   "sFit": 119,
+   "eFit": 5881,
+   "loserId": "51ce5a48",
+   "prev": "be936f5b",
+   "hash": "59d4965c"
+  },
+  "row_hash": "9327046d0399228e17c5cbf437592662843cbba902d326ddb2cb98263a27d7d5"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 63,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 62,
+   "sId": "35059656",
+   "eId": "4ba70711",
+   "outcome": "ENDER-KILL",
+   "frames": 2415,
+   "sFit": 3015,
+   "eFit": 3645,
+   "loserId": "35059656",
+   "prev": "59d4965c",
+   "hash": "7ceb2c7c"
+  },
+  "row_hash": "b5f9151e01c1ec4718de00e726ce59015483dc1baa766693ebe1c470de997230"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 64,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 63,
+   "sId": "08c798a7",
+   "eId": "c0cf4a18",
+   "outcome": "ENDER-KILL",
+   "frames": 687,
+   "sFit": 787,
+   "eFit": 5313,
+   "loserId": "08c798a7",
+   "prev": "7ceb2c7c",
+   "hash": "d0247cec"
+  },
+  "row_hash": "e22982c3c619cd2bc413fb31e34cfafec4597641800f7d3a13b858f69542faf0"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 65,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 64,
+   "sId": "8f6e56d0",
+   "eId": "0339f4cb",
+   "outcome": "ENDER-KILL",
+   "frames": 1202,
+   "sFit": 1402,
+   "eFit": 4798,
+   "loserId": "8f6e56d0",
+   "prev": "d0247cec",
+   "hash": "9bf39d4b"
+  },
+  "row_hash": "091161c506dea36d814d573ff3e397da489e090a4b3d19aa1d2f0c422b7c122c"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 66,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 65,
+   "sId": "b4af6b4b",
+   "eId": "16f3fad2",
+   "outcome": "ENDER-KILL",
+   "frames": 1000,
+   "sFit": 1200,
+   "eFit": 5000,
+   "loserId": "b4af6b4b",
+   "prev": "9bf39d4b",
+   "hash": "aaff7c0c"
+  },
+  "row_hash": "09e54174a557693dc05ee43181b0cab532ee8d7e17305f0d04bd64ad9eb6cde2"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 67,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 66,
+   "sId": "8ce06900",
+   "eId": "02d88b51",
+   "outcome": "ENDER-KILL",
+   "frames": 3065,
+   "sFit": 3665,
+   "eFit": 2935,
+   "loserId": "8ce06900",
+   "prev": "aaff7c0c",
+   "hash": "9bc2b12f"
+  },
+  "row_hash": "78765d1162b9bb322a8637e41406b76a0c132566101b8e51374f75215df5fb4d"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 68,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 67,
+   "sId": "9031cfde",
+   "eId": "02d88b51",
+   "outcome": "ENDER-KILL",
+   "frames": 129,
+   "sFit": 129,
+   "eFit": 5871,
+   "loserId": "9031cfde",
+   "prev": "9bc2b12f",
+   "hash": "aa8f65ad"
+  },
+  "row_hash": "3aee3861be88cc8cb95133f1ab254d4d051d74c4ca2c18627b74bdee8f123b57"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 69,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 68,
+   "sId": "695eeeb6",
+   "eId": "b37cf205",
+   "outcome": "ENDER-KILL",
+   "frames": 1364,
+   "sFit": 1564,
+   "eFit": 4636,
+   "loserId": "695eeeb6",
+   "prev": "aa8f65ad",
+   "hash": "462b752e"
+  },
+  "row_hash": "e008bd850a570bd358d1f6642ea5a926aa0a42205aee9a9b29cf817ef0aad81d"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 70,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 69,
+   "sId": "20a02678",
+   "eId": "28bb22c2",
+   "outcome": "ENDER-KILL",
+   "frames": 136,
+   "sFit": 136,
+   "eFit": 5864,
+   "loserId": "20a02678",
+   "prev": "462b752e",
+   "hash": "6403c4b8"
+  },
+  "row_hash": "16a252d89fb2f5764d9dc9dd77b4ba8f59416c13ee450f6ad7864778e2ed9c08"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 71,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 70,
+   "sId": "512aad5c",
+   "eId": "c68bd83c",
+   "outcome": "ENDER-KILL",
+   "frames": 873,
+   "sFit": 873,
+   "eFit": 5127,
+   "loserId": "512aad5c",
+   "prev": "6403c4b8",
+   "hash": "bc3512b1"
+  },
+  "row_hash": "d11dea609555dfe3169b35ea7058648a45634075fb5691c7b945c00af5b4b32d"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 72,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 71,
+   "sId": "910cb2aa",
+   "eId": "89aa7f49",
+   "outcome": "ENDER-KILL",
+   "frames": 202,
+   "sFit": 202,
+   "eFit": 5798,
+   "loserId": "910cb2aa",
+   "prev": "bc3512b1",
+   "hash": "ce29bce8"
+  },
+  "row_hash": "d514a12320b06973be850170ce5a1cf00568b29eea5931ee75d6d0da0c9282d8"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 73,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 72,
+   "sId": "9f2ea632",
+   "eId": "ee61c1c2",
+   "outcome": "ENDER-KILL",
+   "frames": 783,
+   "sFit": 883,
+   "eFit": 5217,
+   "loserId": "9f2ea632",
+   "prev": "ce29bce8",
+   "hash": "1f3ccaec"
+  },
+  "row_hash": "d3c4e8c2348bf79e02e402ea3e592e3fff004c2468bbfd732c905c28d2aa244c"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 74,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 73,
+   "sId": "7f740bf1",
+   "eId": "c877aa9e",
+   "outcome": "ENDER-KILL",
+   "frames": 650,
+   "sFit": 750,
+   "eFit": 5350,
+   "loserId": "7f740bf1",
+   "prev": "1f3ccaec",
+   "hash": "515ec771"
+  },
+  "row_hash": "fb9dbba2e3cf703574aad95cec5b6104f2457c39cf4879bc2080a6da302bf68c"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 75,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 74,
+   "sId": "ec08095b",
+   "eId": "a8defaae",
+   "outcome": "ENDER-KILL",
+   "frames": 2102,
+   "sFit": 2502,
+   "eFit": 3898,
+   "loserId": "ec08095b",
+   "prev": "515ec771",
+   "hash": "3bd825ec"
+  },
+  "row_hash": "43951a07a18aa73608b3549559fd9f71dc8b21f058187ef1ea7cf4447adbf7ec"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 76,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 75,
+   "sId": "da6f6def",
+   "eId": "ef07b83d",
+   "outcome": "ENDER-KILL",
+   "frames": 2460,
+   "sFit": 3060,
+   "eFit": 3540,
+   "loserId": "da6f6def",
+   "prev": "3bd825ec",
+   "hash": "a51b6c57"
+  },
+  "row_hash": "2a295732fc6f229b03a297a693057c195cf2cb4283e4d9a3b8f3800725e38db5"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 77,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 76,
+   "sId": "a9b5cd9d",
+   "eId": "48baf9d4",
+   "outcome": "ENDER-KILL",
+   "frames": 4306,
+   "sFit": 4506,
+   "eFit": 1694,
+   "loserId": "a9b5cd9d",
+   "prev": "a51b6c57",
+   "hash": "a782a7f5"
+  },
+  "row_hash": "5c9dc1303ad55787f0cecf16e1657f7a51808a29fb8fe9b839525d23a7ee1034"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 78,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 77,
+   "sId": "c924477d",
+   "eId": "48baf9d4",
+   "outcome": "ENDER-KILL",
+   "frames": 1197,
+   "sFit": 1397,
+   "eFit": 4803,
+   "loserId": "c924477d",
+   "prev": "a782a7f5",
+   "hash": "931d803d"
+  },
+  "row_hash": "a4508aaf2bd151f28b485697d41e8c364e428c1651a32542828a9c5b7206bd88"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 79,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 78,
+   "sId": "1be6b9da",
+   "eId": "8c657b55",
+   "outcome": "ENDER-KILL",
+   "frames": 856,
+   "sFit": 1056,
+   "eFit": 5144,
+   "loserId": "1be6b9da",
+   "prev": "931d803d",
+   "hash": "4153e23f"
+  },
+  "row_hash": "cfa4d14392df3781174d7a470738f81d36f7adc8a91cb4dc7a9705445c722d34"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 80,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 79,
+   "sId": "712a19f5",
+   "eId": "8c657b55",
+   "outcome": "ENDER-KILL",
+   "frames": 115,
+   "sFit": 115,
+   "eFit": 5885,
+   "loserId": "712a19f5",
+   "prev": "4153e23f",
+   "hash": "665186d1"
+  },
+  "row_hash": "0758807113814b8296ac6ce7eadf10b44689b3b34010676dba91ed72fada4d88"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 81,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 80,
+   "sId": "54fd05dc",
+   "eId": "a81ef173",
+   "outcome": "ENDER-KILL",
+   "frames": 4028,
+   "sFit": 5728,
+   "eFit": 2002,
+   "loserId": "54fd05dc",
+   "prev": "665186d1",
+   "hash": "4a13003e"
+  },
+  "row_hash": "e471247f20882db87bc267ee622fe63bb4a2df911fcf1c227012fd370751ecd6"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 82,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 81,
+   "sId": "fa793569",
+   "eId": "bbab44d9",
+   "outcome": "ENDER-KILL",
+   "frames": 652,
+   "sFit": 652,
+   "eFit": 5348,
+   "loserId": "fa793569",
+   "prev": "4a13003e",
+   "hash": "f4031534"
+  },
+  "row_hash": "ed85b3afd20385cf69e60ab1df0ca5dd27412ecf731a1185463cf73f81d9eba1"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 83,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 82,
+   "sId": "2a62e33a",
+   "eId": "5f5c5a9c",
+   "outcome": "ENDER-KILL",
+   "frames": 2272,
+   "sFit": 2772,
+   "eFit": 3728,
+   "loserId": "2a62e33a",
+   "prev": "f4031534",
+   "hash": "e035d9ef"
+  },
+  "row_hash": "aefdcef224a0ce185b68b6cfaddca4209fae8728394acd35132bb9151733cdd2"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 84,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 83,
+   "sId": "01dc6b28",
+   "eId": "94710dc0",
+   "outcome": "ENDER-KILL",
+   "frames": 4602,
+   "sFit": 6902,
+   "eFit": 1428,
+   "loserId": "01dc6b28",
+   "prev": "e035d9ef",
+   "hash": "9dbfcaae"
+  },
+  "row_hash": "c332f5d43a7f639e4fc034f4ba84850d45d543512ec2feb522de7d931bbea520"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 85,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 84,
+   "sId": "de039e27",
+   "eId": "b1d80fe5",
+   "outcome": "ENDER-KILL",
+   "frames": 1636,
+   "sFit": 1936,
+   "eFit": 4394,
+   "loserId": "de039e27",
+   "prev": "9dbfcaae",
+   "hash": "6ad8840e"
+  },
+  "row_hash": "67d4dbb43aa2db747f832f963065ff171e4742706914b36df4d90eb89b91d8e7"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 86,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 85,
+   "sId": "480d7b40",
+   "eId": "5311e8b3",
+   "outcome": "ENDER-KILL",
+   "frames": 435,
+   "sFit": 435,
+   "eFit": 5565,
+   "loserId": "480d7b40",
+   "prev": "6ad8840e",
+   "hash": "675fcd9a"
+  },
+  "row_hash": "86bc1cac0a7f784215e320278f20c5394a97e9a04169f00384d47b1d61fac7c1"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 87,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 86,
+   "sId": "a2ac0b44",
+   "eId": "72e9f55f",
+   "outcome": "ENDER-KILL",
+   "frames": 987,
+   "sFit": 1187,
+   "eFit": 5013,
+   "loserId": "a2ac0b44",
+   "prev": "675fcd9a",
+   "hash": "f619af47"
+  },
+  "row_hash": "7a7c40136c2eb99a0bcf88c9778c67f3c81addafc105c629eb0d93b101b6d7a0"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 88,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 87,
+   "sId": "5c332921",
+   "eId": "97d9d4b0",
+   "outcome": "ENDER-KILL",
+   "frames": 129,
+   "sFit": 129,
+   "eFit": 5871,
+   "loserId": "5c332921",
+   "prev": "f619af47",
+   "hash": "17c7c39d"
+  },
+  "row_hash": "3930038f9d8676ae4966f64ea71c1578cb9b817e312852e6fb6be22a6a7575a0"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 89,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 88,
+   "sId": "351cb8e7",
+   "eId": "004cdd55",
+   "outcome": "ENDER-KILL",
+   "frames": 4208,
+   "sFit": 5608,
+   "eFit": 1912,
+   "loserId": "351cb8e7",
+   "prev": "17c7c39d",
+   "hash": "905ca541"
+  },
+  "row_hash": "e3a0de212c5ab040abfe809761bdc8a0056b7efada5d12937a2627b670f9444c"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 90,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 89,
+   "sId": "7cc82537",
+   "eId": "998ca22c",
+   "outcome": "ENDER-KILL",
+   "frames": 3873,
+   "sFit": 5873,
+   "eFit": 2337,
+   "loserId": "7cc82537",
+   "prev": "905ca541",
+   "hash": "1cb4aff7"
+  },
+  "row_hash": "1cc28d2f7f2a8b3631151b1aa0c67fa5fe4cf54f17a6b4a61dd03b47137e47ef"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 91,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 90,
+   "sId": "91bef95d",
+   "eId": "ab018d1e",
+   "outcome": "ENDER-KILL",
+   "frames": 4844,
+   "sFit": 4944,
+   "eFit": 1156,
+   "loserId": "91bef95d",
+   "prev": "1cb4aff7",
+   "hash": "c0ff56c1"
+  },
+  "row_hash": "a1b15d14189345e4144323e5c59414f6e4b942732079a2f1acb77cde4529c10f"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 92,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 91,
+   "sId": "2d9ad0b2",
+   "eId": "ae28c501",
+   "outcome": "ENDER-KILL",
+   "frames": 2639,
+   "sFit": 3539,
+   "eFit": 3361,
+   "loserId": "2d9ad0b2",
+   "prev": "c0ff56c1",
+   "hash": "7fb4fca5"
+  },
+  "row_hash": "9c93a4f5d278dc1e96a09ecba18f18bbb9588d406ab7a2a68f5457380dae8a22"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 93,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 92,
+   "sId": "2d9ad0b2",
+   "eId": "71593564",
+   "outcome": "ENDER-KILL",
+   "frames": 2428,
+   "sFit": 2728,
+   "eFit": 3602,
+   "loserId": "2d9ad0b2",
+   "prev": "7fb4fca5",
+   "hash": "f279b2af"
+  },
+  "row_hash": "d9020e2cd9ff4eb5074e24b0d8856f7a94389170a55495091df49391097f98e8"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 94,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 93,
+   "sId": "4b42a675",
+   "eId": "46389502",
+   "outcome": "ENDER-KILL",
+   "frames": 660,
+   "sFit": 760,
+   "eFit": 5340,
+   "loserId": "4b42a675",
+   "prev": "f279b2af",
+   "hash": "f3c6620e"
+  },
+  "row_hash": "a7d375eba276543ea1e46b86b3215c7f1dd61bb6a499e403716874084c4ca856"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 95,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 94,
+   "sId": "25f2d3f3",
+   "eId": "418025c8",
+   "outcome": "ENDER-KILL",
+   "frames": 1328,
+   "sFit": 1528,
+   "eFit": 4702,
+   "loserId": "25f2d3f3",
+   "prev": "f3c6620e",
+   "hash": "a501b380"
+  },
+  "row_hash": "2324733115234273bde74a3c872324cf0000e0bb11b9ad3f25945b63b3a9785f"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 96,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 95,
+   "sId": "19b7ef91",
+   "eId": "e6e84948",
+   "outcome": "ENDER-KILL",
+   "frames": 112,
+   "sFit": 112,
+   "eFit": 5888,
+   "loserId": "19b7ef91",
+   "prev": "a501b380",
+   "hash": "08c4f099"
+  },
+  "row_hash": "5bdb06a704da0912aacce4870afe3573f0022a0ee3672d27bedede7dcd520212"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 97,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 96,
+   "sId": "83024419",
+   "eId": "dc4373fc",
+   "outcome": "ENDER-KILL",
+   "frames": 4671,
+   "sFit": 6771,
+   "eFit": 1389,
+   "loserId": "83024419",
+   "prev": "08c4f099",
+   "hash": "cdbbf425"
+  },
+  "row_hash": "d182707533db6fef89f229ec3debec237edef5c0107cdab452fcd8aa744b107a"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 98,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 97,
+   "sId": "83024419",
+   "eId": "7024393a",
+   "outcome": "ENDER-KILL",
+   "frames": 1273,
+   "sFit": 1473,
+   "eFit": 4727,
+   "loserId": "83024419",
+   "prev": "cdbbf425",
+   "hash": "44de03f2"
+  },
+  "row_hash": "36a3a95dcd3edd90d8cd2d2a99b8899053511791aa9792caf71b26bc829ccfab"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 99,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 98,
+   "sId": "d9497ed2",
+   "eId": "a406efe5",
+   "outcome": "ENDER-KILL",
+   "frames": 670,
+   "sFit": 770,
+   "eFit": 5330,
+   "loserId": "d9497ed2",
+   "prev": "44de03f2",
+   "hash": "17f8eeb5"
+  },
+  "row_hash": "14a619cfdd5fd9de7ef6490c1cd61847b171e3134a6404b50a47f52442df1a1e"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 100,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 99,
+   "sId": "9733aa57",
+   "eId": "18a0bf4e",
+   "outcome": "ENDER-KILL",
+   "frames": 1148,
+   "sFit": 1348,
+   "eFit": 4852,
+   "loserId": "9733aa57",
+   "prev": "17f8eeb5",
+   "hash": "368d7348"
+  },
+  "row_hash": "fcbcaffdad3fae944cee4c0a45cc96b06440a843e2a7fa33a5bbe3d7de590ac8"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 101,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 100,
+   "sId": "d305d94a",
+   "eId": "53bf0571",
+   "outcome": "ENDER-KILL",
+   "frames": 4023,
+   "sFit": 4523,
+   "eFit": 2037,
+   "loserId": "d305d94a",
+   "prev": "368d7348",
+   "hash": "ebf89d96"
+  },
+  "row_hash": "f85764ff669e6696794706ffc01be12a2019632a6775852f97365069851abdaf"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 102,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 101,
+   "sId": "d305d94a",
+   "eId": "2f6c93d7",
+   "outcome": "ENDER-KILL",
+   "frames": 3600,
+   "sFit": 4800,
+   "eFit": 2520,
+   "loserId": "d305d94a",
+   "prev": "ebf89d96",
+   "hash": "6f9ba2d0"
+  },
+  "row_hash": "490dd22c3dfc2ba66dd2243bfe71ff372d7be8b3735667a0af30534525184adf"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 103,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 102,
+   "sId": "9f23c381",
+   "eId": "a56d5138",
+   "outcome": "ENDER-KILL",
+   "frames": 109,
+   "sFit": 109,
+   "eFit": 5891,
+   "loserId": "9f23c381",
+   "prev": "6f9ba2d0",
+   "hash": "4f3bcc5d"
+  },
+  "row_hash": "ad46cb5ee9f294086478afeb83c018f5cf44a1a67a47244001af74c8bce710bf"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 104,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 103,
+   "sId": "9f23c381",
+   "eId": "35ae9fef",
+   "outcome": "ENDER-KILL",
+   "frames": 3612,
+   "sFit": 3912,
+   "eFit": 2418,
+   "loserId": "9f23c381",
+   "prev": "4f3bcc5d",
+   "hash": "4b352b77"
+  },
+  "row_hash": "87826cf78a1691bdb327424cac6db939c9844054328595b911898b9f0aed1f27"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 105,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 104,
+   "sId": "6abc470a",
+   "eId": "1d3ecbfa",
+   "outcome": "ENDER-KILL",
+   "frames": 4329,
+   "sFit": 4629,
+   "eFit": 1701,
+   "loserId": "6abc470a",
+   "prev": "4b352b77",
+   "hash": "854b46d2"
+  },
+  "row_hash": "76489440e790a107d9d81f5e2ac695764bc0d88864309e7f69a78e3f57211ac9"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 106,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 105,
+   "sId": "bc385ab2",
+   "eId": "7a0d5670",
+   "outcome": "ENDER-KILL",
+   "frames": 3244,
+   "sFit": 3744,
+   "eFit": 2756,
+   "loserId": "bc385ab2",
+   "prev": "854b46d2",
+   "hash": "d09b22d7"
+  },
+  "row_hash": "b6b0733eadf12e53aad1e3cb9691521a1eadeed0506d25f87747e6b8635935f5"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 107,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 106,
+   "sId": "faf4e505",
+   "eId": "812bf74d",
+   "outcome": "ENDER-KILL",
+   "frames": 633,
+   "sFit": 733,
+   "eFit": 5367,
+   "loserId": "faf4e505",
+   "prev": "d09b22d7",
+   "hash": "10f94793"
+  },
+  "row_hash": "287314aba3c5fdb920fee02e20ae3fb468a528bad3331657c6c5b8e6b4b30ace"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 108,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 107,
+   "sId": "04bafe4e",
+   "eId": "ffc114c3",
+   "outcome": "ENDER-KILL",
+   "frames": 5444,
+   "sFit": 8344,
+   "eFit": 736,
+   "loserId": "04bafe4e",
+   "prev": "10f94793",
+   "hash": "d4b45447"
+  },
+  "row_hash": "21c9952c92cdaa6e7f06d175e491eae5be0cf67d24c3df6ad5f442734a1a4326"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 109,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 108,
+   "sId": "439a1150",
+   "eId": "70bc6756",
+   "outcome": "ENDER-KILL",
+   "frames": 2332,
+   "sFit": 2432,
+   "eFit": 3698,
+   "loserId": "439a1150",
+   "prev": "d4b45447",
+   "hash": "55b4d5f8"
+  },
+  "row_hash": "29fd333f6b1d2a87f151f5e8f54ac37535eab9a5f84398fb1ef55238cb025e14"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 110,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 109,
+   "sId": "3c293ed8",
+   "eId": "35cb3b9c",
+   "outcome": "ENDER-KILL",
+   "frames": 969,
+   "sFit": 1169,
+   "eFit": 5031,
+   "loserId": "3c293ed8",
+   "prev": "55b4d5f8",
+   "hash": "6c072f4c"
+  },
+  "row_hash": "059bd32351550422aabf08a56abb9f9d8227f5b90a37bcdbe0a73dd7c07e9e42"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 111,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 110,
+   "sId": "e93ac86c",
+   "eId": "a2b1950f",
+   "outcome": "SURVIVOR-CAP",
+   "frames": 6000,
+   "sFit": 6900,
+   "eFit": 5,
+   "loserId": "e93ac86c",
+   "prev": "6c072f4c",
+   "hash": "4cee6e50"
+  },
+  "row_hash": "c1ddd8b50b58301985e319ea0aae9f9a79925edad15183d06c4bb2cbc37e97e2"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 112,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 111,
+   "sId": "163ed837",
+   "eId": "4a6c0d87",
+   "outcome": "ENDER-KILL",
+   "frames": 3377,
+   "sFit": 4577,
+   "eFit": 2743,
+   "loserId": "4a6c0d87",
+   "prev": "4cee6e50",
+   "hash": "275aface"
+  },
+  "row_hash": "10d0d0100aa3049d831a82019dd6683de85697f33525d5aebcfcb83af1eb2ba2"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 113,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 112,
+   "sId": "ab7e74b8",
+   "eId": "9a82bfe4",
+   "outcome": "ENDER-KILL",
+   "frames": 4531,
+   "sFit": 7331,
+   "eFit": 1649,
+   "loserId": "ab7e74b8",
+   "prev": "275aface",
+   "hash": "cef43b29"
+  },
+  "row_hash": "f0b9b790edbadb66150f3957d778bb21c135b6fe4a4d12cd564c8870e0b26c25"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 114,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 113,
+   "sId": "ecb8dd55",
+   "eId": "27a18614",
+   "outcome": "ENDER-KILL",
+   "frames": 1950,
+   "sFit": 2350,
+   "eFit": 4080,
+   "loserId": "ecb8dd55",
+   "prev": "cef43b29",
+   "hash": "dceffbf0"
+  },
+  "row_hash": "7f4dd224a8d9b91283c3054e64088a0be6108a748af174567727b1b58e6a79a7"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 115,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 114,
+   "sId": "f6f01da8",
+   "eId": "3f7b0aee",
+   "outcome": "ENDER-KILL",
+   "frames": 543,
+   "sFit": 643,
+   "eFit": 5487,
+   "loserId": "f6f01da8",
+   "prev": "dceffbf0",
+   "hash": "2c22fa1b"
+  },
+  "row_hash": "072dd5fb82871f88e04d404260d0af759fed9dae6b8fa65e1bca066381876241"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 116,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 115,
+   "sId": "f67dda31",
+   "eId": "f325e98f",
+   "outcome": "ENDER-KILL",
+   "frames": 559,
+   "sFit": 659,
+   "eFit": 5441,
+   "loserId": "f67dda31",
+   "prev": "2c22fa1b",
+   "hash": "2803ab11"
+  },
+  "row_hash": "921e12f9360f7f83fc90bd1bb746ffc71de6d45f539058fa748e7df28e2b4730"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 117,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 116,
+   "sId": "d3106eed",
+   "eId": "21954f7c",
+   "outcome": "ENDER-KILL",
+   "frames": 572,
+   "sFit": 672,
+   "eFit": 5428,
+   "loserId": "d3106eed",
+   "prev": "2803ab11",
+   "hash": "897f6a6c"
+  },
+  "row_hash": "7ae22fd2a3bc4b57478472498915dc18d39bc51fcd7232bdb2af89f125716e0a"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 118,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 117,
+   "sId": "d2baa3dd",
+   "eId": "43e6561a",
+   "outcome": "ENDER-KILL",
+   "frames": 352,
+   "sFit": 352,
+   "eFit": 5648,
+   "loserId": "d2baa3dd",
+   "prev": "897f6a6c",
+   "hash": "d3c305ef"
+  },
+  "row_hash": "fa84830060aed165826b188170601105cc6d9d8bb8d94d75490d49ca7fbbee80"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 119,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 118,
+   "sId": "d2baa3dd",
+   "eId": "9ca8b806",
+   "outcome": "ENDER-KILL",
+   "frames": 112,
+   "sFit": 112,
+   "eFit": 5888,
+   "loserId": "d2baa3dd",
+   "prev": "d3c305ef",
+   "hash": "4da51a24"
+  },
+  "row_hash": "3720dcf9ad929aebffe55296447b3c89dd380c731fa2195a33f0dd7a66fb14c0"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 120,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 119,
+   "sId": "a9482f1d",
+   "eId": "c3fedfbb",
+   "outcome": "ENDER-KILL",
+   "frames": 492,
+   "sFit": 492,
+   "eFit": 5508,
+   "loserId": "a9482f1d",
+   "prev": "4da51a24",
+   "hash": "52081eac"
+  },
+  "row_hash": "7e18f5658b8ff666c8e281071061e886faa60eb6355608788c8ae46e87d25e67"
+ },
+ {
+  "kind": "pq/wal-op",
+  "seq": 121,
+  "op": "LINK",
+  "cell": "pq/prerun-coev-birth",
+  "args": {
+   "gen": 120,
+   "sId": "099016dd",
+   "eId": "b4b40f61",
+   "outcome": "ENDER-KILL",
+   "frames": 3475,
+   "sFit": 4675,
+   "eFit": 2675,
+   "loserId": "099016dd",
+   "prev": "52081eac",
+   "hash": "8663279a"
+  },
+  "row_hash": "9a8f972e0189ad4221bd1de466c34279d71ac93f76c289d9c729e888b0d3903e"
+ }
+]

@@ -79,6 +79,7 @@ browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
 (235 tests total: 227 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(222 tests total: 214 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
 is pinned in EXPERIMENTS.md).
 
@@ -127,7 +128,11 @@ The committed artifact (`node tools/prerun-coev.js`, ≈2 min, seed 20260924):
   *is* coevolution.
 - Byte-reproducible: two consecutive runs print the same md5 for
   `checkpoints/coev.js` (`946e639a…`). The C1 lineage is separate from L0–L2:
-  classic checkpoints' provenance is untouched.
+  classic checkpoints' provenance is untouched. The C1 birth ledger is also
+  sealed at birth into `checkpoints/coev-stone-v1.json` (Round 45), a stone-v1
+  chain over all 121 head-to-head rows, verified BEFORE write and refused
+  loudly on tamper (`tests/coev-birth-seal.test.js`); the seal is a receipt,
+  not a sixth training artifact.
 
 In the demo: mode select → **C1 · COEVOLUTION**, press Train (both populations
 evolve — Round 5: this browser path is node-pinned by `tests/coev-glue.test.js`,

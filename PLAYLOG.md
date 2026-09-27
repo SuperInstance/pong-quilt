@@ -10,6 +10,13 @@ Every round is a receipted observation in the loop. Newest first.
 | R43 | 2026-09-28 | r43-seed-zero-honesty (PR #57, vs main 2aa7901, post-R42 main-repair) | canonical |
 | R42 | 2026-09-28 | r42-site (PR #58, vs main 4d447ed, post-#55) + playtest-round-42 (PR #56 main-repair, vs main 4d447ed, post-#55) — two canonical branches; the #58 merge concatenated both stacks (index + entries + README counts) | canonical — deduped by R44 (R31/R2 convention) |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (lost in the #55 merge conflict resolution, same class as R34) |
+| R45 | 2026-09-28 | r45-coev-birth-seal (vs main 1da41be, post-#58) | canonical |
+| R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) | canonical |
+| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
+| R43 | 2026-09-28 | r43-seed-zero-honesty (vs main 2aa7901, post-R42 main-repair) | canonical |
+| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, R40 finding 2) | canonical — index row + entry restored by R42 repair (lost in the #55 merge conflict resolution, same class as R34) |
+| R42 | 2026-09-28 | playtest-round-42 (vs main 4d447ed, post-#55) | canonical |
+| R41 | 2026-09-27 | r41-maxspeed-honesty (vs main 4bb0264, post-#52) | canonical — entry + index row restored by R42 (lost in the #55 conflict resolution; verified against 9c701d2) |
 | R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
@@ -161,6 +168,27 @@ What shipped:
   every `<script src>` in demo/index.html must exist in dist (same class as
   the F7 pin, one level deeper).
 - Suite stays 227/227 through both fixes; PR #59; deploy v5 (e5444d0).
+## Round 45 — coev birth seal: the fifth canonical artifact receipts its own birth rows (R40 finding 4)
+
+**vs main 1da41be (post-#58) — branch r45-coev-birth-seal.**
+
+### Played versions
+v1; the R37→R38→R43 provenance chain by diff + suite at the tip; R40 finding 4 replayed against `tools/prerun-coev.js` (zero seal code on the lane it names).
+
+### Deltas observed
+- d(provenance)/d(version): the R40 finding-4 shape, narrowed to one lane — `checkpoints/coev.js` was byte-reproducible and md5-printed, but the 121 ledger rows behind it were not chained at birth. A post-merge edit could move the artifact's receipt history while leaving only a printed md5 as provenance.
+
+### Built
+- `tools/prerun-coev.js` gains an async birth-seal tail: build `{op:'LINK', cell:'pq/prerun-coev-birth'}` rows one-for-one from the C1 ledger rows just written → `wal-export.js` `toStoneV1` (one stone dialect in the repo) → mirror `verifyStoneV1` BEFORE write → live `stone.verifyChain` when `QUILT_STONE_DIR` names a checkout → write `checkpoints/coev-stone-v1.json`. Refusal path: `stone: SEAL/REFUSED` + exit 1, no file. The stale seal is dropped before the run, the R37 stale-receipt lesson applied to the coev lane.
+- `tests/coev-birth-seal.test.js` — 7 pins: extraction, one-for-one mirror, byte determinism, canonical permutation invariance, exact-row tamper, committed artifact/seal agreement, and live `stone.mjs` accept/tamper vocabulary.
+- `checkpoints/coev-stone-v1.json` — committed birth receipt over the shipped artifact: header + 121 coev birth rows; verifies under the mirror and live at the local quilt-stone checkout.
+
+### Verify
+- `node tests/coev-birth-seal.test.js` 7/7; `tests/stone-prerun-glue.test.js` 5/5 and `tests/wal-session-stone.test.js` 7/7 as regression rails; README count corrected by the readme-count pin (207→214 in `tests/`, total 222); `node tools/receipt-completeness.js` OK.
+- No dynamics touched: the canonical five md5s are unchanged in this commit (`coev.js` remains `946e639a…`); the new file is a receipt, not a training artifact. Inherited red named, not fixed here: a full `node tools/prerun-coev.js` run at this tip regenerates `coev.js` as `2ab34b54…`, not the committed `946e639a…` — the canonical-drift class R43 named for `prerun.js`, present on the coev lane too. The regenerated artifact was restored; the committed seal is over the shipped `coev.js` ledger.
+
+### Verdict
+MERGEABLE — one small committable unit, branch + commit, never main.
 
 ## Round 42 — the website: understand the repo by playing it, in many forms
 
