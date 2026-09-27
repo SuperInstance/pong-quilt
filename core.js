@@ -84,6 +84,8 @@
       const a = Math.atan2(g.vy, g.vx) + (swan() - 0.5) * 1.2;
       g.vx = Math.cos(a); g.vy = Math.abs(Math.sin(a)) * (g.vy < 0 ? -1 : 1);
     }
+    if (!(g.maxSeen >= 1)) g.maxSeen = 1;
+    if (g.speedMul > g.maxSeen) g.maxSeen = g.speedMul; // moved-at speed, pre-reset
     g.speedMul = 1 + g.frames * D.ramp;
     g.frames++;
     if (g.vy > 0 && g.y >= 0.94) {
@@ -95,10 +97,16 @@
     }
     return true;
   }
+  // maxSeen: the max speed multiplier the ball ACTUALLY moved at (sampled at
+  // frame start, before the ramp reset and before any hitBoost is applied).
+  // Round 41 (R40 finding 2): the old metric returned the final-frame
+  // speedMul, so a game ending on a hit frame reported (1+frames*ramp)*1.03 —
+  // a boosted value the ball never moved at (playtest trace: maxReported
+  // 1.0652 vs maxActual 1.0648).
   function newGame(rand) {
     const a = (rand() * 0.8 + 0.7) * Math.PI * (rand() < 0.5 ? 0.25 : 0.75);
     return { x: 0.5, y: 0.5, vx: Math.cos(a), vy: Math.abs(Math.sin(a)),
-             px: 0.42, hold: 0, frames: 0, hits: 0, speedMul: 1 };
+             px: 0.42, hold: 0, frames: 0, hits: 0, speedMul: 1, maxSeen: 1 };
   }
   function sense(g) {
     return [g.x * 2 - 1, g.y * 2 - 1, g.vx, g.vy * (g.vy > 0 ? 1 : -1) * (g.vy > 0 ? 1 : -0.2),
@@ -112,7 +120,7 @@
       if (!step(g, act, rand)) break;
     }
     return { fitness: fitnessOf(g.frames, g.hits), frames: g.frames, hits: g.hits,
-             maxSpeed: g.speedMul };
+             maxSpeed: g.maxSeen }; // R41: max speed actually moved at, never a trailing phantom boost
   }
   function runGeneration(pop, scored, rand, sigma) {
     const D = DEFAULTS, next = [];
@@ -435,6 +443,7 @@
     { id: "doctor-lens-page-glue", claim: "the external lens reaches the PAGE's refusal stat surface — qa.js setDoctorLens()/lensSuffix() carry the Round 24 doctor-verdict line onto both QA-REFUSAL render sites in the real qaSuggest() slice; the seam ships closed (null/empty/non-string lens renders the exact pre-R27 line, never a placeholder) and both render sites are wired (Round 27)", proofTest: "tests/doctor-lens-page-glue.test.js" },
     { id: "wal-session-cli", claim: "the wal-session CLI fails loudly on misuse — an unrecognized positional arg or flag, or a valueless --out, prints usage to stderr and exits non-zero instead of silently defaulting the seed or leaking a raw TypeError from fs.writeFileSync(undefined) (Round 33)", proofTest: "tests/wal-session-cli.test.js" },
     { id: "wal-session-stone", claim: "the session driver's WAL seals in stone-v1 at birth-on-demand — --stone-out re-anchors the SAME session rows into quilt-stone's canonical stone-v1 forward format via the exporter's toStoneV1 (one dialect in the repo), the seal is verified BEFORE it is written (offline mirror always, quilt-stone's OWN stone.mjs when QUILT_STONE_DIR names a checkout), payload rows are one-for-one the WAL rows, same seed re-seals byte-identically, post-write tamper is caught at the exact row, a bogus checkout degrades to a labeled mirror-only receipt never a fake live line, and a valueless --stone-out is a usage error (Round 38)", proofTest: "tests/wal-session-stone.test.js" },
+    { id: "maxspeed-honesty", claim: "the L1 maxSpeed metric is the max speed multiplier the ball ACTUALLY moved at — sampled at frame start before the ramp reset and before any hitBoost; a game ending on a hit frame no longer reports the trailing (1+frames*ramp)×1.03 value the ball never moved at (Round 41, R40 playtest finding 2: trace maxReported 1.0652 vs maxActual 1.0648)", proofTest: "tests/maxspeed-honesty.test.js" },
     { id: "cells-render", claim: "projection cells / fitness strip / receipt panel render live", proofTest: null },
   ];
   return { DEFAULTS, rng, makeNet, forward, mutate, step, newGame, sense, playOne,
