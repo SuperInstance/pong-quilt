@@ -6,17 +6,13 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R48 | 2026-09-28 | r48-main-repair (vs main 4c13b58, post-#61) | canonical |
 | R46 | 2026-09-28 | r46-main-repair (vs main 1da41be, post-#58) | canonical |
 | R44 | 2026-09-28 | r44-site-v2 (vs main 1da41be, post-#58) | canonical |
 | R43 | 2026-09-28 | r43-seed-zero-honesty (PR #57, vs main 2aa7901, post-R42 main-repair) | canonical |
 | R42 | 2026-09-28 | r42-site (PR #58, vs main 4d447ed, post-#55) + playtest-round-42 (PR #56 main-repair, vs main 4d447ed, post-#55) — two canonical branches; the #58 merge concatenated both stacks (index + entries + README counts) | canonical — deduped by R44 (R31/R2 convention) |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (lost in the #55 merge conflict resolution, same class as R34) |
 | R45 | 2026-09-28 | r45-coev-birth-seal (vs main 1da41be, post-#58) | canonical |
-| R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) | canonical |
-| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
-| R43 | 2026-09-28 | r43-seed-zero-honesty (vs main 2aa7901, post-R42 main-repair) | canonical |
-| R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) + playtest-round-42 (vs main 4d447ed, post-#55) — two canonical branches, one row (R2 branch-pair convention) | canonical — site v2; entry + index row restored by R42 repair (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
-| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main 4bb0264→bd91026, post-#52/#53) | canonical — R40 playtest finding 2; entry + index row restored by R42 (lost in the #55 merge conflict resolution, same class as R34; verified against 9c701d2) |
 | R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
@@ -58,6 +54,43 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 48 — main-repair: the #61 merge result was red in three ways no single branch saw
+
+**vs main 4c13b58 (post-#61) — branch r48-main-repair.**
+
+- [finding] every branch in the #59–#61 burst was green ON ITS OWN BASE; the
+  merge RESULT was red on three pins, and each red was invisible to the
+  branches that composed it:
+  1. canonical-index uniqueness — the #61 merge itself concatenated: THREE
+     R42 rows + TWO R41 + TWO R43 (the R44-side rows appended below the
+     R46-side dedup block). Invisible to R46 (its own dedup was correct) and
+     to R44 (merged earlier, through #59).
+  2. readme-count — a FIVE-deep README test-count stack (231/215/212/235/222,
+     three merge generations of nobody deleting the superseded line) AND the
+     live number moved under it: R44's site-v2 stack brought the suite to
+     233 run / 232 pass, so even the newest line (231) was stale.
+  3. honesty two-way (VERIFIED_CLAIMS) — #60 (R45) shipped
+     tests/coev-birth-seal.test.js with no claim entry, while R46 had branched
+     pre-#60 and never met the file. R46's 223/223 was true on its base; the
+     merge result carried a test file no claims list knew.
+  The class: green branch, red merge — the pins catch it after the fact,
+  nothing yet prevents it.
+- [fix] docs only, no code touched. Index: one row per round, first
+  occurrence kept (R31/R2 convention; R2's branch-pair row and the retitled
+  "R2 artifact" row are pin-exempt, as before). README: the stack collapsed
+  to the one live-verified line, 241 = 233 in `tests/` + 8 in qa — the pin
+  counts passes plus its own registration, so a named red stays receiptable
+  without lying about the number.
+- [named, not fixed here] (a) the honesty red above — the coev-birth-seal
+  claim entry rides in open PR #62 (R47), which documents exactly this
+  inherited red; fixing it here would double-fix. (b) the recurrence class
+  itself — every merge burst this week re-wounds the same files; a
+  merge-concatenation pin (simulate the merge result before it exists)
+  belongs beside the pins that catch it after. Booked.
+- [suite] 233 pass-equivalent of 233 run in tests/ (232 spawned + the
+  readme-count pin's own registration) + qa 8/8 at this tip; canonical-index
+  and readme-count green again; the one red is (a) above, fix rides #62.
 
 ## Round 46 — main-repair: CI never built the site; index + count rot at the #58 tip
 
