@@ -6,6 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) | canonical |
+| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
 | R43 | 2026-09-28 | r43-seed-zero-honesty (vs main 2aa7901, post-R42 main-repair) | canonical |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, R40 finding 2) | canonical — index row + entry restored by R42 repair (lost in the #55 merge conflict resolution, same class as R34) |
 | R42 | 2026-09-28 | playtest-round-42 (vs main 4d447ed, post-#55) | canonical |
@@ -52,6 +54,77 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 42 — the website: understand the repo by playing it, in many forms
+
+**vs main 4d447ed (post-#55) — r42-site**
+
+Casey's order: pong-quilt needs a website where visitors explore and
+understand the repo *through playing the application in a browser, in many
+forms* — backend on Cloudflare, using JEV and moth from the secrets store.
+
+What ships:
+- `site/` — a zero-dependency explorable (one HTML file, hand-written CSS,
+  no build framework): "many forms" cards for every way to play (classic
+  L0→L2, C1 coevolution, advisors, scratch tile, WAL export) each with a
+  "what to watch" caption and the verified claim behind it; a Seed Lab
+  (worker-side deterministic replay); a Claim Judge (replay + live JEV
+  verdict); a moth ledger view; the VERIFIED_CLAIMS wristband rendered live.
+- `site/worker.js` — Cloudflare Worker: /api/replay re-runs the repo's own
+  core.js in the isolate (seed-deterministic, validated inputs);
+  /api/judge replays then asks JEV (typesafe) for a verdict;
+  /api/moth reads the live moth ledger (no credits spent); /api/claims and
+  /api/provenance serve the repo's own ledger and a build-sealed sha256
+  manifest of the demo copies.
+- `tools/build-site.mjs` — seals site/dist: the demo files are copied
+  BYTE-IDENTICAL (never re-implemented) under demo/, and a sha256 provenance
+  receipt is written to site/generated/provenance.json.
+- `tools/site-lab.mjs` — pre-build contract probe (replay-in-node,
+  JEV live noul, moth /jobs read): run before building, all four green or
+  don't build.
+- `tests/site-glue.test.js` — the pin: byte-identity of demo copies,
+  provenance shape, replay determinism across calls, input validation,
+  honest abstention on every backend seam with keys unbound.
+
+Honesty notes:
+- moth submission is credit-gated and stays a NAMED slot; v1 only reads the
+  ledger (a receipt of what exists, never a faked green).
+- The demo is never forked: the site frames byte-identical copies and the
+  provenance endpoint lets any visitor check that claim.
+
+### Also this round: the R41 receipt, restored (R35 precedent)
+
+R41 (PR #55, maxSpeed honesty) merged with no PLAYLOG entry and no
+canonical-index row — the exact R34 loss class. The R38 receipt-completeness
+pin (spawned at the repo tip) named it at 4d447ed: "R41: merged via
+'r41-maxspeed-honesty' (PR #55) has no canonical-index row". This round
+restores both, verbatim in shape from the merge itself:
+
+- `core.js` gained `g.maxSeen` — the max speed multiplier sampled at frame
+  start, before the ramp reset and before hitBoost; dynamics untouched
+  (R40 playtest finding 2; trace maxReported 1.0652 vs maxActual 1.0648).
+  Pin: tests/maxspeed-honesty.test.js (4 pins). VERIFIED_CLAIMS +1.
+- The suite was NOT green at the R41 merge despite the round's "201/201"
+  report — receipt-completeness only runs green when every merged round
+  carries a row, and R41 carried none. The pin named the merge itself.
+
+### Verify
+
+- `node tools/build-site.mjs` then the suite: site-glue pins byte-identity,
+  provenance, replay determinism, validation, and named abstention.
+- README count corrected by the readme-count pin (it names the bump).
+
+## Round 41 — maxSpeed honesty (merged; receipt restored by R42)
+
+**vs main bd91026 (post-#53) — PR #55, r41-maxspeed-honesty**
+
+R40 playtest finding 2: playOne() reported the final-frame speedMul, so a
+game ending on a hit frame recorded a boosted speed the ball never moved at
+(trace: maxReported 1.0652 vs maxActual 1.0648). Fix: `g.maxSeen`, sampled
+at frame start before the ramp reset and before hitBoost application; game
+dynamics untouched. 4 new pins, FAIL-first verified on pristine origin/main.
+Merged as PR #55. The merge shipped without this entry and without a
+canonical-index row — restored by R42 above; the R38 pin caught the loss at
+the next tip.
 ## Round 43 — seed honesty: an explicit seed is played verbatim (R40 finding 3)
 
 **vs main 2aa7901 (post-R42 main-repair) — branch r43-seed-zero-honesty.**
