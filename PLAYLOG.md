@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, R40 finding 2) | canonical — index row + entry restored by R42 repair (lost in the #55 merge conflict resolution, same class as R34) |
 | R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
@@ -47,6 +48,30 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 41 — maxSpeed honesty: the metric reports the moved-at speed (R40 finding 2)
+
+**vs main post-#54 — branch r41-maxspeed-honesty, PR #55.** Entry restored
+by the R42 main-repair: the #55 merge conflict resolution dropped this entry
+and the index row (same loss class as R34); content reconstructed from the
+PR #55 body and the merged diff (9c701d2), which are intact.
+
+- `playOne()` returned the FINAL-frame `speedMul`, so a game ending on a hit
+  frame reported `(1+frames×ramp)×hitBoost` — a boosted value the ball never
+  moved at. The L1 metric carried a phantom exactly on the frames that end
+  games.
+- Fix: `g.maxSeen` sampled at frame START (the multiplier the frame's ball
+  movement actually used), before ramp reset and before hitBoost. Dynamics
+  untouched — `speedMul` still carries the boost into `sense()`/`swanP()`;
+  only the reported metric changed.
+- Pinned by `tests/maxspeed-honesty.test.js` (4 pins: exclusion on
+  game-ending hit frames, capture of a boost the next frame actually moves
+  at, seeded `playOne` smoke bounded by the physical ceiling).
+
+### Verdict
+
+Shipped; VERIFIED_CLAIMS +1 (`maxspeed-honesty`). The round's own README
+count edit was also lost in the merge — corrected by the R42 repair.
 
 ## Round 40 — playtest: four P4 findings, first one repaired (coev label/axis divergence)
 
