@@ -125,6 +125,7 @@ emitCurve();
 // ---------------------------------------------------------------------------
 const cpDir = path.join(__dirname, "..", "checkpoints");
 fs.rmSync(path.join(cpDir, "stone-v1.json"), { force: true }); // prior run's seal, if any
+fs.rmSync(path.join(cpDir, "stone-v1.signed.json"), { force: true }); // R39: prior run's staple, if any
 for (const f of fs.readdirSync(cpDir).sort()) {
   const md5 = crypto.createHash("md5").update(fs.readFileSync(path.join(cpDir, f))).digest("hex");
   console.log(`md5  ${f}  ${md5}`);
@@ -155,4 +156,48 @@ console.log("checkpoints written:", fs.readdirSync(cpDir).join(", "));
   }
   fs.writeFileSync(path.join(cpDir, "stone-v1.json"), JSON.stringify(seal, null, 1) + "\n");
   console.log(`stone: sealed ${rows.length} checkpoint rows -> checkpoints/stone-v1.json; mirror ok; ${liveNote}`);
+
+  // R39 (branch r39-stone-sign-pilot): STONE-V2-PILOTS first sign pilot —
+  // the producer staples the birth-seal chain's tip with an ed25519
+  // signature (SuperInstance/quilt-stone signTip/verifyTipSignature, the
+  // stone-v2 sign lane; STONE-SPEC.md §4.6.2). Keys live with the PRODUCER:
+  // QUILT_STONE_SIGN_KEY may name a PEM private key file for a stable
+  // producer identity; absent, an ephemeral keypair is generated per run
+  // and the staple is LABELED ephemeral — never presented as standing
+  // identity. The staple ships CLOSED: when the named checkout has no
+  // signTip (the sign lane is not merged there yet) nothing is written and
+  // the skip is printed labeled, never silent. The signed chain is verified
+  // BEFORE write (verifyTipSignature with the producer public key), and a
+  // refused staple bricks the run exactly like a refused seal.
+  if (!stone || typeof stone.signTip !== "function") {
+    console.log("stone: sign lane not in named checkout (quilt-stone signTip absent) — staple skipped, labeled");
+    return;
+  }
+  const keyPath = process.env.QUILT_STONE_SIGN_KEY || null;
+  let privateKey, publicKeyPem, ephemeral;
+  if (keyPath) {
+    privateKey = crypto.createPrivateKey(fs.readFileSync(keyPath));
+    publicKeyPem = crypto.createPublicKey(privateKey).export({ type: "spki", format: "pem" });
+    ephemeral = false;
+  } else {
+    const pair = crypto.generateKeyPairSync("ed25519");
+    privateKey = pair.privateKey;
+    publicKeyPem = pair.publicKey.export({ type: "spki", format: "pem" });
+    ephemeral = true;
+  }
+  const signed = seal.map(r => ({ ...r })); // staple a copy; the unsigned birth seal stays canonical
+  stone.signTip(signed, privateKey, { key_id: "pq-prerun-sign-pilot", signer_role: "producer" });
+  const sig = stone.verifyTipSignature(signed, publicKeyPem);
+  if (!sig.ok) {
+    console.error(`stone: SIGN/REFUSED verifyTipSignature rejects the staple ${JSON.stringify(sig)}`);
+    process.exit(1);
+  }
+  fs.writeFileSync(path.join(cpDir, "stone-v1.signed.json"), JSON.stringify({
+    tool: "pong-quilt", round: "R39", source: "tools/prerun.js birth-seal tip staple (STONE-V2-PILOTS first sign pilot)",
+    key: { ephemeral, public: publicKeyPem },
+    verify: { ok: sig.ok, tip: sig.tip, signer: sig.signer },
+    chain: signed,
+  }, null, 1) + "\n");
+  console.log(`stone: stapled birth-seal tip ${sig.tip} -> checkpoints/stone-v1.signed.json; verifyTipSignature ok` +
+    (ephemeral ? " (ephemeral producer key, labeled)" : ` (producer key ${keyPath})`));
 })().catch(e => { console.error("stone: SEAL/REFUSED", e && e.message ? e.message : e); process.exit(1); });
