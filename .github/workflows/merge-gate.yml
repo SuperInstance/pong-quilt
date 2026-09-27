@@ -34,5 +34,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # R35: open the canonical lens BEFORE counting. The wal-doctor-e2e pins
+      # (R29) and the doctor-verdict live digest (R32) read a quilt-doctor
+      # clone from QUILT_DOCTOR_PATH or /tmp/quilt-doctor; without it they
+      # honestly skip and the suite count silently drops by 3 — the readme-
+      # count pin then had a SPLIT-BRAIN denominator (171 lens-open in the
+      # pulse sandbox vs 168 lens-closed here). Pinning the canonical clone
+      # (aa5a041, the vendored fixture's citation) makes the count one value
+      # everywhere AND turns the count pin into the lens-open detector: a
+      # missing/broken seam drops the count and fails the gate, by construction
+      # (the R32-carried "open-the-lens CI step" spec, shipped).
+      - name: clone canonical quilt-doctor (opens the live lens)
+        run: |
+          git clone https://github.com/SuperInstance/quilt-doctor.git /tmp/quilt-doctor
+          git -C /tmp/quilt-doctor checkout aa5a041
+          test -f /tmp/quilt-doctor/quilt_doctor/substrate.py
       - name: node --test tests/*.test.js
         run: node --test tests/*.test.js

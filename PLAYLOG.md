@@ -6,6 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R35 | 2026-09-27 | playtest-round-35 (vs main a4f3516, post-#44) | canonical |
+| R34 | 2026-09-27 | r34-amber-admission-source (vs main 0a29cdb, post-#42) | canonical — entry + index row restored by R35 (lost in the #44 conflict resolution; verified against 777e76d) |
 | R33 | 2026-09-27 | r33-wal-session-cli-usage-guard (vs main 0a29cdb, post-#42) | canonical |
 | R32 | 2026-09-27 | playtest-round-32 (vs main 07dc9ae, post-#41) | canonical |
 | R31 | 2026-09-27 | r31-index-dedup-count-fix (vs main 7649f4c, post-#40) | canonical |
@@ -40,6 +42,61 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 35 — CCC — 2026-09-27 — mode: BUILDER ×2 (R31-class main-repair: R34's receipt lost in the PR #44 conflict resolution — entry + index row restored from 777e76d; AND the carried R32→R34 "open-the-lens CI step" — CI now clones canonical quilt-doctor so the suite count is one value everywhere) + play-tester — vs main a4f3516 (post-#44)
+
+### Played versions: main a4f3516 (R34 merged) → R33 tip 3e6a00b → R32 de2fd16 → R34 branch commit 777e76d → R34 final tip 69129d5 — swept in scratch worktrees per the R13 lesson
+
+Suite on main at round start (pulse sandbox, lens open): 171 tests in tests/, **1 RED** — the readme-count pin ("README claims 168 tests in tests/ but the suite runs 171"); qa 8/8. In CI the same commit runs 168 (lens closed) and the pin is GREEN — the pin had a split-brain denominator, see below. `node tools/prerun.js` at all five played tips regenerates the canonical five byte-identically (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps; L0 5767 / L1 8700 / L2 8800).
+
+### Deltas observed (shapes of change)
+- **d(learning)/d(version) = 0 — 13th straight frozen round (R23→R34).** Every played tip's prerun md5s identical; the paddle has not moved since the R22 canonical set.
+- **d(receipt-integrity)/d(version): the receipt layer's failure modes are migrating from redundancy to absence.** R31's merge-burst disease was too much memory (duplicated index rows R24–R27, stale README count lines); this round's is no memory (an entire round entry + index row vanished in a conflict resolution). The shape flips from "two copies of a receipt" to "zero receipts for shipped code" — and zero is worse, because the canonical-index pin is structurally blind to it (verified: green on main while R34's row was missing — no orphan heading, no phantom row; the round simply is not in the file).
+- **d(test-cardinality)/d(environment): the readme-count pin's denominator was a function of the machine, not the commit.** With /tmp/quilt-doctor present (pulse sandbox) the R29 wal-doctor-e2e pins run live and the suite counts 171; absent (CI) they honestly skip (−3) and it counts 168. Same commit, two truths. This single fact retro-explains the entire R34 saga: the branch's README bump was sandbox-computed (lens-open) so CI on 777e76d went RED; the conflict resolution "fixed" it by reverting to main's lens-closed-correct 168, dropping the branch's receipt files as collateral; main's post-merge CI was green and stayed green while the sandbox stayed red. Nobody was lying — the ruler itself was a rubber band.
+
+### Lies hunted
+- **[P2, found by running, FIXED by unification — not by renumbering]** the readme-count pin has a split-brain denominator: pristine main a4f3516 is RED in the pulse sandbox (claims 168, runs 171) and GREEN in CI (runs 168) on the identical commit. My first repair attempt — set README to 171 — passed locally and **failed the CI gate on PR #45** ("claims 171, runs 168"), which is how the environment split surfaced. The honest fix is to define the canonical count WITH the canonical lens open and make CI open it (builder receipt 2), not to pick one environment's number.
+- **[P2-process, found by inspecting git + the GitHub checks API, FIXED]** R34's PLAYLOG entry and canonical-index row never reached main. The commit message of 777e76d claims "PLAYLOG R34 + canonical index row" but neither is on main (grep: 0 hits; the branch-vs-main PLAYLOG diff proves the drop). The canonical-index pin stayed green the whole time — its two-way check only sees rows/headings present in the file, so a round absent entirely is invisible. Restored verbatim from 777e76d (receipts are memory; the loss record lives here).
+- **[P3-process, verified via check-runs API, recorded]** the merge-gate never ran green on PR #44's final head: zero completed checks on 69129d5 at merged_at 23:09:50Z; the suite success on that SHA started 23:10:08Z (post-merge, push event); the pre-merge branch commit's suite was a FAILURE at 22:25Z. Spec item 2 below.
+- **[none else found — crown claims re-verified live on main]** page-parse green; honesty two-way 9/9; wal-session CLI guard behaves per R33 spec (bogus arg → exit 2 + usage; valueless --out → exit 2 + usage, no TypeError leak); amber-admission pins 3/3 green; canonical five byte-identical at all five played tips.
+
+### Builder receipt 1: restore R34's lost receipt (R31-class main repair, docs)
+- **what:** R34's PLAYLOG entry + canonical-index row restored verbatim from 777e76d (above the R33 entry, newest-first); README count corrected.
+- **why:** R34's code, pins, and VERIFIED_CLAIMS row merged and are green on main — only the receipt was lost. The R11 lesson cuts both ways: code without a receipt is unshipped, and shipped code whose receipt vanished is half-shipped.
+- **verify:** the canonical-index uniqueness pin passes with the R34+R35 rows present; the loss is git-verified (environment-independent, unlike the count below).
+
+### Builder receipt 2: open-the-lens CI step (the R32-carried spec, shipped) — unifies the count by construction
+- **what:** `.github/workflows/merge-gate.yml` suite job now clones `SuperInstance/quilt-doctor` at the canonical `aa5a041` (the vendored fixture's exact citation) into `/tmp/quilt-doctor` before running the suite. One small step, three receipts at once.
+- **why:** (1) the count becomes one value — 171 with the lens open — in the sandbox AND CI; (2) the carried R32→R34 spec ("workflow job running the doctor-verdict live pin, FAILING if the seam does not open") is now the default path, not a separate job — if the clone fails, the e2e pins skip, the count drops to 168, and the readme-count pin fails the gate by construction; (3) it retro-diagnoses R34's CI red: the branch's bump was computed lens-open while CI ran lens-closed.
+- **verify (FAIL-first, by running):** my docs-only attempt (README 171 without the CI lens step) FAILED the gate on PR #45's head 9b286d7 — the gate itself produced the evidence ("claims 171, runs 168"). With the step added, CI runs the three e2e pins live against the real substrate.py and the suite counts 171 there too. CI on the final head b7bc183: **# tests 171 / # pass 171 / # fail 0, zero doctor skips** (run log verified) + page-parse green.
+
+### Next version spec (competitive improvements)
+- [small] **receipt-completeness CI job**: a workflow step diffs merged-PR branch names (`r<N>-*`, `playtest-round-<N>`) against canonical-index rows on main after each merge, FAILING when a merged round has no row. why: this round's P2-process — the index pin is blind to absence; only git ground truth can see it (it saw R34 instantly). verify: FAIL-first by replaying PR #44's state (fixture index without the R34 row) through the check script.
+- [small] **merge-gate enforcement, not just existence**: branch protection requiring "full test suite" green before merge. why: this round's P3-process — PR #44 merged with no green check on its final head and a red on its last real signal. verify: repo setting (admin); a deliberately red PR must be unmergeable.
+- [small] **lens-freshness pin**: the CI clone is pinned to aa5a041; quilt-doctor HEAD has already moved (957e360). A scheduled job re-running the verdict pin against quilt-doctor HEAD would catch cross-repo canonical drift before it surprises a future round. why: shipped lens step pins the PAST by design; freshness is the other half. verify: scheduled workflow, green while HEAD shape-matches the vendored fixture.
+- carried: [epic, R12→R35] C1 scaling study. [medium, R22→R35] advice-aware GA. [medium, R27→R35] canonical-md5 lineage for the WAL session export.
+
+### Siblings studied this round
+Internal receipt-layer archaeology (git log/show + GitHub checks API against SuperInstance/pong-quilt PR #44 and its two SHAs) plus SuperInstance/quilt-doctor aa5a041 — the canonical substrate the R29/R32 pins cite, re-confirmed present and loadable by file. The pulse-sandbox clone at 957e360 re-verified green against the aa5a041-shape fixture.
+
+### Verdict
+MERGEABLE (docs repair restoring the R34 receipt verbatim + one workflow step that opens the canonical lens; suite green at tip in both environments once CI runs lens-open; training path untouched — prerun canonical five byte-identical at base and tip).
+
+## Round 34 — k2d8 — 2026-09-27 — mode: BUILDER (R28 item 3 / R32 spec item 2 — one amber-admission source, still unfulfilled through R33) — vs main 0a29cdb (post-#42)
+
+### Builder receipt: three degrade sentences, one source
+- **what:** `index.html` now defines a single `amberAdmission(what, cause)` — all three amber degrade sentences (`renderCoinJournal`'s in-renderer branch, the page's `coinJournalUnavailable` fetch-failure instrument, `coevStripUnavailable`) build from it; only the parenthetical stays per-cause (R32 spec verbatim). The pre-R34 state was three literal copies whose parentheticals already disagreed about WHY (R32's P4).
+- **why:** honesty sentences copied by hand drift — R32 counted three copies, one already divergent; one copy by construction cannot.
+- **verify (FAIL-first, by running):** new `tests/amber-admission-glue.test.js` — pin 1 asserts the stem and tail each appear exactly once in index.html code (3 literal copies on pristine main → RED 3/3 there, verified in a detached worktree); pin 2 extracts all three instruments VERBATIM (brace-counted, with the `$` canvas helper stubbed) and asserts each rendered string byte-equals what the source builds, stems byte-equal, tails byte-equal, both amber `#d29922`; pin 3 asserts the renderer degrade path (null journal) still admits via the source with no fake ticks (R28 vocabulary preserved). `tests/coin-journal-glue.test.js` extraction now carries the shared definition it closes over (same extract-as-shipped doctrine). Suite 166/166 + qa 8/8; README 171→174 (the readme-count pin named me, as designed); prerun canonical five byte-identical — training path untouched; VERIFIED_CLAIMS +1 (`amber-admission-source`).
+- **honesty notes:** extraction lesson recorded — `coinJournalUnavailable`/`coevStripUnavailable` are multi-line one-close instruments (close brace rides line end), so naive `\n}` anchoring over-extracts into page boot code; brace-counting is the robust cut. No lies found this round beyond the one fixed; crown claims (WAL export → doctor verify, canonical five) re-verified green at this tip.
+
+### Next version spec (competitive improvements)
+- [small] **wal-session CLI usage guard** (R28 item 2, still unfulfilled on main — PR #43 open): unrecognized positional arg, or `--out` with no value → usage on stderr + exit non-zero.
+- [medium] **open-the-lens CI step** (carried from R32): a workflow job running the doctor-verdict live pin with `QUILT_DOCTOR_PATH` set, FAILING if the seam does not open.
+- carried: [epic, R12→R34] C1 scaling study. [medium, R22→R34] advice-aware GA. [medium, R27→R34] canonical-md5 lineage for the WAL session export.
+
+### Verdict
+MERGEABLE (docs+instrument honesty only; the paddle math is untouched).
 
 ## Round 33 — r33-wal-session-cli-usage-guard — 2026-09-27 — mode: BUILDER (R33 spec item 1 — wal-session CLI usage guard, the R32-booked P4) — vs main 0a29cdb (post-#42)
 
