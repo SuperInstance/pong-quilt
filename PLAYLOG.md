@@ -6,6 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R50 | 2026-09-28 | r50-main-repair (vs main b767404, post-#66) | canonical |
+| R49 | 2026-09-28 | r49-readme-count-repair (PR #66, vs main ea9dfbb, post-#62) + r49-count-bistability (PR #65, vs main ea9dfbb, post-#62) + playtest-round-49 (PR #64, vs main 166a1f2, post-#63) — three canonical branches, one round; the #64/#65/#66 merges stacked three index rows on R49 | canonical — deduped by R50 (R42/R31/R2 convention) |
 | R50 | 2026-09-28 | r50-difficulty-escalation (vs main 629bfd8, post-#67; stacked on r49c #69) | canonical |
 | R49 | 2026-09-28 | r49-readme-count-repair + r49-count-bistability (both vs main ea9dfbb, post-#62) + playtest-round-49 (vs main 166a1f2, post-#63) — three canonical branches, one row (R2 branch-pair convention) | canonical — deduped by the R49 main-repair addendum below (R31/R2 convention) |
 | R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
@@ -58,6 +60,21 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 50 — main-repair: the #66 merge result red on two pins, one root cause
+
+**vs main b767404 (post-#66) — branch r50-main-repair.**
+
+Casey's #64/#65/#66 merge stack landed all three R49 branches, and each branch
+had written its own canonical-index row — three `| R49 |` rows where the R2
+convention allows exactly one per round (multiple `## Round 49` headings below
+are legitimate; multiple index rows are the drift class R31/R42/R44 deduped
+before). Both red pins were the same root: the uniqueness pin named the dup
+rows directly, and the readme-count pin counted the suite as 234 (its spawn
+sees the index test fail) against README's live-verified 235. Fix: one merged
+R49 row naming all three branches (R42 row form), no count change — with the
+index green the spawn passes 234, +1 for this file = 235 = README's claim
+(243 = 235 + 8, re-verified by running). FAIL-first: both pins RED on pristine
+main b767404 (CI run at the #66 merge), green only here. Docs only.
 ## Round 50 — difficulty escalation: the game hardens until a perfect oracle dies
 
 Branch `r50-difficulty-escalation` (vs main b767404, post-#66). The user's ask: the demo
