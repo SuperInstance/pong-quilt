@@ -66,6 +66,8 @@ MERGEABLE (sign pilot ships closed; opens fully the moment the sign lane lands i
 *Receipt: PR to be posted — branch playtest-round-38, vs main 1c3db7d, post-#47-merge.*
 *Mode: BUILDER + play-tester (builder claim: R35 spec item 1, unfulfilled through R37; play claim below).*
 
+*R39 addendum (played 2026-09-27): the two P2 merge-blockers booked against PR #48 — the README count that had to ride the #48 merge and the missing R38 receipt references — were both real: #48 merged without them (c399bda), main's suite went red (readme-count 186 vs live), and the full-suite job additionally went red on the R38 pin's shallow-checkout refusal (fetch-depth 1 default in the suite job — repaired R39). Both booked blockers honored here post-merge.*
+
 **Played.** main tip 1c3db7d (post-#47): suite 181/181 under the canonical glob, tools/test-qa.js 8/8, zero skips (lens-open in the sandbox). `node tools/prerun.js` exit 0; the canonical five byte-identical for the 16th straight round (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps); stone seal verified-before-write, mirror honestly labeled (QUILT_STONE_DIR unset). Also played open sibling PR #48 (r38-wal-session-stone-seal, tip 6d111b8) per the open-sibling doctrine — played, not merged:
 
 - **Suite at 6d111b8: 187/188 — RED.** The readme-count pin: README on the branch says 181 (body claims 183), live suite is 188. The main-merge at 6d111b8 pulled 5 new main tests under the branch's count bump and nobody re-ran the named pin. The body's "Suite 183/183 green under the canonical glob" was true of 9b235e9 and is false of the head the PR actually ships. [P2, found by running]

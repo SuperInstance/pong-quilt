@@ -30,7 +30,14 @@ jobs:
     needs: page-parse-pin
     runs-on: ubuntu-latest
     steps:
+      # R39: the receipt-completeness pin (R38) refuses a shallow checkout
+      # ("no merge commits reachable from HEAD"), and the suite runs that pin
+      # via tests/*.test.js — so this job needs full history too, same as the
+      # named receipt-completeness job below. Without it every run is red by
+      # construction, and red-but-ignored gates merge red PRs (#48, #50).
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
