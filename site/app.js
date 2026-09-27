@@ -78,7 +78,7 @@
       out2.innerHTML =
         '<table class="sweeptable"><thead><tr><th>seed</th><th>frames</th><th>hits</th><th>max speed</th><th>digest</th></tr></thead><tbody>' +
         rows.map((r) => r.ok
-          ? '<tr><td>' + fmt(r.seed) + '</td><td>' + fmt(r.frames) + '</td><td>' + r.hits + '</td><td>' + r.maxSpeed + '</td><td><code>' + dig(r.digest) + '</code></td></tr>'
+          ? '<tr' + (r.frames < r.maxFrames ? ' class="died" title="the champion died at frame ' + fmt(r.frames) + ' — fitness capped"' : '') + '><td>' + fmt(r.seed) + '</td><td>' + fmt(r.frames) + '</td><td>' + r.hits + '</td><td>' + r.maxSpeed + '</td><td><code>' + dig(r.digest) + '</code></td></tr>'
           : '<tr><td>' + fmt(r.seed) + '</td><td colspan="4">' + abstain(r.why) + '</td></tr>').join('') +
         '</tbody></table>' +
         '<p class="dim">' + okRows.length + ' replays · ' + digests.size + ' unique digests · hits min/mean/max: ' +
@@ -201,7 +201,7 @@
       '<table class="sweeptable"><thead><tr><th>when (UTC)</th><th>game</th><th>claim</th><th>verdict</th><th>digest</th></tr></thead><tbody>' +
       r.wall.map((w) => '<tr data-testid="wall-row">' +
         '<td>' + new Date(w.ts).toISOString().slice(0, 19).replace('T', ' ') + '</td>' +
-        '<td>' + esc(w.level) + ' · ' + fmt(w.seed) + '</td>' +
+        '<td><a href="/?level=' + encodeURIComponent(w.level) + '&seed=' + w.seed + '" title="re-run this exact game in the Engine Room">' + esc(w.level) + ' · ' + fmt(w.seed) + '</a></td>' +
         '<td>' + esc(w.claim) + '</td>' +
         '<td>' + (w.verdict !== null && w.verdict !== undefined ? '<b>' + esc(w.verdict) + '</b>' : '<span class="dim">abstain' + (w.abstain ? ': ' + esc(String(w.abstain).slice(0, 40)) : '') + '</span>') + '</td>' +
         '<td><code>' + dig(w.digest) + '</code></td></tr>').join('') +
