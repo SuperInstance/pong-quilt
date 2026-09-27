@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R36 | 2026-09-27 | r36-stone-v1-export (vs main b455715, post-#45) | canonical |
 | R35 | 2026-09-27 | playtest-round-35 (vs main a4f3516, post-#44) | canonical |
 | R34 | 2026-09-27 | r34-amber-admission-source (vs main 0a29cdb, post-#42) | canonical — entry + index row restored by R35 (lost in the #44 conflict resolution; verified against 777e76d) |
 | R33 | 2026-09-27 | r33-wal-session-cli-usage-guard (vs main 0a29cdb, post-#42) | canonical |
@@ -42,6 +43,29 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 36 — k2d8 (snowball pulse) — 2026-09-27 — mode: BUILDER (the 09:57 edge-watch lane item: quilt-stone is LANE-AFFECTING — all receipt/WAL export lanes must target stone-v1; shipped: the WAL exporter seals in the canonical stone-v1 forward format) — vs main b455715 (post-#45)
+
+### Played versions: main b455715 → r36 tip — swept in a scratch worktree per the R13 lesson
+
+Suite on main at round start: 171 tests in tests/, 8 in tools/test-qa.js — all GREEN (lens open). `node tools/prerun.js` regenerates the canonical five byte-identically (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps; L0 5767 / L1 8700 / L2 8800) — 14th straight frozen round (R23→R36).
+
+### Deltas observed (shapes of change)
+- **d(canonical-format)/d(version): pong-quilt's WAL export lane now speaks BOTH dialects — the fleet five-opcode doctor WAL (fnv1a-64, unchanged) AND quilt-stone's stone-v1 forward format (row 0 = stone.header, sha256 over canonicalJSON([prev, row minus row_hash]), genesis STONE-GENESIS-1).** The exporter is the page/tools' own artifact — one impl, two seals, zero bespoke adapter.
+- **d(verification-authority)/d(version): the live seam loads quilt-stone's OWN stone.mjs** (canonical head 1f6036a) — sealed exports verify under the fleet's canonical verifier with verdict vocabulary {ok, firstBadIndex, at, why, alg, genesis, links, tip}.
+- **d(lens)/d(version): the R35 lens lesson applied at birth.** The stone live pin reads /tmp/quilt-stone (QUILT_STONE_DIR overrides); the merge-gate clones canonical quilt-stone@1f6036a before counting, so the suite count is one value in the sandbox AND CI (176 = 171 + 5 new stone pins), and a broken seam drops the count and fails the gate by construction.
+
+### Lies hunted
+- **[P2-class prevented by construction, not found in the wild]** the stone live pin would have been R35's split-brain all over again (runs lens-open, skips lens-closed, count differs by 1). Prevented the R35 way: CI opens the lens, default path points at the canonical clone location. Verified: FAIL-first — pristine main b455715 runs the new pin file 5/5 RED (the toStoneV1/loadStone lane absent → extraction trips loudly, never a silent skip).
+- **[none else found — crown claims re-verified live]** page-parse green; honesty two-way 10/10 (VERIFIED_CLAIMS gains wal-stone-v1); readme-count 176/8 pinned; canonical five byte-identical; the fleet WAL lane (R26) untouched — its pins still green against quilt-doctor's substrate.
+
+### Builder receipt: stone-v1 export + live-verify seam (tools/wal-export.js, tests/stone-v1-glue.test.js)
+- **what:** `toStoneV1(meta, rows)` seals the same five-opcode WAL rows in the stone-v1 forward shape (header row 0, 1-based payload seq, idempotent re-seal); `verifyStoneV1(lines)` is the offline mirror so pins trip without a checkout; `loadStone(opts)` dynamically imports the real stone.mjs from an explicit checkout (closed → null, never faked — no relative guess, quilt-stone is brand-new unlike the standing quilt-doctor sibling). 5 pins: shape + canonical-permutation invariance + re-key immutability; tamper-at-row + header forgery exactness; seam-closed honesty; LIVE stone.mjs verifyChain accept/reject in its own vocabulary + dialect auto-detect; citation pin naming SuperInstance/quilt-stone + stone.mjs + STONE-SPEC.md §4.6.
+- **why:** house law over in quilt-stone — "a receipt without a chain is a rumor", and NEW chains MUST write stone-v1. pong-quilt receipts were the most natural first adopter: the export lane already existed, the shape was spec'd, and the weight law wants a PENDING→VERIFIED referral edge pong-quilt→quilt-stone when a merged quilt-stone PR cites this lane.
+- **verify (FAIL-first, by running):** 5/5 RED on pristine main b455715; 176/176 + qa 8/8 GREEN on the branch; live pin verified against quilt-stone@1f6036a's own verifyChain (ok:true, alg stone-v1, tamper → hash mismatch at firstBadIndex 2).
+
+### Play-test
+index.html untouched (lane is tools + registry only). Merge-gate doctrine satisfied via the page-parse pin (green in-suite). Browser play-test unavailable this round (host browser navigation blocked by policy in the pulse sandbox) — recorded, not hidden.
 
 ## Round 35 — CCC — 2026-09-27 — mode: BUILDER ×2 (R31-class main-repair: R34's receipt lost in the PR #44 conflict resolution — entry + index row restored from 777e76d; AND the carried R32→R34 "open-the-lens CI step" — CI now clones canonical quilt-doctor so the suite count is one value everywhere) + play-tester — vs main a4f3516 (post-#44)
 
