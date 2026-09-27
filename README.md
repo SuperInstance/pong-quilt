@@ -60,8 +60,8 @@ script prints the md5 of every emitted file):
 
 Reproduce any row: `node tools/prerun.js` (≈40 s) regenerates all three levels
 plus `checkpoints/curve.json` and prints their md5s. Current artifacts:
-`level0.js 8a49b0f6…`, `level1.js aa4d7c4b…`, `level2.js 63b7fdd5…`,
-`curve.json ba1c919a…` (truncated; the script prints full digests).
+`level0.js bc15d414…`, `level1.js 1125d59c…`, `level2.js 50137ceb…`,
+`curve.json f9b20e7d…` (the post-R50 line; EXPERIMENTS.md keeps the earlier lines)
 
 Two honest notes on the shape: **L1 > L2** under the new weights — the gen-60
 champion hit 28 times where the gen-260 one hit 27, and one more hit outweighs
@@ -78,7 +78,7 @@ The demo renders a wristband panel from a single registry in `core.js`
 browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
-(245 tests total: 237 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(255 tests total: 247 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
 is pinned in EXPERIMENTS.md).
 

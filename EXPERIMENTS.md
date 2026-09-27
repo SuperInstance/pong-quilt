@@ -83,6 +83,17 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
   field-by-field parse, R42). The R42 pin (`tests/artifact-maxspeed-lineage.test.js`)
   holds this line: any future metric-semantics change that re-drifts the
   artifacts trips it and forces a declared re-embed — never silent drift.
+- **The post-R50 line** (R50 escalation re-embed — hitBoost revived in the speed
+  law + `accel·frames²` + shrinking paddle + growing decision interval): curve
+  `f9b20e7d…`, L0 `bc15d414…`, L1 `1125d59c…`, L2 `50137ceb…`, coev `946e639a…`
+  (**byte-identical to the post-R21 line** — escalation defaults are inert at
+  coev horizons: no coev game lives long enough for shrink to flip an outcome
+  and no seeded swan draw crosses either probability threshold differently).
+  L1/L2 `maxSpeed` fields move to **4.443 / 3.411** (moved-at values under the
+  R50 law; real hitBoost compounding + accel raise the ceiling honestly). The
+  curve's tie journal collapses from 182 flips / 89 swaps to **5 flips / 3
+  swaps** — escalation spreads fitness values, so generations almost never tie
+  exactly. The R42 pin now anchors this line; any future re-drift trips it.
 - **Provenance is a chained receipt, not a promise (Round 37).** Every
   `node tools/prerun.js` run ends by sealing the four artifacts it just
   wrote into `checkpoints/stone-v1.json` — a stone-v1 forward chain
