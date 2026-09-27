@@ -6,15 +6,16 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R51 | 2026-09-28 | r51-playlog-newest-first (vs main 629bfd8, post-#67) | canonical |
 | R49 | 2026-09-28 | r49-readme-count-repair + r49-count-bistability (both vs main ea9dfbb, post-#62) + playtest-round-49 (vs main 166a1f2, post-#63) — three canonical branches, one row (R2 branch-pair convention) | canonical — deduped by the R49 main-repair addendum below (R31/R2 convention) |
-| R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
 | R48 | 2026-09-28 | r48-main-repair (vs main 4c13b58, post-#61) | canonical |
+| R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
 | R46 | 2026-09-28 | r46-main-repair (vs main 1da41be, post-#58) | canonical |
+| R45 | 2026-09-28 | r45-coev-birth-seal (vs main 1da41be, post-#58) | canonical |
 | R44 | 2026-09-28 | r44-site-v2 (vs main 1da41be, post-#58) | canonical |
 | R43 | 2026-09-28 | r43-seed-zero-honesty (PR #57, vs main 2aa7901, post-R42 main-repair) | canonical |
 | R42 | 2026-09-28 | r42-site (PR #58, vs main 4d447ed, post-#55) + playtest-round-42 (PR #56 main-repair, vs main 4d447ed, post-#55) — two canonical branches; the #58 merge concatenated both stacks (index + entries + README counts) | canonical — deduped by R44 (R31/R2 convention) |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (lost in the #55 merge conflict resolution, same class as R34) |
-| R45 | 2026-09-28 | r45-coev-birth-seal (vs main 1da41be, post-#58) | canonical |
 | R40 | 2026-09-27 | playtest-round-40 (PR #53, open at repair time) + r40-coev-label-axis (vs main 4bb0264, post-#52) | canonical |
 | R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
@@ -56,6 +57,16 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 51 — k2d8 (snowball pulse) — 2026-09-28 — mode: BUILDER (main-repair: the canonical index and the round entries were both out of newest-first order — R47 sat above R48, R45 below R44, R42 above R43; observed by the R50 report, not fixed there) — vs main 629bfd8 (post-#67)
+
+Branch `r51-playlog-newest-first`. Docs + pins only; no code touched.
+
+- **The wound:** the canonical-index table had `R47` above `R48` (and `R44` above `R45`), and the round entries repeated the same inversion plus `Round 45` misplaced after `Round 41` and `Round 42`/`43` swapped — the "newest first" contract the PLAYLOG header states was broken in both views.
+- **The fix:** both views stable-sorted to strict descending round order (moves only — 89 insertions / 89 deletions, no content edited). Equal rounds keep branch-stack relative order.
+- **The pins (FAIL-first, verified against pristine `origin/main` — both trip there at R47-above-R48):** `tests/canonical-index.test.js` gains "index rows are newest-first (non-increasing)" and "round entries are newest-first (non-increasing)". Numeric comparison, not lexicographic.
+- **Counts:** suite 235 -> 237; README 243=235+8 -> 245=237+8.
+- **Not double-fixed (R30 precedent):** the R49-row uniqueness red that shared this file was healed upstream by the R49 main-repair addendum (#67) before this round branched — named here, not re-fixed.
 
 ## Round 49 — main-repair addendum: three R49 receipts, one round — the uniqueness pin named it
 
@@ -212,37 +223,6 @@ Every round is a receipted observation in the loop. Newest first.
   234 run (README binds the pass-count 233 and its pin is green, so this is
   doc-precision only — P4 — but PLAYLOG suite lines are unpinned; state run
   AND pass going forward).
-## Round 47 — doctor-lens freshness: the receipt names the commit it read
-
-**vs main 822c850 (post-#60), rebased onto 166a1f2 (post-#63) — branch
-r47-doctor-lens-freshness.**
-
-- [finding] tools/doctor-verdict.js digested a quilt-doctor checkout but the
-  receipt line never named WHICH checkout state produced the verdict — the
-  R43-booked lens-freshness gap. A drifted doctor could be silently cited
-  as aa5a041 forever.
-- [fix] resolveHead() reads .git directly (pure fs — HEAD ref, loose ref,
-  packed-refs fallback, detached HEAD; no git binary, same no-deps contract);
-  the digest carries observedCommit and lensLine() appends
-  `[observed @<short>]` — or `[observed-commit unresolved]` when .git is
-  unreadable (degraded freshness NAMED, never silent, never faked).
-- [pins] 3 freshness pins in tests/doctor-verdict-glue.test.js, FAIL-first
-  3/3 RED on pristine main 822c850: observed-commit naming, moved-checkout
-  moves the name (old commit must not survive), detached resolves,
-  unresolved named. Fixture grows a fake .git (aa5a041…f00d).
-- [inherited red repaired] merged R45 (#60) shipped tests/coev-birth-seal.test.js
-  with NO VERIFIED_CLAIMS entry — the honesty two-way pin was red on main;
-  claim added (proofTest: tests/coev-birth-seal.test.js) and the site demo
-  copy + build manifest re-sealed (tools/build-site.mjs).
-- [named at base, repaired by R48] on the original base 822c850 the
-  canonical-index dup-row was the one red (232/233 pass) — named, not
-  fixed. #61's merge result re-concatenated the index (R42×3/R41×2/R43×2)
-  plus a README count stack — R48 (#63) repaired the merge wounds and named
-  this branch's honesty fix as the one red it carried; this branch rebases
-  onto post-#63 main where the index + counts are clean.
-- [suite] 237/237 tests + qa 8/8 green at the rebased tip; README count
-  241→245 (pin-named).
-
 ## Round 48 — main-repair: the #61 merge result was red in three ways no single branch saw
 
 **vs main 4c13b58 (post-#61) — branch r48-main-repair.**
@@ -280,6 +260,37 @@ r47-doctor-lens-freshness.**
   readme-count pin's own registration) + qa 8/8 at this tip; canonical-index
   and readme-count green again; the one red is (a) above, fix rides #62.
 
+## Round 47 — doctor-lens freshness: the receipt names the commit it read
+
+**vs main 822c850 (post-#60), rebased onto 166a1f2 (post-#63) — branch
+r47-doctor-lens-freshness.**
+
+- [finding] tools/doctor-verdict.js digested a quilt-doctor checkout but the
+  receipt line never named WHICH checkout state produced the verdict — the
+  R43-booked lens-freshness gap. A drifted doctor could be silently cited
+  as aa5a041 forever.
+- [fix] resolveHead() reads .git directly (pure fs — HEAD ref, loose ref,
+  packed-refs fallback, detached HEAD; no git binary, same no-deps contract);
+  the digest carries observedCommit and lensLine() appends
+  `[observed @<short>]` — or `[observed-commit unresolved]` when .git is
+  unreadable (degraded freshness NAMED, never silent, never faked).
+- [pins] 3 freshness pins in tests/doctor-verdict-glue.test.js, FAIL-first
+  3/3 RED on pristine main 822c850: observed-commit naming, moved-checkout
+  moves the name (old commit must not survive), detached resolves,
+  unresolved named. Fixture grows a fake .git (aa5a041…f00d).
+- [inherited red repaired] merged R45 (#60) shipped tests/coev-birth-seal.test.js
+  with NO VERIFIED_CLAIMS entry — the honesty two-way pin was red on main;
+  claim added (proofTest: tests/coev-birth-seal.test.js) and the site demo
+  copy + build manifest re-sealed (tools/build-site.mjs).
+- [named at base, repaired by R48] on the original base 822c850 the
+  canonical-index dup-row was the one red (232/233 pass) — named, not
+  fixed. #61's merge result re-concatenated the index (R42×3/R41×2/R43×2)
+  plus a README count stack — R48 (#63) repaired the merge wounds and named
+  this branch's honesty fix as the one red it carried; this branch rebases
+  onto post-#63 main where the index + counts are clean.
+- [suite] 237/237 tests + qa 8/8 green at the rebased tip; README count
+  241→245 (pin-named).
+
 ## Round 46 — main-repair: CI never built the site; index + count rot at the #58 tip
 
 **vs main 1da41be (post-#58) — branch r46-main-repair.**
@@ -298,6 +309,28 @@ r47-doctor-lens-freshness.**
   pin named it, corrected to 223 (+8 qa = 231).
 - Docs + workflow only; training path untouched. Suite 223/223 + qa 8/8
   green with the site build present (the CI shape from now on).
+## Round 45 — coev birth seal: the fifth canonical artifact receipts its own birth rows (R40 finding 4)
+
+**vs main 1da41be (post-#58) — branch r45-coev-birth-seal.**
+
+### Played versions
+v1; the R37→R38→R43 provenance chain by diff + suite at the tip; R40 finding 4 replayed against `tools/prerun-coev.js` (zero seal code on the lane it names).
+
+### Deltas observed
+- d(provenance)/d(version): the R40 finding-4 shape, narrowed to one lane — `checkpoints/coev.js` was byte-reproducible and md5-printed, but the 121 ledger rows behind it were not chained at birth. A post-merge edit could move the artifact's receipt history while leaving only a printed md5 as provenance.
+
+### Built
+- `tools/prerun-coev.js` gains an async birth-seal tail: build `{op:'LINK', cell:'pq/prerun-coev-birth'}` rows one-for-one from the C1 ledger rows just written → `wal-export.js` `toStoneV1` (one stone dialect in the repo) → mirror `verifyStoneV1` BEFORE write → live `stone.verifyChain` when `QUILT_STONE_DIR` names a checkout → write `checkpoints/coev-stone-v1.json`. Refusal path: `stone: SEAL/REFUSED` + exit 1, no file. The stale seal is dropped before the run, the R37 stale-receipt lesson applied to the coev lane.
+- `tests/coev-birth-seal.test.js` — 7 pins: extraction, one-for-one mirror, byte determinism, canonical permutation invariance, exact-row tamper, committed artifact/seal agreement, and live `stone.mjs` accept/tamper vocabulary.
+- `checkpoints/coev-stone-v1.json` — committed birth receipt over the shipped artifact: header + 121 coev birth rows; verifies under the mirror and live at the local quilt-stone checkout.
+
+### Verify
+- `node tests/coev-birth-seal.test.js` 7/7; `tests/stone-prerun-glue.test.js` 5/5 and `tests/wal-session-stone.test.js` 7/7 as regression rails; README count corrected by the readme-count pin (207→214 in `tests/`, total 222); `node tools/receipt-completeness.js` OK.
+- No dynamics touched: the canonical five md5s are unchanged in this commit (`coev.js` remains `946e639a…`); the new file is a receipt, not a training artifact. Inherited red named, not fixed here: a full `node tools/prerun-coev.js` run at this tip regenerates `coev.js` as `2ab34b54…`, not the committed `946e639a…` — the canonical-drift class R43 named for `prerun.js`, present on the coev lane too. The regenerated artifact was restored; the committed seal is over the shipped `coev.js` ledger.
+
+### Verdict
+MERGEABLE — one small committable unit, branch + commit, never main.
+
 ## Round 44 — site v2: play without leaving the page (+ the #58 merge-wound repair)
 
 **vs main 1da41be (post-#58) — r44-site-v2**
@@ -407,27 +440,46 @@ What shipped:
   every `<script src>` in demo/index.html must exist in dist (same class as
   the F7 pin, one level deeper).
 - Suite stays 227/227 through both fixes; PR #59; deploy v5 (e5444d0).
-## Round 45 — coev birth seal: the fifth canonical artifact receipts its own birth rows (R40 finding 4)
+## Round 43 — seed honesty: an explicit seed is played verbatim (R40 finding 3)
 
-**vs main 1da41be (post-#58) — branch r45-coev-birth-seal.**
+**vs main 2aa7901 (post-R42 main-repair) — branch r43-seed-zero-honesty.**
 
-### Played versions
-v1; the R37→R38→R43 provenance chain by diff + suite at the tip; R40 finding 4 replayed against `tools/prerun-coev.js` (zero seal code on the lane it names).
-
-### Deltas observed
-- d(provenance)/d(version): the R40 finding-4 shape, narrowed to one lane — `checkpoints/coev.js` was byte-reproducible and md5-printed, but the 121 ledger rows behind it were not chained at birth. A post-merge edit could move the artifact's receipt history while leaving only a printed md5 as provenance.
-
-### Built
-- `tools/prerun-coev.js` gains an async birth-seal tail: build `{op:'LINK', cell:'pq/prerun-coev-birth'}` rows one-for-one from the C1 ledger rows just written → `wal-export.js` `toStoneV1` (one stone dialect in the repo) → mirror `verifyStoneV1` BEFORE write → live `stone.verifyChain` when `QUILT_STONE_DIR` names a checkout → write `checkpoints/coev-stone-v1.json`. Refusal path: `stone: SEAL/REFUSED` + exit 1, no file. The stale seal is dropped before the run, the R37 stale-receipt lesson applied to the coev lane.
-- `tests/coev-birth-seal.test.js` — 7 pins: extraction, one-for-one mirror, byte determinism, canonical permutation invariance, exact-row tamper, committed artifact/seal agreement, and live `stone.mjs` accept/tamper vocabulary.
-- `checkpoints/coev-stone-v1.json` — committed birth receipt over the shipped artifact: header + 121 coev birth rows; verifies under the mirror and live at the local quilt-stone checkout.
-
-### Verify
-- `node tests/coev-birth-seal.test.js` 7/7; `tests/stone-prerun-glue.test.js` 5/5 and `tests/wal-session-stone.test.js` 7/7 as regression rails; README count corrected by the readme-count pin (207→214 in `tests/`, total 222); `node tools/receipt-completeness.js` OK.
-- No dynamics touched: the canonical five md5s are unchanged in this commit (`coev.js` remains `946e639a…`); the new file is a receipt, not a training artifact. Inherited red named, not fixed here: a full `node tools/prerun-coev.js` run at this tip regenerates `coev.js` as `2ab34b54…`, not the committed `946e639a…` — the canonical-drift class R43 named for `prerun.js`, present on the coev lane too. The regenerated artifact was restored; the committed seal is over the shipped `coev.js` ledger.
+- `parseCliArgs` computed the seed as `parseInt(arg, 10) || 20260926`, so an
+  explicit `0` was falsy-collapsed into the default — the user asked for one
+  session and the CLI played another, with the genesis row naming the seed
+  that was actually played. One falsy value away from every misuse the R33
+  usage guard already fails loudly on ("never silently default the seed").
+- Fix: an explicit seed is used verbatim — 0 is a real seed (`PQ.rng(0)` is a
+  valid LCG stream, verified live), and a non-integer seed (`abc`, `0x10`)
+  is a usage error (exit 2 + usage naming the arg) instead of a silent
+  default. Full-string integer check also refuses `parseInt`'s silent-prefix
+  parses. No-arg default (20260926) and negative integers unchanged.
+- Pinned by `tests/wal-session-seed-honesty.test.js` (5 pins, FAIL-first 5/5
+  RED on pristine main 2aa7901): unit seed-0, unit non-integer → usage error,
+  real CLI run reports `stats.seed === 0` + genesis names `seed 0`,
+  seed-0 vs default sessions differ, R33 guarded forms unchanged
+  (regression rail).
 
 ### Verdict
-MERGEABLE — one small committable unit, branch + commit, never main.
+
+Shipped; VERIFIED_CLAIMS +1 (`seed-zero-honesty`). README count pin named
+its own bump (197→207 in `tests/`, total 215).
+
+### Inherited reds named, not touched (this round)
+
+- **prerun repro drift at main tip:** `node tools/prerun.js` at pristine main
+  2aa7901 rewrites `checkpoints/level1.js`, `level2.js`, AND
+  `stone-v1.json` — the committed canonical five do not reproduce at their
+  own tip (R42's main-repair re-froze the documented line; the checkpoint
+  files themselves drift). Verified in a detached pristine worktree; NOT
+  caused by this round (diff here touches only `tools/wal-session.js`,
+  `core.js` registry, README count, this PLAYLOG). Belongs to the canonical
+  lane, not a finding-3 fix.
+- **README count at main was already stale:** main claimed 197 in `tests/`,
+  live at the tip was 201 (R42's re-pin didn't match the live suite); this
+  round's pin-named bump sets the live-verified 206.
+
+
 
 ## Round 42 — the website: understand the repo by playing it, in many forms
 
@@ -510,47 +562,6 @@ worked, enforcement stayed absent.
 
 (The r42-site branch had independently restored the same R41 receipt —
 restoration exists twice in history; R44 deduped the ledger.)
-
-
-## Round 43 — seed honesty: an explicit seed is played verbatim (R40 finding 3)
-
-**vs main 2aa7901 (post-R42 main-repair) — branch r43-seed-zero-honesty.**
-
-- `parseCliArgs` computed the seed as `parseInt(arg, 10) || 20260926`, so an
-  explicit `0` was falsy-collapsed into the default — the user asked for one
-  session and the CLI played another, with the genesis row naming the seed
-  that was actually played. One falsy value away from every misuse the R33
-  usage guard already fails loudly on ("never silently default the seed").
-- Fix: an explicit seed is used verbatim — 0 is a real seed (`PQ.rng(0)` is a
-  valid LCG stream, verified live), and a non-integer seed (`abc`, `0x10`)
-  is a usage error (exit 2 + usage naming the arg) instead of a silent
-  default. Full-string integer check also refuses `parseInt`'s silent-prefix
-  parses. No-arg default (20260926) and negative integers unchanged.
-- Pinned by `tests/wal-session-seed-honesty.test.js` (5 pins, FAIL-first 5/5
-  RED on pristine main 2aa7901): unit seed-0, unit non-integer → usage error,
-  real CLI run reports `stats.seed === 0` + genesis names `seed 0`,
-  seed-0 vs default sessions differ, R33 guarded forms unchanged
-  (regression rail).
-
-### Verdict
-
-Shipped; VERIFIED_CLAIMS +1 (`seed-zero-honesty`). README count pin named
-its own bump (197→207 in `tests/`, total 215).
-
-### Inherited reds named, not touched (this round)
-
-- **prerun repro drift at main tip:** `node tools/prerun.js` at pristine main
-  2aa7901 rewrites `checkpoints/level1.js`, `level2.js`, AND
-  `stone-v1.json` — the committed canonical five do not reproduce at their
-  own tip (R42's main-repair re-froze the documented line; the checkpoint
-  files themselves drift). Verified in a detached pristine worktree; NOT
-  caused by this round (diff here touches only `tools/wal-session.js`,
-  `core.js` registry, README count, this PLAYLOG). Belongs to the canonical
-  lane, not a finding-3 fix.
-- **README count at main was already stale:** main claimed 197 in `tests/`,
-  live at the tip was 201 (R42's re-pin didn't match the live suite); this
-  round's pin-named bump sets the live-verified 206.
-
 
 
 ## Round 41 — maxSpeed honesty: the metric reports the moved-at speed (R40 finding 2)

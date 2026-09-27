@@ -51,3 +51,23 @@ test("index rows are unique (no duplicated round keys)", () => {
   const dupes = pureRoundKeys.filter((k, i) => pureRoundKeys.indexOf(k) !== i);
   assert.deepEqual(dupes, [], `duplicated index rows: ${dupes.join(", ")}`);
 });
+
+// Round 51 pin — the R50 main-repair observed ("index R47/R48 rows slightly out
+// of newest-first order, no pin covers ordering") becomes structurally
+// impossible: both views must be newest-first (non-increasing, equal allowed
+// for multi-branch rounds). FAIL-first: any adjacent ascent trips it.
+test("index rows are newest-first (non-increasing)", () => {
+  const nums = pureRoundKeys.map((k) => parseInt(k.slice(1), 10));
+  for (let i = 1; i < nums.length; i++) {
+    assert.ok(nums[i] <= nums[i - 1],
+      `index row ${pureRoundKeys[i - 1]} sits above ${pureRoundKeys[i]} — the canonical index must be newest-first`);
+  }
+});
+
+test("round entries are newest-first (non-increasing)", () => {
+  const nums = headingRounds.map((n) => parseInt(n, 10)); // numeric, not lexicographic ("9" > "10" as strings)
+  for (let i = 1; i < nums.length; i++) {
+    assert.ok(nums[i] <= nums[i - 1],
+      `entry 'Round ${nums[i - 1]}' sits above 'Round ${nums[i]}' — PLAYLOG entries must be newest-first`);
+  }
+});
