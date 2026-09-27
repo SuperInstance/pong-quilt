@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
 | R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
 | R37 | 2026-09-27 | r37-prerun-stone-seal (vs main dd7f858, post-#46) | canonical |
 | R36 | 2026-09-27 | r36-stone-v1-export (vs main b455715, post-#45) | canonical |
@@ -46,7 +47,21 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 39 — stone-sign-pilot: the producer staples the birth-seal chain's tip (STONE-V2-PILOTS first sign pilot)
+
+**vs main 3dd4178 (post-#50) — branch r39-stone-sign-pilot**
+
+- [built] `tools/prerun.js` R39 tail: when the named quilt-stone checkout (QUILT_STONE_DIR) ships `signTip` (the stone-v2 sign lane, SuperInstance/quilt-stone PR #4, STONE-SPEC.md §4.6.2), the prerun staples the R37 birth-seal chain's tip with an ed25519 producer signature — `signTip` on a COPY of the seal (the unsigned `checkpoints/stone-v1.json` stays canonical), `verifyTipSignature` with the producer public key BEFORE write, output `checkpoints/stone-v1.signed.json` = {tool, round, key:{ephemeral, public}, verify, chain}. Producer key from `QUILT_STONE_SIGN_KEY` (PEM path, stable identity) or generated per run and LABELED ephemeral — never presented as standing identity. Refused staple → `stone: SIGN/REFUSED` + exit 1, no file. Seam ships CLOSED: no `signTip` in the named checkout → nothing written, skip printed labeled, never silent.
+- [pinned] `tests/stone-sign-glue.test.js` — 4 pins: extraction (FAIL-first, absent on main; stale staple dropped before the provenance loop; staple signs a COPY), citation (SuperInstance/quilt-stone + STONE-SPEC §4.6.2 in-repo), live signTip/verifyTipSignature over the prerun-shaped seal incl. the laundering case (post-sign body edit re-seals hashes green but the signature still names the OLD tip → `signed tip does not match the chain tip (post-signature chain edit)`) and wrong-key refusal, ephemeral-key file-shape labeling. Live pins honestly abstain when the checkout lacks signTip.
+- [verified live] `QUILT_STONE_DIR=/tmp/quilt-stone` (sign-lane tip 047be72): prerun sealed 4 rows (verifyChain ok, links 5) + stapled tip `ffe8abd842…f5503`, verifyTipSignature ok, ephemeral labeled; fresh re-verify ok; post-sign FORGED-edit refused with the exact laundering why; verifyChain over the signed chain ok (links 6, annotation row skipped per the v2 rule). Run 2: md5s byte-identical (canonical set 63617065…/8a49b0f…/643bd132…/454511548… — 17th frozen training round, R23→R39).
+- [note] The staple file is NOT canonical — it is the signature receipt OVER the seal; each ephemeral-key run legitimately re-staples a different key. A standing producer key (QUILT_STONE_SIGN_KEY) is producer-side doctrine, Casey decision.
+- [edge] On merge of SuperInstance/quilt-stone PR #4, the pong-quilt→quilt-stone sign-lane adoption becomes a candidate VERIFIED referral edge per the weight law (pong-quilt cites quilt-stone BY NAME in-repo; a merged quilt-stone PR consuming this pilot citing pong-quilt would mint it — same pattern as edge #9).
+
+### Verdict
+MERGEABLE (sign pilot ships closed; opens fully the moment the sign lane lands in quilt-stone main).
+
 ## Round 38 — receipt-completeness: R34's loss class becomes structurally impossible (R35 spec item 1, shipped)
+
 
 *Receipt: PR to be posted — branch playtest-round-38, vs main 1c3db7d, post-#47-merge.*
 *Mode: BUILDER + play-tester (builder claim: R35 spec item 1, unfulfilled through R37; play claim below).*
