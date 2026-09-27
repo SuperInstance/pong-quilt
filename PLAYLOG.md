@@ -6,6 +6,10 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R44 | 2026-09-28 | r44-site-v2 (vs main 1da41be, post-#58) | canonical |
+| R43 | 2026-09-28 | r43-seed-zero-honesty (PR #57, vs main 2aa7901, post-R42 main-repair) | canonical |
+| R42 | 2026-09-28 | r42-site (PR #58, vs main 4d447ed, post-#55) + playtest-round-42 (PR #56 main-repair, vs main 4d447ed, post-#55) — two canonical branches; the #58 merge concatenated both stacks (index + entries + README counts) | canonical — deduped by R44 (R31/R2 convention) |
+| R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (lost in the #55 merge conflict resolution, same class as R34) |
 | R45 | 2026-09-28 | r45-coev-birth-seal (vs main 1da41be, post-#58) | canonical |
 | R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) | canonical |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
@@ -55,6 +59,115 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 44 — site v2: play without leaving the page (+ the #58 merge-wound repair)
+
+**vs main 1da41be (post-#58) — r44-site-v2**
+
+Casey's order: take the website a lot further, iteratively playtest and
+improve. Two halves.
+
+### Half 1 — the #58 merge wound, healed (playtest finding 0)
+
+The #58 merge (site R42 into a main that already carried the playloop's R42
+from PR #56) concatenated instead of resolving:
+- canonical index carried R42 twice, R41 three times — the R43 index-unique
+  pin (from PR #57, spawned for exactly this class) caught it: main arrived
+  217/223.
+- the round entries duplicated the same way; README carried three stacked
+  test-count paragraphs.
+- site-glue tests failed on a fresh checkout (dist/ is gitignored, and they
+  demanded a manual build step) — they now self-seal via
+  tools/build-site.mjs when the output is absent, keeping the canonical
+  suite command self-sufficient.
+Repair: index deduped per the R31/R2 branch-pair convention (one R42 row
+naming both branches, one R41 row), the PR #56 main-repair receipts folded
+into the R42 entry as a subsection, README collapsed to one count line.
+Suite 223/223 after repair.
+
+### Half 2 — site v2, from playtesting the live site
+
+Findings from playing https://pong-quilt-site.casey-digennaro.workers.dev:
+1. [P1] The page carried zero client-side JS — Seed Lab and Claim Judge
+   were plain forms that navigated away to raw JSON. Every interaction
+   ejected the visitor from the explorable. (ciechanowski's rule: the
+   explanation must respond where you stand.)
+2. [P2] No inline play — every card linked out.
+3. [P2] The L0→L1→L2 champion progression existed only as prose.
+4. [P2] The coevolution record (260 gens, 182 coin flips) was invisible.
+5. [P3] Judge verdicts evaporated — no history, no shareable receipt.
+6. [P3] Seed Lab was one-at-a-time — no way to see a distribution.
+
+What shipped:
+- `site/app.js` (zero-dep interactive layer, progressive enhancement:
+  every form keeps its no-JS action; absent mounts abstain named).
+  Engine Room: inline receipts (frames/hits/maxSpeed/fitness/digest), a
+  receipt link (?level&seed auto-runs and re-runs for anyone), and an
+  8-seed sweep table with unique-digest + hits min/mean/max summary.
+  Champion lineage + coevolution strip: rendered in the visitor's browser
+  from the SAME committed artifacts the demo loads (checkpoints via script
+  tags — their own browser idiom; curve.json + coev.js via fetch), never
+  re-typed or re-implemented. Play-here buttons lazy-iframe the byte-
+  identical demo inline.
+- Claim Wall: `POST /api/judge` now records every verdict AND every
+  abstain (content-addressed by replay digest + time) into a Cloudflare
+  KV binding (CLAIMS); `GET /api/wall` serves newest-first. Unbound →
+  named abstain, never faked. No identities stored.
+- Pins: tests/site-glue.test.js +4 (wall abstain unbound; wall
+  newest-first from a stub KV; judge records verdicts and abstains when
+  bound; widget wiring contract — mounts exist, app.js wires each, app.js
+  speaks only to known /api endpoints, no-JS fallbacks intact).
+  VERIFIED_CLAIMS +1 (site-interactive); site-glue claim text updated.
+
+### Verify
+- `node tools/build-site.mjs` → suite: 227/227 in tests/ + qa 8/8.
+- Deployed live (Casey's "take it further" = iterate the preview):
+  wrangler KV namespaces created (prod 9e6572fb…, preview 7783e751…),
+  wrangler deploy clean; endpoints re-verified against the running worker.
+
+### Playtest round (scripted harness + real browser) — findings F7, F8 shipped
+
+- `tools/site-playtest.mjs` (9 live checks): mounts wired, receipt link,
+  same-seed→same-digest, 8-seed distribution (8/8 unique digests),
+  live JEV verdict 0.71–0.73 on a true claim, wall record + round-trip,
+  served checkpoint sha256 == local, provenance sealed. **9/9 PASS.**
+- Real-browser pass (Chromium via CDP, the visitor's view):
+  - **[P2] F7**: coev strip rendered "named abstain — artifact missing:
+    /demo/coev.js". The artifact lives at /demo/checkpoints/coev.js —
+    wrong path shipped, and only the browser caught it (the mount existed,
+    the fetch 404'd). Fixed; the widget-wiring pin now asserts every
+    artifact path app.js touches ships in the build — FAIL-first-verified
+    against the old bug before fixing.
+  - **[P3] F8**: strip copy conflated two artifacts' gen counts (coev.js
+    120 vs curve 260) as one number. Now source-attributed per artifact.
+  - Judge calibrated live: true claim → 0.73; false claim ("at least 5
+    hits" vs the game's 4) → **0.07**. It discriminates.
+  - Sweep told its story in-browser: seeds …930/…934 the champion DIES
+    (4,826f/6h and 1,880f/2h) while neighbors survive 6,000f — variance
+    visible in the visitor's hands.
+  - Play-here button embeds the byte-identical demo inline. Lineage bars,
+    sparkline, wall (3 receipts), moth ledger, wristband all render.
+- F9/F10 (same doctrine, next pass): the wall promised "re-runnable from
+  its game params" but made you type them — game cells are now links into
+  the Engine Room (verified live: wall row level1·777 → click → replay
+  digest c6f04cb49f50… == the recorded digest). Sweep rows where the
+  champion dies before maxFrames now render tinted with a death marker.
+- **F11 [P1, Casey live report]**: "/demo/ game isn't actually playing —
+  the ball isn't moving." Diagnosed live in a real browser: training was
+  BLAZING (gen 161→675, 1,152 games in 2.5s) while the canvas pixels were
+  bit-frozen and zero exceptions fired. Root cause: `continueGen()` reset
+  `champGame` to a fresh serve EVERY generation, and the streaming evaluator
+  completes a generation in 1-2 RAF frames — the visible game restarted
+  ~10-30×/sec and never left the serve position. Fix (canonical repo demo,
+  byte-identical copy redeployed): `live()` owns the rally — a new champion
+  net takes over the ongoing ball; reset only on death or when no game
+  exists. Same fix in the C1 branch. Verified live: ball centroid moved
+  34px between samples, display game lived 52+ frames (was ~2).
+- **F12 [P2]**: the demo's own `tools/wal-export.js` 404'd on the site
+  (never copied by build-site.mjs) — the WAL export button was dead.
+  Shipped in the build now; `window.QUILT_WAL` present live. New pin:
+  every `<script src>` in demo/index.html must exist in dist (same class as
+  the F7 pin, one level deeper).
+- Suite stays 227/227 through both fixes; PR #59; deploy v5 (e5444d0).
 ## Round 45 — coev birth seal: the fifth canonical artifact receipts its own birth rows (R40 finding 4)
 
 **vs main 1da41be (post-#58) — branch r45-coev-birth-seal.**
@@ -114,40 +227,52 @@ Honesty notes:
 - The demo is never forked: the site frames byte-identical copies and the
   provenance endpoint lets any visitor check that claim.
 
-### Also this round: the R41 receipt, restored (R35 precedent)
 
-R41 (PR #55, maxSpeed honesty) merged with no PLAYLOG entry and no
-canonical-index row — the exact R34 loss class. The R38 receipt-completeness
-pin (spawned at the repo tip) named it at 4d447ed: "R41: merged via
-'r41-maxspeed-honesty' (PR #55) has no canonical-index row". This round
-restores both, verbatim in shape from the merge itself:
+### R42 main-repair branch (PR #56, playtest-round-42) — folded by R44
 
-- `core.js` gained `g.maxSeen` — the max speed multiplier sampled at frame
-  start, before the ramp reset and before hitBoost; dynamics untouched
-  (R40 playtest finding 2; trace maxReported 1.0652 vs maxActual 1.0648).
-  Pin: tests/maxspeed-honesty.test.js (4 pins). VERIFIED_CLAIMS +1.
-- The suite was NOT green at the R41 merge despite the round's "201/201"
-  report — receipt-completeness only runs green when every merged round
-  carries a row, and R41 carried none. The pin named the merge itself.
+The #58 merge concatenated both R42 branches' stacks: the index, the
+entries, and the README count paragraphs all doubled (dup R42 + R41 rows,
+three stacked count lines). This subsection preserves the main-repair
+branch's receipts in compact form (full text: PR #56 body / git history).
 
-### Verify
+Numbers verified by running at 4d447ed (before repair): canonical suite
+**200/202, RED** — readme-count (README 198 vs live 201) + receipt-
+completeness ("R41: merged via 'r41-maxspeed-honesty' (PR #55) has no
+canonical-index row"). The R38 check-runs job fired 16:15Z, 7 minutes after
+the #55 push — and nothing blocked: enforcement is an unset repo setting
+(R35 item 2, R36 infeasible-via-workflow). Main sat red ~35 minutes.
 
-- `node tools/build-site.mjs` then the suite: site-glue pins byte-identity,
-  provenance, replay determinism, validation, and named abstention.
-- README count corrected by the readme-count pin (it names the bump).
+Findings:
+1. [P2, process] R41's receipt was amputated by the #55 conflict resolution
+   — the R34 loss class recurred. The merge touched only core.js (+13/-2)
+   and tests/maxspeed-honesty.test.js (+70); R41's entry + index row +
+   README bump were dropped while its code shipped. Repro at the time:
+   receipt-completeness at 4d447ed named R41.
+2. [P3, lineage] R41's "no canonical artifact touched (byte-frozen)" clause
+   was falsified at the file level: prerun.js embeds maxSpeed in L1/L2 and
+   the metric-semantics change rewrote exactly that field (3.400 → 3.497 /
+   3.476), so regen drifted two of the frozen five at every prerun run.
+   Populations byte-identical ("dynamics untouched" survives). Page-visible:
+   index.html rendered x3.4 where the honest moved-at value is x3.50/x3.48.
+   The R22 verify-by-copying class recurred 17 rounds after R24 pinned it.
 
-## Round 41 — maxSpeed honesty (merged; receipt restored by R42)
+Shipped by the main-repair branch: R41 entry + index row restored verbatim
+from 9c701d2; README counts repaired; L1/L2 re-embedded at the tip (pops
+byte-identical, maxSpeed now honest) + stone-v1.json re-emitted — prerun
+drift-free again; EXPERIMENTS.md declares the post-R42 line (curve
+63617065…, L0 8a49b0f6…, L1 cf08b000…, L2 c8ba57db…, coev 946e639a…);
+tests/artifact-maxspeed-lineage.test.js (2 pins, FAIL-first — any future
+metric-semantics drift trips it and forces a declared re-embed).
 
-**vs main bd91026 (post-#53) — PR #55, r41-maxspeed-honesty**
+Carried P4s: seed-0 collapse (wal-session.js:140) — fulfilled by R43; coev
+birth seal still open. Delta observed: the failure mode migrated from lies
+escape receipts (R22) to receipts escape the ledger (R34, R41) — detection
+worked, enforcement stayed absent.
 
-R40 playtest finding 2: playOne() reported the final-frame speedMul, so a
-game ending on a hit frame recorded a boosted speed the ball never moved at
-(trace: maxReported 1.0652 vs maxActual 1.0648). Fix: `g.maxSeen`, sampled
-at frame start before the ramp reset and before hitBoost application; game
-dynamics untouched. 4 new pins, FAIL-first verified on pristine origin/main.
-Merged as PR #55. The merge shipped without this entry and without a
-canonical-index row — restored by R42 above; the R38 pin caught the loss at
-the next tip.
+(The r42-site branch had independently restored the same R41 receipt —
+restoration exists twice in history; R44 deduped the ledger.)
+
+
 ## Round 43 — seed honesty: an explicit seed is played verbatim (R40 finding 3)
 
 **vs main 2aa7901 (post-R42 main-repair) — branch r43-seed-zero-honesty.**
@@ -187,6 +312,8 @@ its own bump (197→207 in `tests/`, total 215).
   live at the tip was 201 (R42's re-pin didn't match the live suite); this
   round's pin-named bump sets the live-verified 206.
 
+
+
 ## Round 41 — maxSpeed honesty: the metric reports the moved-at speed (R40 finding 2)
 
 **vs main post-#54 — branch r41-maxspeed-honesty, PR #55.** Entry restored
@@ -205,134 +332,7 @@ PR #55 body and the merged diff (9c701d2), which are intact.
 - Pinned by `tests/maxspeed-honesty.test.js` (4 pins: exclusion on
   game-ending hit frames, capture of a boost the next frame actually moves
   at, seeded `playOne` smoke bounded by the physical ceiling).
-## Round 42 — playtest + main-repair: R41's receipt restored (the R34 class recurred), the canonical line re-frozen under R41 semantics
 
-**vs main 4d447ed (post-#55) — branch playtest-round-42**
-
-BUILDER × play-tester round. Mode: the R40 spec is down to carried items and
-open P4s, so this round ships one small builder item — the R41 receipt
-restoration + canonical-line re-embed (docs/artifacts/pin only, zero dynamics
-change) — and specifies the next version.
-
-### Played versions
-Only tag is `v1`; played the R39→R40→R41 commit chain and merges #53/#54/#55
-by diff + suite at the tip (fba0324 sign pilot, 1557c03 coev-label repair,
-9c701d2 maxspeed honesty, 4d447ed the #55 merge).
-
-### Numbers verified by running (at 4d447ed, before any repair)
-- Canonical suite: **200/202, RED** — fails: `readme-count` (README claims 198
-  in tests/, live is 201: the R41 bump was dropped in the #55 merge) and
-  `receipt-completeness` live pin ("R41: merged via 'r41-maxspeed-honesty'
-  (PR #55) has no canonical-index row"). qa 8/8 green.
-- `gh api check-runs` on push 4d447ed: "full test suite" FAILURE (16:15:24Z),
-  "merged rounds are receipted" FAILURE (16:15:29Z), page-parse success —
-  the R38 detector fired 7 minutes after merge and nothing blocked, alerted,
-  or reverted: main sat red for ~35 minutes until this round.
-- `node tools/prerun.js`: coev `946e639a…`, curve `63617065…`, L0 `8a49b0f6…`
-  regenerate byte-identical; L1/L2 regenerate as `cf08b000…`/`c8ba57db…` vs
-  committed `643bd132…`/`454511548…` — field-by-field parse: populations
-  byte-identical, ONLY the embedded `maxSpeed` differs (3.400 → 3.497 /
-  3.476). Stone seal re-emitted clean (5 rows).
-
-### Lies hunted — findings
-1. [P2, process] **R41's receipt was amputated by the #55 conflict
-   resolution — the R34 loss class recurred.** `git diff bd91026..4d447ed`
-   shows the merge touched only core.js (+13/-2) and
-   tests/maxspeed-honesty.test.js (+70); R41's PLAYLOG entry + index row
-   (+8 lines) and README bump (198→201, 205→209) are gone, while its code
-   shipped. The R38 receipt-completeness job caught it at push time (red),
-   but it runs post-merge with no enforcement — R35 spec item 2's
-   branch-protection half was never a repo setting (R36 declared
-   workflow-only enforcement infeasible). Minimal repro: `node tools/receipt-completeness.js`
-   at 4d447ed → names R41; `node --test tests/readme-count.test.js` → red.
-2. [P3, lineage-hygiene] **R41's "no canonical artifact touched (md5 set
-   byte-frozen, untouched this round)" is falsified at the file level.**
-   prerun.js embeds `maxSpeed` in the L1/L2 artifacts (prerun.js:69) and the
-   R41 metric-semantics change rewrites exactly that field, so regen drifts
-   two of the frozen five at every prerun run — the R22 verify-by-copying
-   class recurred in a receipt 17 rounds after the R24 doctrine pinned it.
-   Populations byte-identical (the "dynamics untouched" claim survives).
-   Page-visible too: index.html:421 renders `speed x${cp.maxSpeed}` — the page
-   showed x3.4 where the honest moved-at value is x3.50/x3.48. Minimal repro:
-   `node tools/prerun.js` at the R41 tip → `git diff checkpoints/` shows the
-   field-only L1/L2 drift.
-3. [P4, open] **parseCliArgs seed-0 collapse still live** (R40 finding 3,
-   unfulfilled): `parseCliArgs(["0"])` → `{seed: 20260926}` —
-   `parseInt(positional[0],10) || 20260926` (tools/wal-session.js:140)
-   silently discards the legitimate seed 0.
-4. [P4, open] **prerun-coev.js still has no birth seal** (R40 finding 4,
-   unfulfilled): zero seal/stone code in the tool; coev.js (5th canonical
-   artifact) carries an md5 print only.
-
-### What shipped here (the builder item)
-- **[restored]** R41's PLAYLOG entry + index row, verbatim from 9c701d2, row
-  annotated "restored by R42" (R34 precedent, R35 method).
-- **[restored]** README count 198→204 in tests/ → 212 total with qa (R41's own
-  201→209 bump restored, plus +2 pins in artifact-maxspeed-lineage +1
-  honesty-claim subtest from the VERIFIED_CLAIMS registration).
-- **[re-embedded]** checkpoints/level1.js + level2.js regenerated at this tip
-  (pops byte-identical; maxSpeed now the honest 3.497/3.476) + stone-v1.json
-  re-emitted over the new line → `node tools/prerun.js` is drift-free again
-  (committed == regen, verified by running). EXPERIMENTS.md declares the
-  **post-R42 line** (curve 63617065…, L0 8a49b0f6…, L1 cf08b000…, L2
-  c8ba57db…, coev 946e639a…), post-R21 kept labeled for the R24 pin.
-- **[pinned]** tests/artifact-maxspeed-lineage.test.js (2 pins, FAIL-first on
-  pre-re-embed main): committed L1/L2 maxSpeed == 3.497/3.476; EXPERIMENTS.md
-  declares the post-R42 line. Any future metric-semantics drift trips it and
-  forces a declared re-embed — never silent drift.
-
-### Deltas observed (shapes of change)
-d(learning)/d(version) R38→R41: the failure mode migrated from *lies escape
-receipts* (R22, copy-paste hashes) to *receipts escape the ledger* (R34, R41:
-merged code, amputated entry) — and the R38 detection layer worked while the
-enforcement layer (R35 item 2) stayed a repo setting nobody set, so the
-failure now lives entirely in the detect-but-don't-act gap. The R41 metric
-change also exposed a new drift shape: a semantics-only change walks through
-embedded fields of frozen artifacts (L1/L2 maxSpeed) while nets stay frozen —
-"byte-frozen" was a receipt claim, not a pinned property, until this round's
-re-embed + pin.
-
-### Next version spec (R43)
-1. [small] wal-session seed-0 guard — distinguish absent seed from
-   seed-parse-to-0 (NaN-check, not `|| default`); non-numeric seed errors
-   loudly instead of silently defaulting. why: finding 3. verify: parseCliArgs
-   pins for `["0"]`, `["abc"]`, `[]` + the R33 glue spawn.
-2. [small] coev birth seal — prerun-coev.js seals coev.js's birth rows into
-   the stone chain, mirror-first exactly like wal-session-stone (R38). why:
-   finding 4; the 5th canonical artifact is the only unsealed one. verify:
-   seal pins + tamper-row catch.
-3. [medium] live regen-idempotence pin — a suite job (or scheduled workflow
-   if the ~3-4 min prerun cost is too heavy per-PR) that runs prerun in a
-   scratch checkout and fails on any committed-vs-regen md5 mismatch. why:
-   finding 2's general form; the R42 value-pin holds today's line only.
-   verify: red when an artifact field is hand-edited, green at a clean tip.
-4. [small, carried R35→R40] lens-freshness pin (scheduled quilt-doctor HEAD
-   re-run).
-5. [medium, carried R27→R40] canonical-md5 lineage for the WAL session
-   export.
-6. [epic, carried R12→R40] C1 scaling study; advice-aware GA.
-
-### Verdict
-MERGEABLE — restores main to green (suite + receipt-completeness + readme-count
-all repaired), re-freezes the canonical line under R41 semantics, pins the
-drift class. Credit: R35 (restoration precedent), R36 (enforcement-infeasible
-analysis), R38 (the detector that fired), R39 (main-repair precedent),
-R40 (Casey's four findings), R41 (the maxspeed honesty itself — sound code,
-amputated receipt).
-
-## Round 41 — maxspeed honesty: the metric reports the moved-at speed, never the trailing phantom boost (R40 playtest finding 2)
-
-**vs main 4bb0264 (post-#52) — branch r41-maxspeed-honesty**
-
-*(entry restored verbatim by R42 — lost in the #55 conflict resolution; verified against 9c701d2)*
-
-- [found] playtest PR #53 (R40) traced the L1 `maxSpeed` metric: `playOne()` returned the FINAL-frame `speedMul`, so a game ending on a hit frame reported `(1+frames*ramp)×hitBoost` — a boosted value the ball never moved at (trace: maxReported 1.0652 vs maxActual 1.0648). The metric was a phantom on exactly the frames that end games.
-- [built] `g.maxSeen`: sampled at frame START (the multiplier the frame's ball movement actually used), before the ramp reset and before any hitBoost application. Dynamics untouched — `speedMul` still carries the boost into `sense()`/`swanP` for the next frame; only the reported metric changed. `newGame` initializes `maxSeen=1`; `playOne` reports `maxSeen`. VERIFIED_CLAIMS +1 (`maxspeed-honesty`).
-- [pinned] `tests/maxspeed-honesty.test.js` (4 pins, FAIL-first: `g.maxSeen` absent on pre-R41 main — every assertion trips): game-ending hit frame keeps the boost on `speedMul` but excludes it from the metric; a boost the NEXT frame actually moves at IS captured; seeded `playOne` smoke bounded by the physical ceiling.
-- [verified live] suite 201/201 + qa 8/8; readme-count pin named my own bump (197→201, README corrected 205→209); no canonical artifact touched (md5 set byte-frozen, untouched this round).
-
-### Verdict
-MERGEABLE (R42 note: the "byte-frozen" clause is accurate for the trained populations but was falsified at the file level — L1/L2 embed maxSpeed, which the metric change rewrites; see R42 finding 2 and the post-R42 line).
 
 ## Round 40 — playtest: four P4 findings, first one repaired (coev label/axis divergence)
 
