@@ -43,15 +43,21 @@ test('usage guard: unknown flag -> usage + non-zero', () => {
 });
 
 test('parseCliArgs unit: valid forms unchanged (defaults, seed, --out placements)', () => {
-  assert.deepStrictEqual(parseCliArgs([]), { seed: 20260926, outPath: null });
-  assert.deepStrictEqual(parseCliArgs(['7']), { seed: 7, outPath: null });
+  // R38 extends the shape with stoneOutPath (the --stone-out seal lane);
+  // seed/outPath semantics are unchanged.
+  assert.deepStrictEqual(parseCliArgs([]), { seed: 20260926, outPath: null, stoneOutPath: null });
+  assert.deepStrictEqual(parseCliArgs(['7']), { seed: 7, outPath: null, stoneOutPath: null });
   assert.deepStrictEqual(parseCliArgs(['--out', '/tmp/x.jsonl']),
-    { seed: 20260926, outPath: '/tmp/x.jsonl' });
+    { seed: 20260926, outPath: '/tmp/x.jsonl', stoneOutPath: null });
   assert.deepStrictEqual(parseCliArgs(['7', '--out', '/tmp/x.jsonl']),
-    { seed: 7, outPath: '/tmp/x.jsonl' });
+    { seed: 7, outPath: '/tmp/x.jsonl', stoneOutPath: null });
+  assert.deepStrictEqual(parseCliArgs(['7', '--stone-out', '/tmp/x.stone.jsonl']),
+    { seed: 7, outPath: null, stoneOutPath: '/tmp/x.stone.jsonl' });
   assert.ok(parseCliArgs(['99', 'bogus']).error);
   assert.ok(parseCliArgs(['--out']).error);
   assert.ok(parseCliArgs(['--out', '--out']).error, 'flag as --out value rejected');
+  assert.ok(parseCliArgs(['--stone-out']).error);
+  assert.ok(parseCliArgs(['--stone-out', '--stone-out']).error, 'flag as --stone-out value rejected');
 });
 
 test('guard does not fence the happy path: valid CLI invocation still exports JSONL', () => {
