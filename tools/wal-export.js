@@ -77,6 +77,101 @@ function verifyQuiltWal(lines) {
   return { ok: divergences.length === 0, divergences, lines: lines.length };
 }
 
+// ---------------------------------------------------------------------------
+// R36 — stone-v1 forward format (SuperInstance/quilt-stone, Task 26-b).
+// quilt-stone is THE CANONICAL receipt-chain module: one zero-dep verifier
+// (stone.mjs) for every repo chain, 42/42 sibling chains conformance-verified.
+// House law over there: "a receipt without a chain is a rumor" — and NEW
+// chains MUST write stone-v1: row 0 is a stone.header naming its alg, hash =
+// sha256Hex over canonicalJSON([prev, row minus row_hash]), genesis
+// 'STONE-GENESIS-1' hashed into row 0 (STONE-SPEC.md §4.6). This lane seals
+// the SAME five-opcode WAL rows in the stone-v1 forward shape, so pong-quilt
+// receipts are directly consumable by the fleet's canonical verifier.
+//
+// HONESTY CONTRACT (fleet doctrine, same shape as the doctor seam): the live
+// cross-check loads quilt-stone's OWN stone.mjs via loadStone() and only when
+// an explicit checkout is named (QUILT_STONE_DIR, or opts.dir). Absent → null
+// → consumers skip, NEVER a hand-rolled stand-in presented as stone.
+// CITATION (referral edge candidate, PENDING per weight law): canonical
+// source = SuperInstance/quilt-stone stone.mjs + STONE-SPEC.md §4.6.
+// VERIFIED only when a merged PR in the TARGET repo names this citation.
+// ---------------------------------------------------------------------------
+
+const STONE_GENESIS = 'STONE-GENESIS-1';
+
+// stone.mjs canonicalJSON, mirrored verbatim (undefined-valued keys SKIPPED —
+// the fleet canonical() above keeps them as undefined→omitted-by-JSON, which
+// coincides for our rows but NOT for explicit undefined; the mirror is exact
+// so cross-tool hashes can never diverge on a serialization subtlety).
+function canonicalStone(d) {
+  if (d === null || typeof d !== 'object') return JSON.stringify(d ?? null);
+  if (Array.isArray(d)) return '[' + d.map(canonicalStone).join(',') + ']';
+  const keys = Object.keys(d).filter(k => d[k] !== undefined).sort();
+  return '{' + keys.map(k => JSON.stringify(k) + ':' + canonicalStone(d[k])).join(',') + '}';
+}
+
+// sha256Hex is node-only (tools/tests). The page WAL seam (Round 30) is
+// unchanged — the browser door never calls the stone-v1 lane.
+function sha256Hex(s) {
+  if (typeof require !== 'function') throw new Error('stone-v1 sealing is node-only; the page WAL seam is unchanged');
+  return require('crypto').createHash('sha256').update(s, 'utf8').digest('hex');
+}
+
+// rows: [{op, cell, args}, ...] — the same five-opcode WAL ops as toQuiltWal.
+// meta: {tool, source} — lands in the stone.header row (self-describing chain).
+// Returns stone-v1 rows: row 0 = {kind:'stone.header', alg, genesis, ...},
+// payload rows carry {kind:'pq/wal-op', seq (1-based), op, cell, args}, each
+// with row_hash = sha256Hex(canonicalJSON([prev, row minus row_hash])).
+function toStoneV1(meta, rows) {
+  const header = { kind: 'stone.header', alg: 'stone-v1', genesis: STONE_GENESIS,
+                   tool: meta.tool, source: meta.source };
+  const body = rows.map((r, i) => {
+    if (!OPS.includes(r.op)) throw new Error('unknown WAL op: ' + r.op);
+    return { kind: 'pq/wal-op', seq: i + 1, op: r.op, cell: r.cell, args: r.args };
+  });
+  let prev = STONE_GENESIS;
+  return [header].concat(body).map(r => {
+    const row = Object.assign({}, r);
+    const { row_hash, ...rest } = row; // strip if caller re-seals
+    row.row_hash = sha256Hex(canonicalStone([prev, rest]));
+    prev = row.row_hash;
+    return row;
+  });
+}
+
+// Offline mirror of stone.mjs verifyChain for the stone-v1 dialect, so pins
+// trip without a checkout; the live seam (below) is the receipted authority.
+function verifyStoneV1(lines) {
+  let prev = STONE_GENESIS;
+  for (let i = 0; i < lines.length; i++) {
+    const row = lines[i];
+    const h = row && row.row_hash;
+    if (typeof h !== 'string' || !/^[0-9a-f]{64}$/.test(h))
+      return { ok: false, at: i, why: 'row_hash form', links: i };
+    const { row_hash, ...rest } = row;
+    if (sha256Hex(canonicalStone([prev, rest])) !== h)
+      return { ok: false, at: i, why: 'hash mismatch', links: i };
+    prev = h;
+  }
+  return { ok: true, at: null, why: null, links: lines.length, tip: lines.length ? prev : null };
+}
+
+// Live seam: load quilt-stone's OWN verifier. dir resolution: opts.dir ||
+// QUILT_STONE_DIR env; NO relative guess (quilt-stone is brand-new — unlike
+// quilt-doctor there is no standing sibling checkout to assume).
+// Returns the stone module ({verifyChain, verifyChainFile, detectAlg, ...})
+// or null — never throws, never fabricates.
+async function loadStone(opts) {
+  if (typeof require !== 'function') return null; // browser door: seam closed
+  const dir = (opts && opts.dir) || (typeof process !== 'undefined' && process.env && process.env.QUILT_STONE_DIR);
+  if (!dir) return null;
+  try {
+    const m = await import(require('path').join(dir, 'stone.mjs'));
+    if (typeof m.verifyChain === 'function') return m;
+  } catch (e) { /* absent or unloadable: seam closed */ }
+  return null;
+}
+
 function walToJsonl(lines) {
   // json.dumps(line, sort_keys=True) equivalent — the replacer-array trick
   // would whitelist NESTED keys too and silently drop args fields; canonical()
@@ -86,7 +181,8 @@ function walToJsonl(lines) {
 
 // Dual load: node (tools, tests) and the page (script tag). The page
 // seam (Round 30) needs the SAME exporter the tools pin — one impl, two doors.
-const WAL_EXPORT_API = { fnv1a64, canonical, toQuiltWal, verifyQuiltWal, walToJsonl, OPS };
+const WAL_EXPORT_API = { fnv1a64, canonical, toQuiltWal, verifyQuiltWal, walToJsonl, OPS,
+                         toStoneV1, verifyStoneV1, canonicalStone, loadStone, STONE_GENESIS };
 if (typeof module !== 'undefined' && module.exports) module.exports = WAL_EXPORT_API;
 if (typeof window !== 'undefined') window.QUILT_WAL = WAL_EXPORT_API;
 

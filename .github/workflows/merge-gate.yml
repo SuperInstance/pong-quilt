@@ -49,5 +49,14 @@ jobs:
           git clone https://github.com/SuperInstance/quilt-doctor.git /tmp/quilt-doctor
           git -C /tmp/quilt-doctor checkout aa5a041
           test -f /tmp/quilt-doctor/quilt_doctor/substrate.py
+      # R36: open the stone lens the same way — the stone-v1 glue pins read a
+      # quilt-stone clone from QUILT_STONE_DIR or /tmp/quilt-stone; without it
+      # the live pin honestly skips and the count drops by 1 (the R35 lesson:
+      # one count everywhere, and the count pin doubles as the lens-open detector).
+      - name: clone canonical quilt-stone (opens the stone-v1 lens)
+        run: |
+          git clone https://github.com/SuperInstance/quilt-stone.git /tmp/quilt-stone
+          git -C /tmp/quilt-stone checkout 1f6036a
+          test -f /tmp/quilt-stone/stone.mjs
       - name: node --test tests/*.test.js
         run: node --test tests/*.test.js
