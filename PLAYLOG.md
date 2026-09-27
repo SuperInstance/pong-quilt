@@ -6,8 +6,8 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R39 | 2026-09-27 | playtest-round-39 (vs main 3dd4178, post-#50) | canonical |
-| R38 | 2026-09-27 | playtest-round-38 + r38-wal-session-stone-seal (vs main 1c3db7d, post-#47) — two canonical branches, one row (R2 branch-pair convention; branch cell named for both by R39 — #48 merged under the same round) | canonical |
+| R39 | 2026-09-27 | r39-stone-sign-pilot (vs main 3dd4178, post-#50) | canonical |
+| R38 | 2026-09-27 | playtest-round-38 (vs main 1c3db7d, post-#47) | canonical |
 | R37 | 2026-09-27 | r37-prerun-stone-seal (vs main dd7f858, post-#46) | canonical |
 | R36 | 2026-09-27 | r36-stone-v1-export (vs main b455715, post-#45) | canonical |
 | R35 | 2026-09-27 | playtest-round-35 (vs main a4f3516, post-#44) | canonical |
@@ -47,40 +47,23 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
-## Round 39 — kimi1 — 2026-09-27 — mode: BUILDER (main-repair lane: README count 186→193/#48's unridden bump + suite-job fetch-depth 0 — the R38 pin's shallow-checkout refusal made every CI suite job red + R38 receipt-truth edits) + play-tester — vs main 3dd4178 (post-#50)
+## Round 39 — stone-sign-pilot: the producer staples the birth-seal chain's tip (STONE-V2-PILOTS first sign pilot)
 
-### Played versions: main 3dd4178 (post-#50, #48+#50 both in) · PR #50 tip (CI ground: 186 tests, 2 fails) · #48 wal-session stone-seal lane re-run live (tools/wal-session.js 7 --out … --stone-out …)
+**vs main 3dd4178 (post-#50) — branch r39-stone-sign-pilot**
 
-### Deltas observed (shapes of change)
-- **d(learning)/d(version) = 0 for the 17th straight round (R23→R39)** — training path untouched; canonical five byte-identical (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps; prerun exit 0, birth-seal mirror ok, honestly labeled mirror-only with QUILT_STONE_DIR unset).
-- **Failure-mode migration (the round's shape): the receipt plane's new muscle sprained the CI's ankle.** R38's absence-detection (receipt-completeness) is full-history-by-design — and the suite job runs it inside `tests/*.test.js` with actions/checkout's default fetch-depth 1. In a shallow clone the merge boundary loses its parents, `--merges` sees nothing, and the tool REFUSES (exit 2, by its own R38 doctrine). Result: the full-suite job went red on every event since #50 — and both #48 and #50 merged while their full-suite checks were failing. Detection capability ↑, environment-assumption mismatch → red main + demonstrated non-blocking gate.
-- **The red cascaded.** With the receipt pin refusing, the readme-count pin's inner spawn counted one fewer pass → it failed too (CI #50 tip: 186 tests / 2 fails — one root cause wearing two failure reports). A single missing `fetch-depth: 0` reads as a suite-wide regression.
-
-### Lies hunted
-- **[P2, found by running] main is red and was red for ~3.5h unrepaired.** repro: `node --test tests/*.test.js` at 3dd4178 → `not ok 111 — README claims 186 tests in tests/ but the suite runs 193` (R38 spec item 3: "the readme bump must ride in the same PR" — #48 merged without it). Booked, warned, merged anyway.
-- **[P2, found by running + CI logs] the full-suite merge-gate job fails on EVERY checkout because it is shallow.** repro: any push since 05:42Z — gh run view 36297991395 → `not ok 115 … REFUSED no merge commits reachable from HEAD — shallow checkout? fetch-depth must be 0`. The R38 builder gave fetch-depth 0 to the named receipt-completeness job but not the suite job that runs the same pin in-band. Both merge-gate runs for #48 and #50 show `full test suite: fail`; both PRs merged regardless — the enforcement gap (branch protection, a repo setting) is now demonstrated, not theoretical.
-- **[P3, found by reading] R38's merged entry said "Receipt: PR to be posted"** — stale the moment #50 landed. Repaired in this branch (receipt line + index branch-cell now name PR #50 and both round branches, per the R2 convention R38's spec item 1 asked for).
-- **[none found in the crown claims — re-verified live]** wal-session --stone-out E2E: exit 0, 412 WAL lines / 412 seal rows (1 header + 411 payload, one-for-one), mirror ok, mirror-only labeled; 409 receipts, 3 games, seed 7. Suite 193/193 + qa 8/8 at the repair tip.
-
-### Builder receipt (main-repair lane, all [small])
-1. README.md: "(194 tests total: 186 in tests/ + 8 …)" → "(201 tests total: 193 + 8)" — the #48 bump that didn't ride.
-2. .github/workflows/merge-gate.yml: suite job checkout gains `fetch-depth: 0` (comment names the R39 lesson) — the R38 pin now runs in-band where it lives, instead of refusing every shallow CI clone.
-3. PLAYLOG truth edits: R38 receipt line ("PR to be posted" → "PR #50" + #48 merge note + R39 addendum honoring the two booked blockers post-merge); R38 index row branch-cell names both `playtest-round-38` and `r38-wal-session-stone-seal`.
-- FAIL-first evidence: the two pins failed verbatim on main before this branch (CI logs 36297991395 / 36297914060; local run at 3dd4178 reproduced not-ok-111); after: 193/193 + 8/8 + receipt-completeness OK at the tip.
-
-### Next version spec (competitive improvements)
-- **[small, carried from R35] Lens-freshness pin** — scheduled quilt-doctor HEAD re-run; the merge-gate clones aa5a041 while doctor main advances. why: a pinned lens rots silently; this round adds a second stale-lens shape (full-history pins vs shallow CI). verify: scheduled run diffs clone HEAD vs aa5a041, opens/updates one issue on drift.
-- **[small, NEW] Main-health sentinel** — a scheduled workflow runs the canonical suite (+qa, fetch-depth 0, lens open) on main and opens/updates a single tracking issue when red. why: this round found main red 3.5h with zero automated signal, and the gate demonstrably doesn't block (#48/#50 merged red) — the next red main needs a named alarm, not a play-tester happening by. verify: dry-run flag (or a seeded-red branch) produces an issue; green main closes it.
-- **[small, NEW] Starvation telemetry in the wal-session report** — the report line gains advice:refusal ratio and a STARVED verdict when refusals dominate (>90%). why: observed live this round — seed 7 → 21 advice / 385 refusals (95% refusal across 3 games; R38's fixture shows the same 21:456 shape). The starvation guard is documented and honest, but a 95%-silent advisor is a UX cliff no human would call "advice" — make the ratio visible at a glance. verify: seeded run prints the ratio; unit pin on the formatter + the >90% verdict threshold.
-- **[medium, carried from R37] WAL-session stone-seal lineage** — #48 has now merged; verify by running whether its row-hash coverage fulfills the canonical-md5 lineage spec, and if not, md5 the five canonical artifacts into the session seal. verify: a tamper of one artifact md5 is named at the exact seal row.
-- **[large, carried] C1 scaling study; advice-aware GA.**
+- [built] `tools/prerun.js` R39 tail: when the named quilt-stone checkout (QUILT_STONE_DIR) ships `signTip` (the stone-v2 sign lane, SuperInstance/quilt-stone PR #4, STONE-SPEC.md §4.6.2), the prerun staples the R37 birth-seal chain's tip with an ed25519 producer signature — `signTip` on a COPY of the seal (the unsigned `checkpoints/stone-v1.json` stays canonical), `verifyTipSignature` with the producer public key BEFORE write, output `checkpoints/stone-v1.signed.json` = {tool, round, key:{ephemeral, public}, verify, chain}. Producer key from `QUILT_STONE_SIGN_KEY` (PEM path, stable identity) or generated per run and LABELED ephemeral — never presented as standing identity. Refused staple → `stone: SIGN/REFUSED` + exit 1, no file. Seam ships CLOSED: no `signTip` in the named checkout → nothing written, skip printed labeled, never silent.
+- [pinned] `tests/stone-sign-glue.test.js` — 4 pins: extraction (FAIL-first, absent on main; stale staple dropped before the provenance loop; staple signs a COPY), citation (SuperInstance/quilt-stone + STONE-SPEC §4.6.2 in-repo), live signTip/verifyTipSignature over the prerun-shaped seal incl. the laundering case (post-sign body edit re-seals hashes green but the signature still names the OLD tip → `signed tip does not match the chain tip (post-signature chain edit)`) and wrong-key refusal, ephemeral-key file-shape labeling. Live pins honestly abstain when the checkout lacks signTip.
+- [verified live] `QUILT_STONE_DIR=/tmp/quilt-stone` (sign-lane tip 047be72): prerun sealed 4 rows (verifyChain ok, links 5) + stapled tip `ffe8abd842…f5503`, verifyTipSignature ok, ephemeral labeled; fresh re-verify ok; post-sign FORGED-edit refused with the exact laundering why; verifyChain over the signed chain ok (links 6, annotation row skipped per the v2 rule). Run 2: md5s byte-identical (canonical set 63617065…/8a49b0f…/643bd132…/454511548… — 17th frozen training round, R23→R39).
+- [note] The staple file is NOT canonical — it is the signature receipt OVER the seal; each ephemeral-key run legitimately re-staples a different key. A standing producer key (QUILT_STONE_SIGN_KEY) is producer-side doctrine, Casey decision.
+- [edge] On merge of SuperInstance/quilt-stone PR #4, the pong-quilt→quilt-stone sign-lane adoption becomes a candidate VERIFIED referral edge per the weight law (pong-quilt cites quilt-stone BY NAME in-repo; a merged quilt-stone PR consuming this pilot citing pong-quilt would mint it — same pattern as edge #9).
 
 ### Verdict
-MERGEABLE — main-repair: two P2s (red main, structurally red CI suite job) closed with FAIL-first evidence; crown claims re-verified live; spec carries 2 NEW + 2 carried + 1 standing large.
+MERGEABLE (sign pilot ships closed; opens fully the moment the sign lane lands in quilt-stone main).
 
 ## Round 38 — receipt-completeness: R34's loss class becomes structurally impossible (R35 spec item 1, shipped)
 
-*Receipt: PR #50 — branch playtest-round-38, vs main 1c3db7d, post-#47-merge (receipt line updated by R39; PR #48's wal-session stone-seal lane merged as c399bda under the same round).*
+
+*Receipt: PR to be posted — branch playtest-round-38, vs main 1c3db7d, post-#47-merge.*
 *Mode: BUILDER + play-tester (builder claim: R35 spec item 1, unfulfilled through R37; play claim below).*
 
 *R39 addendum (played 2026-09-27): the two P2 merge-blockers booked against PR #48 — the README count that had to ride the #48 merge and the missing R38 receipt references — were both real: #48 merged without them (c399bda), main's suite went red (readme-count 186 vs live), and the full-suite job additionally went red on the R38 pin's shallow-checkout refusal (fetch-depth 1 default in the suite job — repaired R39). Both booked blockers honored here post-merge.*
