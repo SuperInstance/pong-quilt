@@ -12,6 +12,13 @@
 // this repo), loadDoctorVerdict() returns null and every consumer renders
 // NOTHING — the seam is absent, never faked. No network, no deps.
 //
+// FRESHNESS (Round 47): the digest names the checkout state it actually
+// observed — resolveHead() reads .git directly (pure fs, no git binary)
+// and lensLine() appends [observed @<commit>], or [observed-commit
+// unresolved] when .git is unreadable. A drifted doctor checkout can no
+// longer be silently cited as aa5a041: the receipt carries the commit it
+// really read.
+//
 // CITATION (referral edge candidate, PENDING per weight law): canonical
 // source = SuperInstance/quilt-doctor docs/HOLISTIC-VIEW-2026-09-26.md +
 // docs/holistic-stats.json (commit aa5a041). VERIFIED only when a merged PR
@@ -39,6 +46,29 @@ function doctorDir(explicit) {
   if (explicit) return explicit;
   const rel = path.join(__dirname, "..", "..", "quilt-doctor");
   return rel;
+}
+
+// Freshness: name the doctor checkout state the digest actually observed.
+// Pure-fs .git resolution (no git binary, no network — same contract as
+// the rest of the seam). Returns the full commit hash or null when
+// unresolvable — never guessed, never fabricated.
+function resolveHead(dir) {
+  try {
+    const gitDir = path.join(dir, ".git");
+    const head = fs.readFileSync(path.join(gitDir, "HEAD"), "utf8").trim();
+    const m = head.match(/^ref:\s*(\S+)$/);
+    if (m) {
+      try {
+        return fs.readFileSync(path.join(gitDir, m[1]), "utf8").trim() || null;
+      } catch (e) {
+        // loose-ref miss -> packed-refs fallback
+        const packed = fs.readFileSync(path.join(gitDir, "packed-refs"), "utf8");
+        const line = packed.split("\n").find((l) => l.endsWith(" " + m[1]));
+        return line ? line.split(" ")[0].trim() : null;
+      }
+    }
+    return /^[0-9a-f]{40}$/.test(head) ? head : null;
+  } catch (e) { return null; }
 }
 
 // Load the digest. Returns null (seam closed/absent) — never throws, never
@@ -71,10 +101,12 @@ function loadDoctorVerdict(dirOpt) {
   const jev = parseFloat(m[2]);
   if (!Number.isFinite(jev)) return null;
 
+  const head = resolveHead(dir);
   return {
     source: SOURCE_REPO,
     viewDoc: VIEW_DOC,
     statsDoc: STATS_JSON,
+    observedCommit: head ? head.slice(0, 12) : null,
     row: { repo: "pong-quilt", jevSubstance: jev },
     killed: { test: killed.test, p_exact: killed.p_exact },
     perms: PERMS_EXPECTED,
@@ -86,9 +118,12 @@ function loadDoctorVerdict(dirOpt) {
 // only when) the external lens is actually loaded.
 function lensLine(v) {
   if (!v) return null; // closed seam renders nothing, by contract
+  const fresh = v.observedCommit
+    ? " [observed @" + v.observedCommit + "]"
+    : " [observed-commit unresolved]"; // named, never silent
   return "external lens: " + v.source + " three-lens verdict = THREE THINGS (" +
     v.perms.toLocaleString("en-US").replace(/,/g, "") + " perms enumerated, killed-hypothesis p_exact=" +
-    v.killed.p_exact + ") — a single-judge refusal stands alone";
+    v.killed.p_exact + ") — a single-judge refusal stands alone" + fresh;
 }
 
-module.exports = { loadDoctorVerdict, lensLine, SOURCE_REPO, VIEW_DOC, STATS_JSON, PERMS_EXPECTED };
+module.exports = { loadDoctorVerdict, lensLine, resolveHead, SOURCE_REPO, VIEW_DOC, STATS_JSON, PERMS_EXPECTED };

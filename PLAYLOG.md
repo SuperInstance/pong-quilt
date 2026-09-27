@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60) | canonical |
 | R45 | 2026-09-28 | r45-coev-birth-seal (vs main 1da41be, post-#58) | canonical |
 | R42 | 2026-09-28 | r42-site (vs main 4d447ed, post-#55) | canonical |
 | R41 | 2026-09-27 | r41-maxspeed-honesty (PR #55, vs main bd91026, post-#53) | canonical — entry + index row restored by R42 (merged without a receipt; the R38 receipt-completeness pin named the loss at the next tip) |
@@ -54,6 +55,32 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 47 — doctor-lens freshness: the receipt names the commit it read
+
+- [finding] tools/doctor-verdict.js digested a quilt-doctor checkout but the
+  receipt line never named WHICH checkout state produced the verdict — the
+  R43-booked lens-freshness gap. A drifted doctor could be silently cited
+  as aa5a041 forever.
+- [fix] resolveHead() reads .git directly (pure fs — HEAD ref, loose ref,
+  packed-refs fallback, detached HEAD; no git binary, same no-deps contract);
+  the digest carries observedCommit and lensLine() appends
+  `[observed @<short>]` — or `[observed-commit unresolved]` when .git is
+  unreadable (degraded freshness NAMED, never silent, never faked).
+- [pins] 3 freshness pins in tests/doctor-verdict-glue.test.js, FAIL-first
+  3/3 RED on pristine main 822c850: observed-commit naming, moved-checkout
+  moves the name (old commit must not survive), detached resolves,
+  unresolved named. Fixture grows a fake .git (aa5a041…f00d).
+- [inherited red repaired] merged R45 (#60) shipped tests/coev-birth-seal.test.js
+  with NO VERIFIED_CLAIMS entry — the honesty two-way pin was red on main;
+  claim added (proofTest: tests/coev-birth-seal.test.js) and the site demo
+  copy + build manifest re-sealed (tools/build-site.mjs).
+- [named, not fixed] canonical-index uniqueness still RED on main — dup
+  R41×3/R42×2 rows; the dedup already rides in open PR #61 (R46 main-repair),
+  no double-fix.
+- [suite] 232/233 tests + qa 8/8 at tip; the one red is the named
+  inherited canonical-index dup-row (fix rides in PR #61, not double-fixed
+  here). README count 222→241 (pin-named).
 
 ## Round 45 — coev birth seal: the fifth canonical artifact receipts its own birth rows (R40 finding 4)
 
