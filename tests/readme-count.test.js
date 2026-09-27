@@ -6,9 +6,15 @@
 // rot is structural, so the fix must be too: the count in README is now a
 // claim this file verifies BY RUNNING, every suite, forever.
 // How: spawn the canonical suite (this file excluded — otherwise the spawn
-// would recurse) plus tools/test-qa.js, parse the tap "# pass" summaries,
-// and assert README's stated numbers equal the live ones. The full-suite
-// count = spawned + 1 (this file's own single registration).
+// would recurse) plus tools/test-qa.js, parse the tap summaries, and assert
+// README's stated numbers equal the live ones.
+// R49b hermetic rule: the tests/ count = PASS + SKIP + this file — TOTAL
+// registered tests, not env-dependent passes. Env-gated live tests (signTip
+// lane, doctor-lens freshness) PASS where their checkout exists and SKIP
+// honestly where it does not; either way they ARE part of the suite. The
+// pre-R49b formula (passes + 1) was bistable: 235 locally vs 234 on CI for
+// the same tree — the pin itself was red in exactly one environment, which
+// is the R49 wound this amendment closes for good.
 // FAIL-first: on main (94 claimed, 103 real) the assertion fails; after the
 // README correction it passes, and it can never rot again — any future test
 // added without updating README turns the suite red with this file's name on it.
@@ -50,7 +56,8 @@ function suitePasses() {
   }
   const m = out.match(/^# pass (\d+)$/m);
   assert.ok(m, `spawned suite must print a tap '# pass N' summary (status ${status}); tail:\n${out.slice(-600)}`);
-  return Number(m[1]);
+  const s = out.match(/^# skipped (\d+)$/m);
+  return { pass: Number(m[1]), skipped: s ? Number(s[1]) : 0 };
 }
 
 function qaPasses() {
@@ -73,10 +80,11 @@ test("README's stated test counts equal the live suite counts (run-verified)", (
   const m = readme.match(/\((\d+) tests total: (\d+) in `tests\/` \+ (\d+) in `tools\/test-qa\.js`/);
   assert.ok(m, "README must state its test counts in the pinned '(N tests total: …)' form");
   const [, claimedTotal, claimedSuite, claimedQa] = m.map(Number);
-  const liveSuite = suitePasses() + 1; // + this file's own registration
+  const suite = suitePasses();
+  const liveSuite = suite.pass + suite.skipped + 1; // total registered: passes + honest env-gated skips + this file (R49b)
   const liveQa = qaPasses();
   assert.equal(claimedSuite, liveSuite,
-    `README claims ${claimedSuite} tests in tests/ but the suite runs ${liveSuite} — update the count (or let this pin name you)`);
+    `README claims ${claimedSuite} tests in tests/ but the suite registers ${liveSuite} (${suite.pass} pass + ${suite.skipped} honest skip in this env) — update the count (or let this pin name you)`);
   assert.equal(claimedQa, liveQa,
     `README claims ${claimedQa} tests in tools/test-qa.js but it runs ${liveQa}`);
   assert.equal(claimedTotal, liveSuite + liveQa,
