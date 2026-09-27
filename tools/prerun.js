@@ -102,9 +102,57 @@ for (let g = 61; g <= TOTAL_GENS; g++) {
 }
 emit("level2", TOTAL_GENS);
 emitCurve();
+
+// ---------------------------------------------------------------------------
+// R37 (branch r37-prerun-stone-seal): the canonical checkpoints are sealed
+// IN STONE-V1 AT BIRTH. R35's merge-gate lesson was "the stone lens opens on
+// the merge gate" — this round moves the lens to birth: every prerun run
+// ends by sealing the four artifacts it just wrote (curve.json, level0/1/2)
+// into checkpoints/stone-v1.json, a stone-v1 forward chain verified by
+// SuperInstance/quilt-stone stone.mjs (STONE-SPEC.md §4.6, the fleet's
+// canonical verifier) whose payload rows carry {file, md5} — provenance as
+// a chained receipt, not a promise. Sealing reuses tools/wal-export.js's toStoneV1 so there is
+// exactly one stone-v1 dialect in the repo.
+// HONESTY CONTRACT (same shape as the R36 seam): the chain is verified
+// BEFORE it is written — the offline mirror first, and quilt-stone's OWN
+// stone.mjs via loadStone() when a checkout is named (QUILT_STONE_DIR);
+// absent → the mirror-only receipt is printed labeled, never a hand-rolled
+// stand-in presented as stone, and never a silent skip. Any refusal → no
+// seal file, exit 1 (FAIL-first: a broken receipt must brick the run loudly).
+// The seal is NOT one of the canonical five — it is the receipt OVER them,
+// so a stale seal is dropped before the provenance loop to keep that loop's
+// output exactly the artifacts this run owns.
+// ---------------------------------------------------------------------------
 const cpDir = path.join(__dirname, "..", "checkpoints");
+fs.rmSync(path.join(cpDir, "stone-v1.json"), { force: true }); // prior run's seal, if any
 for (const f of fs.readdirSync(cpDir).sort()) {
   const md5 = crypto.createHash("md5").update(fs.readFileSync(path.join(cpDir, f))).digest("hex");
   console.log(`md5  ${f}  ${md5}`);
 }
 console.log("checkpoints written:", fs.readdirSync(cpDir).join(", "));
+
+(async () => { // R37 stone seal — async tail: loadStone()'s dynamic import is async
+  const WALX = require("./wal-export.js");
+  const sealFiles = ["curve.json", "level0.js", "level1.js", "level2.js"];
+  const rows = sealFiles.map(f => ({ op: "LINK", cell: "pq/prerun-checkpoint",
+    args: { file: f, md5: crypto.createHash("md5").update(fs.readFileSync(path.join(cpDir, f))).digest("hex") } }));
+  const seal = WALX.toStoneV1(
+    { tool: "pong-quilt", source: "tools/prerun.js canonical checkpoint seal (Round 37)" }, rows);
+  const mirror = WALX.verifyStoneV1(seal); // verify BEFORE write (R30 lesson: non-ok → no file saved)
+  if (!mirror.ok) {
+    console.error(`stone: SEAL/REFUSED mirror verify failed ${JSON.stringify(mirror)}`);
+    process.exit(1);
+  }
+  const stone = await WALX.loadStone(); // live cross-check only when a checkout is named
+  let liveNote = "live stone.mjs: no checkout named (QUILT_STONE_DIR) — mirror-only receipt, labeled";
+  if (stone) {
+    const v = stone.verifyChain(seal);
+    if (!v.ok) {
+      console.error(`stone: SEAL/REFUSED canonical verifier rejects the seal ${JSON.stringify(v)}`);
+      process.exit(1);
+    }
+    liveNote = `live stone.mjs verifyChain: ok (links ${v.links})`;
+  }
+  fs.writeFileSync(path.join(cpDir, "stone-v1.json"), JSON.stringify(seal, null, 1) + "\n");
+  console.log(`stone: sealed ${rows.length} checkpoint rows -> checkpoints/stone-v1.json; mirror ok; ${liveNote}`);
+})().catch(e => { console.error("stone: SEAL/REFUSED", e && e.message ? e.message : e); process.exit(1); });
