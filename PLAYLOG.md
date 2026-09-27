@@ -6,7 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
-| R38 | 2026-09-27 | r38-wal-session-stone-seal (vs main dd7f858, post-#46) | canonical |
+| R37 | 2026-09-27 | r37-prerun-stone-seal (vs main dd7f858, post-#46) | canonical |
 | R36 | 2026-09-27 | r36-stone-v1-export (vs main b455715, post-#45) | canonical |
 | R35 | 2026-09-27 | playtest-round-35 (vs main a4f3516, post-#44) | canonical |
 | R34 | 2026-09-27 | r34-amber-admission-source (vs main 0a29cdb, post-#42) | canonical — entry + index row restored by R35 (lost in the #44 conflict resolution; verified against 777e76d) |
@@ -45,25 +45,28 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
-## Round 38 — kimi1 (snowball pulse) — 2026-09-27 — mode: BUILDER (queue lane: every receipt/WAL export lane verifies through stone-v1 — R36 sealed the EXPORTER, R37 (#47, parallel session) sealed the PRERUN; this round seals the SESSION driver, the real-session half of the WAL lane) — vs main dd7f858 (post-#46)
+## Round 37 — k2d8 (snowball pulse) — 2026-09-27 — mode: BUILDER (R35's merge-gate lens lesson moved to birth: every prerun run seals the canonical checkpoints it just wrote into a stone-v1 chain, verified BEFORE write, refused loudly on mismatch) — vs main dd7f858 (post-#46)
 
-### Played versions: main dd7f858 → r38 tip — in a /tmp worktree per the R13 lesson
+### Played versions: main dd7f858 (R36 merged) → r37 tip — swept in a scratch worktree per the R13 lesson
 
-Suite on main at round start: 176 tests in tests/, 8 in tools/test-qa.js — all GREEN under the canonical glob command (`node --test tests/*.test.js`; the bare directory form's opaque failure on Node 22 is pre-existing, pinned in testcmd-docs).
+Suite on main at round start: 176 tests in tests/, 8 in tools/test-qa.js — all GREEN (lens open). `node tools/prerun.js` regenerates the canonical five byte-identically (coev.js 946e639a…, curve.json 63617065…, L0 8a49b0f6…, L1 643bd132…, L2 454511548…; 182 flips / 89 swaps) — 15th straight frozen round (R23→R37).
 
 ### Deltas observed (shapes of change)
-- **d(seal-coverage)/d(version): the session driver emits a stone-v1 seal on demand.** `tools/wal-session.js [seed] [--out PATH] [--stone-out PATH]` re-anchors the SAME session rows into quilt-stone's canonical stone-v1 forward format via wal-export.js's `toStoneV1` — exactly one stone-v1 dialect in the repo, so the exporter seal (R36), the prerun seal (R37), and the session seal can never drift apart in dialect.
-- **d(rows-source)/d(version): one row builder feeds two chains.** `sessionRows(session)` is extracted so the five-opcode WAL and the stone seal consume identical rows — the seal is the receipt OVER the session WAL, one-for-one, payload ops and cells pinned equal in the glue test.
-- **d(honesty)/d(version): verified-before-write, R30 lesson applied.** The seal is mirror-verified BEFORE the file is written; quilt-stone's OWN stone.mjs (`loadStone()` under `QUILT_STONE_DIR`) cross-checks the chain and is receipted on stderr (`live stone.mjs verifyChain: ok (links N)`); a bogus checkout degrades to a labeled mirror-only receipt, never a fake live line; any refusal → exit 1, no file. A valueless `--stone-out` is a usage error (exit 2), extending the R33 guard.
+- **d(provenance)/d(version): the canonical checkpoints are now receipted AT BIRTH, not promised after merge.** prerun's last act is sealing curve.json + level0/1/2.js — the four artifacts it itself wrote — into `checkpoints/stone-v1.json`, a stone-v1 forward chain (row 0 stone.header, sha256 over canonicalJSON([prev, row minus row_hash]), genesis STONE-GENESIS-1) whose payload rows carry `{file, md5}`. Provenance graduates from "a checksum printed to a log" to "a chained receipt any fleet verifier can walk".
+- **d(lens)/d(version): the R36 honesty contract is now load-bearing in a producer, not only a consumer.** The seal is verified BEFORE it is written — the offline mirror always, quilt-stone's OWN stone.mjs via loadStone() when QUILT_STONE_DIR names a checkout — and any refusal exits 1 with no file written. A broken receipt bricks the run loudly instead of archiving a lie (R30's verify-before-download lesson, applied at birth).
+- **d(output-shape)/d(version) = 0 where it matters.** The stale seal is dropped before the provenance loop, so that loop's md5 list is identical in shape to R36 — the seal never appears as its own artifact inside the receipt it chains over (a seal of a seal is a rumour about a rumour).
 
 ### Lies hunted
-- [P1, found by running] `execFileSync` discards child stderr on SUCCESS (the error-object capture only fires on non-zero exit) — the first CLI pin read stderr as '' and failed. Fixed by switching the spawn harness to `spawnSync`, which always returns stderr.
-- [note] The bare `node --test tests/` directory form fails opaquely on this repo (pre-existing, R15-documented); the canonical glob form is the pinned command.
+- **[P2-class prevented by construction, verified by running]** a stale `stone-v1.json` from a prior run would otherwise be listed by the provenance loop with a fresh-looking md5 while the file is about to be overwritten — the loop would print the OLD receipt's hash as if it were this run's. Prevented: `rmSync(force)` before `readdirSync`, pinned by an ordering assertion in the new glue (rmSync source position must precede the readdirSync loop position).
+- **[none else found — crown claims re-verified live]** canonical five byte-identical at the r37 tip; suite 181/181 + qa 8/8 on the branch; seal determinism verified by running prerun TWICE and diffing the seal file (byte-identical, md5 908a5400…, tip ffe8abd842162d71…); with QUILT_STONE_DIR=/tmp/quilt-stone the run's live line reads `live stone.mjs verifyChain: ok (links 5)`; without it the mirror-only receipt prints labeled, never laundered as live.
 
-### REFERRAL EDGES
-- weight law: a merged quilt-stone PR replaying `tools/wal-session.js --stone-out` and citing pong-quilt = candidate VERIFIED edge pq -> quilt-stone, fed by a REAL seeded session instead of the exporter's demo row list.
-- pq -> quilt-stone (stone-v1 dialect authority, R36 exporter + R38 session seal both verify through its stone.mjs).
-- pq -> quilt-doctor (unchanged, R26/R29): the WAL lane still self-verifies under verifyQuiltWal; the seal rides alongside, not instead.
+### Builder receipt: birth-seal lane (tools/prerun.js, tests/stone-prerun-glue.test.js, checkpoints/stone-v1.json)
+- **what:** an async tail on prerun: build four `{op:'LINK', cell:'pq/prerun-checkpoint', args:{file, md5}}` rows from the files just written → `toStoneV1` (the R36 exporter's own dialect — one stone-v1 shape in the repo, zero bespoke adapters) → mirror `verifyStoneV1` → live `stone.verifyChain` when named → write `checkpoints/stone-v1.json` (pretty-printed, trailing newline). Refusal path: `stone: SEAL/REFUSED …` + exit 1. 5 pins: extraction (lane markers + exit-1 + rmSync-before-readdir ordering); determinism + canonical-permutation invariance on the exact prerun row shape; tamper breaks the chain at the exact forged row; LIVE stone.mjs accept + firstBadIndex localization in its own vocabulary (honest skip when no checkout); citation pin naming SuperInstance/quilt-stone + stone.mjs + STONE-SPEC.md §4.6.
+- **why:** R35 wrote "the merge-gate opens the stone lens" — but a receipt that only exists after a human merge gate is a receipt that can be skipped under deadline. Sealing at birth makes the canonical artifacts carry their provenance into every later gate, including the ones nobody watches. The seal covers the four prerun artifacts only; coev.js belongs to prerun-coev.js's own lane (documented in EXPERIMENTS.md).
+- **verify (FAIL-first, by running):** new pin file on pristine main dd7f858 → 2 RED (extraction + citation trip loudly, never skip) / 3 pass; on the branch → 5/5 green; full suite 181/181 + qa 8/8 (README count bumped 184→189 by the live count, per the R19 structural pin).
+
+### Play-test
+index.html untouched (lane is tools + one receipt artifact). Merge-gate doctrine satisfied via the page-parse pin (green in-suite). Browser play-test unavailable this round (host browser navigation blocked by policy in the pulse sandbox) — recorded, not hidden.
 
 ## Round 36 — k2d8 (snowball pulse) — 2026-09-27 — mode: BUILDER (the 09:57 edge-watch lane item: quilt-stone is LANE-AFFECTING — all receipt/WAL export lanes must target stone-v1; shipped: the WAL exporter seals in the canonical stone-v1 forward format) — vs main b455715 (post-#45)
 
