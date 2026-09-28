@@ -332,17 +332,18 @@ function continueGenC(){
 function draw(){const c=$("game").getContext("2d"),W=360;c.fillStyle="#05070b";c.fillRect(0,0,W,W);
  const s=g=>g*W;c.strokeStyle="#1d2634";for(let i=1;i<8;i++){c.beginPath();c.moveTo(i*45,0);c.lineTo(i*45,W);c.stroke();}
  const coevMode=$("mode").value==="coev";
+ const senseIv=champGame?(coevMode?D.decisionInterval:PQ.decisionIntervalAt(champGame)):0; // R55 honesty: C1's stepAdv decides every FIXED D.decisionInterval frames (R50 contract) — the HUD must print the cadence the game actually uses, never L1's drifting law (measured: coev HUD read 1/16f at 2000f while decisions landed every 4f)
  if(champGame){c.fillStyle="#58a6ff";c.beginPath();c.arc(s(champGame.x),s(champGame.y),5,0,7);c.fill();
   const eff=PQ.effectivePaddle(champGame); // THE drawn paddle is THE registered zone (R50: the zone shrinks as frames advance)
   c.fillStyle="#58a6ff";c.fillRect(s(eff.x),s(0.95),eff.w*W,6);
   if(coevMode&&champGame.ex!==undefined){const eE=PQ.effectivePaddle({px:champGame.ex,frames:champGame.frames});
    c.fillStyle="#bc8cff";c.fillRect(s(eE.x),s(0.015),eE.w*W,6);}
-  c.fillStyle="#d29922";c.fillText(`x${champGame.speedMul.toFixed(2)} · ${champGame.frames}f · ${champGame.hits} hits · paddle ${eff.w.toFixed(2)} · sense 1/${PQ.decisionIntervalAt(champGame)}f${coevMode&&champGame.enderHits!==undefined?` · ${champGame.enderHits} blocks`:""}`,8,16);}
+  c.fillStyle="#d29922";c.fillText(`x${champGame.speedMul.toFixed(2)} · ${champGame.frames}f · ${champGame.hits} hits · paddle ${eff.w.toFixed(2)} · sense 1/${senseIv}f${coevMode?" (C1 fixed)":""}${coevMode&&champGame.enderHits!==undefined?` · ${champGame.enderHits} blocks`:""}`,8,16);}
  const cc=$("cells").getContext("2d");cc.fillStyle="#05070b";cc.fillRect(0,0,360,120);
  if(champGame){const inp=PQ.sense(champGame),names=["ball x","ball y","vel x","vel y","intercept","speed"],cols=["#58a6ff","#58a6ff","#d29922","#d29922","#3fb950","#bc8cff"];
   inp.forEach((v,i)=>{cc.fillStyle=cols[i];cc.fillRect(8+i*58,110-Math.min(100,Math.abs(v)*100),16,Math.min(100,Math.abs(v)*100));
    cc.fillStyle="#8b949e";cc.fillText(names[i],8+i*58,118);});
-  cc.fillStyle="#f85149";const iv=PQ.decisionIntervalAt(champGame),cd=(iv-champGame.frames%iv)/iv;
+  cc.fillStyle="#f85149";const iv=senseIv,cd=(iv-champGame.frames%iv)/iv;
   cc.fillRect(8+6*58,110-cd*100,16,cd*100);cc.fillStyle="#8b949e";cc.fillText("decision",8+6*58,118);}
  if(qaVis){const qa=$("qa").getContext("2d"),W2=180;qa.fillStyle="#05070b";qa.fillRect(0,0,W2,60);
   qa.fillStyle="#8b949e";qa.fillText("waveform-imaging (sim QPAM): clean vs decoded · pot "+qaVis.spb+"/bin",4,10);
