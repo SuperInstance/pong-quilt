@@ -6,11 +6,10 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R52 | 2026-09-28 | r52-main-repair (vs main 155ad78, post-#70) | canonical |
 | R51 | 2026-09-28 | r51-playlog-newest-first (vs main 629bfd8, post-#67) | canonical |
-| R50 | 2026-09-28 | r50-main-repair (vs main b767404, post-#66) | canonical |
-| R49 | 2026-09-28 | r49-readme-count-repair (PR #66, vs main ea9dfbb, post-#62) + r49-count-bistability (PR #65, vs main ea9dfbb, post-#62) + playtest-round-49 (PR #64, vs main 166a1f2, post-#63) — three canonical branches, one round; the #64/#65/#66 merges stacked three index rows on R49 | canonical — deduped by R50 (R42/R31/R2 convention) |
-| R50 | 2026-09-28 | r50-difficulty-escalation (vs main 629bfd8, post-#67; stacked on r49c #69) | canonical |
-| R49 | 2026-09-28 | r49-readme-count-repair + r49-count-bistability (both vs main ea9dfbb, post-#62) + playtest-round-49 (vs main 166a1f2, post-#63) — three canonical branches, one row (R2 branch-pair convention) | canonical — deduped by the R49 main-repair addendum below (R31/R2 convention) |
+| R50 | 2026-09-28 | r50-main-repair (vs main b767404, post-#66) + r50-difficulty-escalation (vs main 629bfd8, post-#67; stacked on r49c #69) — two canonical branches, one row (R2 branch-pair convention) | canonical — the #67/#70 merge stack concatenated both stacks' index rows and split the R50/R49 pair across the R51 row; deduped + re-ordered by R52 (R31/R2 convention) |
+| R49 | 2026-09-28 | r49-readme-count-repair (PR #66, vs main ea9dfbb, post-#62) + r49-count-bistability (PR #65, vs main ea9dfbb, post-#62) + playtest-round-49 (PR #64, vs main 166a1f2, post-#63) — three canonical branches, one round; the #64/#65/#66 merges stacked three index rows on R49 | canonical — deduped by R50 (R42/R31/R2 convention); the duplicate pair the #67 merge concatenated removed by R52 |
 | R48 | 2026-09-28 | r48-main-repair (vs main 4c13b58, post-#61) | canonical |
 | R47 | 2026-09-28 | r47-doctor-lens-freshness (vs main 822c850, post-#60; rebased onto post-#63) | canonical |
 | R46 | 2026-09-28 | r46-main-repair (vs main 1da41be, post-#58) | canonical |
@@ -61,6 +60,13 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
+## Round 52 — k2d8 (snowball pulse) — 2026-09-28 — mode: REACTIVE main-repair (the #67/#70 merge stack concatenated the R50 + R49 index rows and stranded a Round 49 entry above both Round 50 entries; README counts stale on top of the #68 difficulty tests) — vs main 155ad78 (post-#70)
+
+- [finding] Casey's 22:26–22:41Z merge burst (#66→#69→#68→#67→#70) landed every open branch; the #67 (R50 main-repair) merge concatenated ITS R50/R49 index-row pair onto the post-#66 R50/R49 pair instead of merging into it, and its Round 49 addendum entry landed between the R51 and R50 entries. Four merge-gate reds on main, one root cause: `duplicated index rows: R50, R49` + `index row R49 sits above R50` + `entry 'Round 49' sits above 'Round 50'` + readme-count (spawn collateral: the failing pins dropped the spawn's pass count below README's claim, and the claim itself was stale — 237/247 in tests/ vs 250 live after #68's escalation pins).
+- [fix] docs-only, the pins did their job: duplicate R50/R49 index rows removed (R50 rows merged into one R2 branch-pair row; the second R49 pair carried no new branch names), the addendum entry moved down into the R49 block (newest-first restored, equal-round relative order untouched), README's two-line count collision collapsed to the live-verified 257 = 249 + 8. No code, no test, no page change.
+- [verify] node --test tests/*.test.js: 249 tests, 247 pass, 0 fail, 2 honest skips (stone signTip lane absent by design); tools/test-qa.js 8/8; FAIL-first by construction: all four pins were RED on pristine main 155ad78 (CI runs 36356106992 + 36356160259) and green only here.
+- [not double-fixed (R30 precedent):] nothing — this is the whole wound.
+
 ## Round 51 — k2d8 (snowball pulse) — 2026-09-28 — mode: BUILDER (main-repair: the canonical index and the round entries were both out of newest-first order — R47 sat above R48, R45 below R44, R42 above R43; observed by the R50 report, not fixed there) — vs main 629bfd8 (post-#67)
 
 Branch `r51-playlog-newest-first`. Docs + pins only; no code touched.
@@ -71,29 +77,6 @@ Branch `r51-playlog-newest-first`. Docs + pins only; no code touched.
 - **Counts:** suite 235 -> 237; README 243=235+8 -> 245=237+8.
 - **Not double-fixed (R30 precedent):** the R49-row uniqueness red that shared this file was healed upstream by the R49 main-repair addendum (#67) before this round branched — named here, not re-fixed.
 
-## Round 49 — main-repair addendum: three R49 receipts, one round — the uniqueness pin named it
-
-**vs main b767404 (post-#66) — direct main repair (CI red since the PR #60 merge, #64–#66 each shipped one `| R49 |` index row).**
-
-- [finding] the PR #60 merge left the merge-gate red; the R46–R48 main-repairs
-  cleared two of the four original reds (site-glue file-level crash — no build
-  step; VERIFIED_CLAIMS proofTest drift), but CI stayed red through #64–#66
-  because each of those R49 branches appended its OWN `| R49 |` canonical-index
-  row — three receipts for one round, and the R19 uniqueness pin is absolute:
-  `duplicated index rows: R49, R49, R49`.
-- [cascade] the readme-count pin (235 claimed) ran red as COLLATERAL, not as a
-  second lie: its inner spawn excludes only itself, so the failing uniqueness
-  pin dropped the spawn's `# pass` by one (233, liveSuite 234) against the
-  correctly-verified 235. One root cause, two red pins — fix the row, both
-  heal. No count edit needed; the R49 count repair (#66) was correct all along.
-- [fix] the three rows consolidated into one R49 row by the R2 branch-pair
-  convention (precedent R24/R26/R27/R40/R42), every branch name and base kept;
-  receipt-completeness unaffected (it matches round NUMBERS, a Set). No code,
-  no test, no page change — docs-only repair, the pins did exactly their job.
-- [verify] node --test tests/*.test.js: 237 tests, 235 pass, 0 fail, 2 honest
-  skips (stone sign-lane live pins, pinned 1f6036a has no signTip — by
-  design); tools/test-qa.js 8/8; page-parse canary green; site build green;
-  receipt-completeness OK.
 ## Round 50 — main-repair: the #66 merge result red on two pins, one root cause
 
 **vs main b767404 (post-#66) — branch r50-main-repair.**
@@ -179,6 +162,29 @@ re-pin is declared above.
 [suite] 245/245 tests + qa 8/8 green at tip (canonical env, 2 honest signTip
 skips); README count 243→253 (245 in tests/ + 8 qa, pin-verified).
 
+## Round 49 — main-repair addendum: three R49 receipts, one round — the uniqueness pin named it
+
+**vs main b767404 (post-#66) — direct main repair (CI red since the PR #60 merge, #64–#66 each shipped one `| R49 |` index row).**
+
+- [finding] the PR #60 merge left the merge-gate red; the R46–R48 main-repairs
+  cleared two of the four original reds (site-glue file-level crash — no build
+  step; VERIFIED_CLAIMS proofTest drift), but CI stayed red through #64–#66
+  because each of those R49 branches appended its OWN `| R49 |` canonical-index
+  row — three receipts for one round, and the R19 uniqueness pin is absolute:
+  `duplicated index rows: R49, R49, R49`.
+- [cascade] the readme-count pin (235 claimed) ran red as COLLATERAL, not as a
+  second lie: its inner spawn excludes only itself, so the failing uniqueness
+  pin dropped the spawn's `# pass` by one (233, liveSuite 234) against the
+  correctly-verified 235. One root cause, two red pins — fix the row, both
+  heal. No count edit needed; the R49 count repair (#66) was correct all along.
+- [fix] the three rows consolidated into one R49 row by the R2 branch-pair
+  convention (precedent R24/R26/R27/R40/R42), every branch name and base kept;
+  receipt-completeness unaffected (it matches round NUMBERS, a Set). No code,
+  no test, no page change — docs-only repair, the pins did exactly their job.
+- [verify] node --test tests/*.test.js: 237 tests, 235 pass, 0 fail, 2 honest
+  skips (stone sign-lane live pins, pinned 1f6036a has no signTip — by
+  design); tools/test-qa.js 8/8; page-parse canary green; site build green;
+  receipt-completeness OK.
 ## Round 49 — main-repair: the #62 merge result red, one pin, named by the pin itself
 
 **vs main ea9dfbb (post-#62) — branch r49-readme-count-repair.**
