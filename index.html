@@ -417,10 +417,12 @@ $("walexport").onclick=()=>{const out=walExportPanel();if(!out)return;
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-wal-gen${gen}.jsonl`;a.click();
  receipt(out.rows?"WAL-EXPORT":"WAL-EXPORT/EMPTY",out.report.ok?1:0,1);};
 $("load").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const q=JSON.parse(t);
- pop=q.pop.concat(pop.slice(q.pop.length));gen=q.gen||0;receipt("LOAD",0,1);});};
+ pop=q.pop.concat(pop.slice(q.pop.length));gen=q.gen||0;evalGen=null;if(coev){coev.evalS=null;coev.evalE=null;} // R57: same stale-evaluator reset as loadLevel — the file-load path overwrites pop mid-generation too
+ receipt("LOAD",0,1);});};
 function loadLevel(l){const cp=window.PONG_QUILT_CHECKPOINTS&&window.PONG_QUILT_CHECKPOINTS[l];
  if(!cp){alert("checkpoints not found — serve the folder over http (or open via file://) so checkpoints/*.js load");return;}
  pop=cp.pop.slice();gen=cp.gen;champNet=cp.pop[0];champGame=null;
+ evalGen=null;if(coev){coev.evalS=null;coev.evalE=null;} // R57: a mid-generation Train holds a streaming evaluator whose candidates are the PRE-LOAD population — without this reset the next Train breeds the stale nets under the loaded banner (pinned: tests/r57-classic-load-continuity-glue.test.js; the R56 P2, champ L2 4.56 vs loaded pop)
  $("stats").textContent=`${l}: gen ${cp.gen} · best ${cp.bestFitness} (frames ${cp.bestFrames}, ${cp.bestHits} hits, speed x${cp.maxSpeed}) — training from here is real`;
  receipt("LOAD/"+l.toUpperCase(),0,1);}
 function loadCoev(){const cp=window.PONG_QUILT_COEV;
