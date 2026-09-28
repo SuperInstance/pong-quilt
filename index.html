@@ -425,13 +425,14 @@ function loadLevel(l){const cp=window.PONG_QUILT_CHECKPOINTS&&window.PONG_QUILT_
 function loadCoev(){const cp=window.PONG_QUILT_COEV;
  if(!cp){alert("checkpoints/coev.js not loaded — serve over http");return;}
  const n=+$("pop").value||32; // R53: seed populations — without them startGenC's `if(!coev)` guard is bypassed and the first `coev.popS.length` read throws inside the rAF tick (R49 P1, survived R49→R52 in the shipped-artifact lane)
- coev=Object.assign(coev||{},{popS:Array.from({length:n},()=>PQ.makeNet(randPQ)),
-  popE:Array.from({length:n},()=>PQ.makeNet(randPQ)),
+ const seedSig=+$("sig").value/100; // R54: seed AROUND the loaded champs, not from noise. R53 unblocked the lane (Train no longer freezes) but the artifact's 120-gen lineage was discarded the moment gen 121 bred random nets — the continuation cliff, measured by running: gen-121 champion benchmarked K=30 vs the artifact ender = 239.6 fitness (random seed) vs 1099.9 (champ-seeded) vs 1259.1 (the artifact champ itself); L2 to the artifact champ 11.91 vs 0.455. Pinned tests/r54-loadcoev-continuation-glue.test.js.
+ coev=Object.assign(coev||{},{popS:Array.from({length:n},()=>PQ.mutate(cp.sChamp.net,randPQ,seedSig)),
+  popE:Array.from({length:n},()=>PQ.mutate(cp.eChamp.net,randPQ,seedSig)),
   sChamp:{net:cp.sChamp.net},eChamp:{net:cp.eChamp.net},last:null,genC:cp.gens,evalS:null,evalE:null});
  coev.ledger=PQ.makeLedger(300);(cp.ledger||[]).slice(-12).forEach(r=>coev.ledger.write(r));
  champNet=cp.sChamp.net;champGame=PQ.newAdvGame(randPQ);gameId++;
  $("mode").value="coev";
- $("stats").textContent=`C1 artifact: seed ${cp.seed}, ${cp.gens} gens × ${cp.pop}+${cp.pop} nets · sChamp ${cp.sChamp.netId} (${cp.sChamp.fitness|0}) · eChamp ${cp.eChamp.netId} (${cp.eChamp.fitness|0}) · ledger ${coev.ledger.head} (re-anchored at genesis; artifact ${cp.ledgerHead}) · md5-verified`;
+ $("stats").textContent=`C1 artifact: seed ${cp.seed}, ${cp.gens} gens × ${cp.pop}+${cp.pop} nets · sChamp ${cp.sChamp.netId} (${cp.sChamp.fitness|0}) · eChamp ${cp.eChamp.netId} (${cp.eChamp.fitness|0}) · ledger ${coev.ledger.head} (re-anchored at genesis; artifact ${cp.ledgerHead}) · populations seeded around the loaded champs (σ${seedSig}) — gen ${cp.gens+1} breeds descendants, not noise · md5-verified`;
  receipt("LOAD/COEV",0,1);}
 $("l2").onchange=()=>{$("llmkey").style.display=$("l2").value==="llm"?"inline":"none";
  $("qapotwrap").style.display=$("l2").value==="qa"?"inline":"none";
