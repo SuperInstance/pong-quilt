@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R57 | 2026-09-29 | playtest-round-57 (vs main b0192ad, post-#75) | canonical |
 | R56 | 2026-09-29 | playtest-round-56 (vs main 01c6bff, post-#74) | canonical |
 | R55 | 2026-09-28 | playtest-round-55 (vs main b4d15c8, post-#73) | canonical |
 | R54 | 2026-09-28 | playtest-round-54 (vs main 34d551f, post-#72) | canonical |
@@ -64,7 +65,35 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
-## Round 56 — k2d8 (snowball pulse) — 2026-09-29 — mode: SCIENTIST (specify only; three consecutive builder rounds shipped R53/R54/R55 — the loop needs sharpened measurements more than another partial build) — vs main 01c6bff (post-#74)
+## Round 57 — k2d8 (cron pong-quilt-playloop) — 2026-09-29 — mode: BUILDER (R56 spec item 2: classic-lane continuity — reset the streaming evaluator on every checkpoint/load path; the measured P2 stale-evaluator overwrite, carried R53→R56) — vs main b0192ad (post-#75)
+
+Branch `playtest-round-57`. Siblings studied: R56 (the spec + its F2 repro harness description, reused here with my own stream), R55 (FAIL-first shape: 2 red on pristine via git stash + 1 no-regression green), R54 (verbatim-extraction glue pattern + low-variance-witness doctrine — L2 distance over noisy fitness), R53 (the freeze class this bug is the classic-mode twin of), R49 (the rAF-death class, spec item 4 below). All numbers below produced by running my own driver (`/tmp/r57/repro.js`, verbatim page-function extraction per the R53/R54 pin pattern) against the tip — none copied.
+
+### Played versions: R56 tip (b0192ad) played headless via the verbatim driver; R53 (34d551f) / R54 (b4d15c8) / R55 (01c6bff) studied through the R56 receipt (its bench/lineage/cadence numbers) plus this round's independent corroboration of its P2 on a fresh stream. Only `v1` is git-tagged; commits are the versions.
+
+### Deltas observed (shapes of change)
+- **d(load-continuity)/d(version): step function, closed this round — measured, not asserted.** Same driver, same seed, only the fix differs. Before: mid-generation Train → loadLevel('level1') → Train-to-completion breeds the PRE-LOAD random nets — champion min L2 to the loaded checkpoint pop **4.561** (R56 measured 4.59 on its own stream: same shape, independent reproduction), bred-pop min L2 **4.466**, gen ticking 60→62 under the banner "training from here is real". After: champion L2 **0.691**, pop min **0.485** — genuine descendants; the loaded checkpoint actually continues.
+- **Failure-mode migration:** the freeze class (R53, coev lane) had a classic-lane twin hiding in the load path: `loadLevel` replaced `pop` but the in-flight streaming evaluator kept scoring the old candidates; its elites bred the next population while `gen` adopted the loaded value — a receipt that asserts continuity while discarding it. The load path family is now reset symmetrically (`evalGen=null` + `coev.evalS/evalE=null`) on BOTH the checkpoint loader and the file-load handler.
+- **d(suite)/d(version): 259 → 262** (+3: two FAIL-first pins + one R55-style no-regression), README 267 → 270, qa 8/8, `node tools/prerun.js` reproduces the canonical post-R42/R50 line exactly at the new tip (coev 946e639a…, curve f9b20e7d…, L0 bc15d414…, L1 1125d59c…, L2 50137ceb… — verified by running, not copied).
+
+### Lies hunted
+- **[P2 → CLOSED this round] stale-evaluator checkpoint overwrite (the R56 measured finding).** Reproduced independently on pristine post-#75 main: verbatim `startGen`/`continueGen`/`loadLevel`, pop slider 96 so chunk=24 leaves the generation genuinely mid-stream (24/96 scored), then loadLevel, then Train-to-completion. Red witness: champion L2 4.561 to the loaded pop. Fix is three lines (reset + coevaluator symmetry, both load paths) pinned in `tests/r57-classic-load-continuity-glue.test.js`. FAIL-first proven both directions: 2 red on pristine main via `git stash` of index.html, 3/3 green at the fix; the no-regression pin (loadLevel with no in-flight generation trains true descendants) is green on BOTH sides, so the pin cannot be vacuously red.
+- **[P3, observed-not-fixed, spec item 6] the file-load merge tail is unlabeled lineage.** The verbatim handler does `pop=q.pop.concat(pop.slice(q.pop.length))`: loading a 48-net quilt at slider 96 silently keeps 48 old-lineage nets under the quilt's `gen`. No crash, no receipt naming the merge — the LOAD row cannot distinguish a pure load from a blend. Spec'd, not fixed (out of item 2's scope; the reset this round ships makes the blend honest-able but does not name it).
+- **[carried, verbatim-confirmed still open at tip] R56 items 1/3/4/5/6 remain open:** the coev continuation-regression lane (bench 1437.7→1178.9→722.6 by gen 123, descendants 0 — the loop's most compelling measured wound), the oracle-death horizon pin (third carrying), `startGenC` guard still `if(!coev)` (fails open), coev save-mode franken-quilt (`{gen,best}` coev + `pop` classic, field-source mismatch verbatim-confirmed), no dilution label after the gen-122 regrow.
+- **Nothing fabricated in the verified-claims lane:** VERIFIED_CLAIMS two-way pin green (new claim registered for the R57 pin), page-parse pin green, prerun md5s byte-reproduce the canonical line, stone seals mirror-verified.
+
+### Next version spec (competitive improvements)
+- **[M] R56 item 1 — C1 full-pop breeding.** The measured regression lane stays the loop's biggest open wound; the R57 fix protects the CLASSIC load path only. Verify per R56: pop-size steady-state, gen-123 lineage pin, bench non-decline pin, hash-chained h2h ledger preserved.
+- **[M] R56 item 3 — oracle-death horizon pin.** Third carrying; three independent seed sets verify always-dies, floors disagree (553/376) — assert all-dead + print the distribution, never a specific min.
+- **[S] R56 item 4 — startGenC guard fails closed** (`if(!coev||!coev.popS||!coev.popE)`), verbatim-confirmed open at tip. Verify: glue constructing `{sChamp,eChamp,genC}` without pops → startGenC must not throw and must materialize both populations at slider size.
+- **[S] R56 item 5 — coev save-mode honesty.** Serialize real coev state or receipt a named refusal ("SAVE/COEV-UNSTABLE") — never the mixed-lineage file. Verify: verbatim save onclick in coev mode asserts same-lineage fields or the refusal; classic save unchanged (regression pin).
+- **[S] R56 item 6 — dilution label until item 1 lands.** Post-gen-122 stats line states the elite-archive + random-filler window honestly. Verify: stats-line pin at slider 32 after the first regrow.
+- **[S] NEW R57 finding — name the file-load merge.** Receipt "LOAD/MERGE kept-tail=N quilt=M" (or banner sentence) whenever `q.pop.length < pop.length` at load time, so a smaller quilt never silently carries old-lineage nets under its gen. Why: observed this round (above) — the merge is by design but unnamed. Verify: verbatim onchange glue with a 48-net quilt at pop 96 asserts the receipt names both numbers; a 96-net quilt at pop 96 receipts a plain LOAD (regression pin).
+
+### Verdict
+MERGEABLE — FAIL-first proven both directions (2 red on pristine post-#75 main via git stash, 3/3 green at the fix, no-regression green on both sides). Suite 262 in tests/ (260 pass, 2 honest skips), qa 8/8, README 270=262+8 live-verified, prerun canonical md5s reproduced at the tip. Main untouched; branch `playtest-round-57`, PR below. R56 items 1/3/4/5/6 carry to R58 plus the new merge-naming item.
+
+ (specify only; three consecutive builder rounds shipped R53/R54/R55 — the loop needs sharpened measurements more than another partial build) — vs main 01c6bff (post-#74)
 
 Branch `playtest-round-56`. PLAYLOG entry + canonical index row only — no code, no tests (suite counts unchanged: 259 in tests/, README 267=259+8 still live-verified). Siblings studied: R55 (cadence-fix pattern, carried spec seed, count hermetics), R54 (the K=30 bench stream + verbatim extraction harness reused verbatim here), R53 (freeze class + journey bounding), R50 (escalation law + the prerun-coev full-pop regime), R19/R49b (count hermetics). All numbers below produced by running my own driver (`/tmp/r56-play/play.js`, verbatim page-function extraction per the R53/R54 pin pattern) against git-archive extractions of R53 (34d551f), R54 (b4d15c8), R55 (01c6bff) — not copied from prior entries.
 
