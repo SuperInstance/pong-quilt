@@ -15,6 +15,18 @@
 // pre-R49b formula (passes + 1) was bistable: 235 locally vs 234 on CI for
 // the same tree — the pin itself was red in exactly one environment, which
 // is the R49 wound this amendment closes for good.
+// R58 amendment: the formula must also count the FAIL class. The R58
+// main-repair round-trip proved the wound by running: at main f53519b (red
+// on canonical-index) the spawned suite printed pass 258 / fail 1 / skip 2,
+// and the old formula demanded 261 (258+2+1); the moment the sibling red was
+// repaired the same tree demanded 262 (259+0+2+1). A builder obeying the pin
+// MID-RED plants a count that flips red when the sibling is fixed — the pin
+// demanding a README edit that the pin itself will reject is the wound.
+// FAIL is an outcome class of REGISTERED tests; omitting it makes the demand
+// = 262 − (#spawned fails), i.e. red-state-dependent, against this pin's own
+// doctrine. New formula: PASS + FAIL + SKIP + this file = total registered,
+// invariant across red/green (verified: 262 demanded at f53519b-red and at
+// the green repair tip alike).
 // FAIL-first: on main (94 claimed, 103 real) the assertion fails; after the
 // README correction it passes, and it can never rot again — any future test
 // added without updating README turns the suite red with this file's name on it.
@@ -56,8 +68,9 @@ function suitePasses() {
   }
   const m = out.match(/^# pass (\d+)$/m);
   assert.ok(m, `spawned suite must print a tap '# pass N' summary (status ${status}); tail:\n${out.slice(-600)}`);
+  const f = out.match(/^# fail (\d+)$/m);
   const s = out.match(/^# skipped (\d+)$/m);
-  return { pass: Number(m[1]), skipped: s ? Number(s[1]) : 0 };
+  return { pass: Number(m[1]), fail: f ? Number(f[1]) : 0, skipped: s ? Number(s[1]) : 0 };
 }
 
 function qaPasses() {
@@ -81,10 +94,10 @@ test("README's stated test counts equal the live suite counts (run-verified)", (
   assert.ok(m, "README must state its test counts in the pinned '(N tests total: …)' form");
   const [, claimedTotal, claimedSuite, claimedQa] = m.map(Number);
   const suite = suitePasses();
-  const liveSuite = suite.pass + suite.skipped + 1; // total registered: passes + honest env-gated skips + this file (R49b)
+  const liveSuite = suite.pass + suite.fail + suite.skipped + 1; // total registered: every outcome class + this file (R49b, fail-class added R58 — red-invariant)
   const liveQa = qaPasses();
   assert.equal(claimedSuite, liveSuite,
-    `README claims ${claimedSuite} tests in tests/ but the suite registers ${liveSuite} (${suite.pass} pass + ${suite.skipped} honest skip in this env) — update the count (or let this pin name you)`);
+    `README claims ${claimedSuite} tests in tests/ but the suite registers ${liveSuite} (${suite.pass} pass + ${suite.fail} fail + ${suite.skipped} honest skip in this env) — update the count (or let this pin name you)`);
   assert.equal(claimedQa, liveQa,
     `README claims ${claimedQa} tests in tools/test-qa.js but it runs ${liveQa}`);
   assert.equal(claimedTotal, liveSuite + liveQa,
