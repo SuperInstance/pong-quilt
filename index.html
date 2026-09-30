@@ -101,12 +101,12 @@ let gameId=0;           // identity token: stale advice from a dead game is drop
 const $=id=>document.getElementById(id);
 function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h.toString(16).padStart(8,"0");}
 function renderReceipts(){const ev=receiptEvicted?`\n[${receipts.length} shown / ${receiptEvicted} evicted]`:"";
- const moth=receipts.slice(-12).map(r=>`${r.kind} move=${r.move} w=${r.conf} ${r.hash}←${r.prev.slice(0,8)}`).join("\n");
+ const moth=receipts.slice(-12).map(r=>`${r.kind}${r.kind.includes("/COEV")?` g${r.gen}`:""} move=${r.move} w=${r.conf} ${r.hash}←${r.prev.slice(0,8)}`).join("\n"); // R68: a C1-lane receipt LINE names its genC (file provenance, R67 spec item 4) — non-C1 rows render byte-unchanged (tests/r68-coev-file-provenance-glue.test.js)
  if($("mode").value!=="coev"||!coev||!coev.ledger){$("receipts").textContent=moth+ev;return;}
  const lev=coev.ledger.evicted?`\n[8 shown / ${coev.ledger.evicted} evicted]`:"";
  $("receipts").textContent=`— MOTH receipts —\n${moth}${ev}\n— C1 ledger —\n${coev.ledger.tail(8).map(r=>
   `COEV g${r.gen} ${r.sId} vs ${r.eId} -> ${r.outcome} ${r.frames}f loser=${r.loserId||"—"} ${r.hash}←${r.prev.slice(0,8)}`).join("\n")}${lev}`;}
-function receipt(kind,move,conf){const row={i:receipts.length,kind,move,conf:+conf.toFixed(2),gen,prev:receiptHead};
+function receipt(kind,move,conf,laneGen){const row={i:receipts.length,kind,move,conf:+conf.toFixed(2),gen:laneGen===undefined?gen:laneGen,prev:receiptHead}; // R68: a C1-lane receipt records ITS generation (laneGen), never the classic slot — a SAVE/LOAD under the coev banner names the genC it belongs to, so the row's own provenance column stops asserting a generation the C1 lane never used
  receiptHead=hash(JSON.stringify(row));row.hash=receiptHead;receipts.push(row);
  if(receipts.length>40){receipts.shift();receiptEvicted++;} // counted, like makeLedger — a bounded panel that admits it forgets
  renderReceipts();} // Round 14: single panel writer — never assign $("receipts") elsewhere (the P3 clobber)
@@ -393,9 +393,9 @@ $("go").onclick=()=>{running=true;};$("pause").onclick=()=>{running=false;};
 $("mode").onchange=()=>{evalGen=null;if(coev){coev.evalS=null;coev.evalE=null;}champGame=null;
  $("stats").textContent=`mode ${$("mode").value} — press Train`;};
 $("save").onclick=()=>{if($("mode").value==="coev"){
- if(!coev||!coev.popS||!coev.popE){receipt("SAVE/COEV-EMPTY",0,0);return;} // R67: nothing to keep yet — Train first; the R64 SAVE/COEV-UNSTABLE bridge is superseded by the writer below, the refusal survives only for the empty state (the franken-quilt it guarded against stays impossible by construction: the coev writer carries no classic field that could disagree with the weights)
+ if(!coev||!coev.popS||!coev.popE){receipt("SAVE/COEV-EMPTY",0,0,coev?coev.genC:undefined);return;} // R67: nothing to keep yet — Train first; the R64 SAVE/COEV-UNSTABLE bridge is superseded by the writer below, the refusal survives only for the empty state (the franken-quilt it guarded against stays impossible by construction: the coev writer carries no classic field that could disagree with the weights). R68: the refusal names its genC too — an empty-state receipt is still a C1-lane row
  const blob=new Blob([JSON.stringify({kind:"pong-quilt/coev@v1",genC:coev.genC,sChamp:coev.sChamp,eChamp:coev.eChamp,popS:coev.popS,popE:coev.popE,last:coev.last||null,ledger:coev.ledger?coev.ledger.items():[]})],{type:"application/json"}); // R67: the coev-quilt writer (R66 spec item 2, 2nd carrying) — ONE lane per file: C1 generation, C1 champs, C1 populations, C1 ledger (R56 P3/R59 M1/R63 M2's three-lineage split is dead by construction, not by guard)
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-coev-gen${coev.genC}.json`;a.click();receipt("SAVE/COEV",0,1);return;} // the named-but-unfixed adjacent tail (C1-trained, dropdown back to classic, save still pairs coev gen/champ with the classic pop) stays OPEN — lane tracking is R66 spec item 1 [M], beyond this [S] item
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-coev-gen${coev.genC}.json`;a.click();receipt("SAVE/COEV",0,1,coev.genC);return;} // R68: the receipt names the genC it kept (R67 spec item 4 — file provenance). the named-but-unfixed adjacent tail (C1-trained, dropdown back to classic, save still pairs coev gen/champ with the classic pop) stays OPEN — lane tracking is R66 spec item 1 [M], beyond this [S] item
  const blob=new Blob([JSON.stringify({gen,best:champNet,pop:pop.slice(0,8),stats:{games,best:lastSnap&&lastSnap.best.fitness}})],{type:"application/json"});
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-gen${gen}.json`;a.click();receipt("SAVE",0,1);};
 // === WAL export seam (Round 30): the live receipt panel, re-anchored into the fleet WAL ===
@@ -422,13 +422,13 @@ $("walexport").onclick=()=>{const out=walExportPanel();if(!out)return;
  receipt(out.rows?"WAL-EXPORT":"WAL-EXPORT/EMPTY",out.report.ok?1:0,1);};
 $("load").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const q=JSON.parse(t);
  if(q.kind==="pong-quilt/coev@v1"||q.popS){ // R67: lane routing — a coev quilt file's only door is this branch and it lands in the C1 lane; the classic splice below is structurally unreachable for coev files (the classic loader refuses them NAMED by construction, not by after-the-fact inspection)
-  if(!q.popS||!q.popE||typeof q.genC!=="number"){receipt("LOAD/COEV-MALFORMED",0,0);return;} // a coev-shaped file missing its load-bearing fields: named refusal, zero state change
+  if(!q.popS||!q.popE||typeof q.genC!=="number"){receipt("LOAD/COEV-MALFORMED",0,0,typeof q.genC==="number"?q.genC:undefined);return;} // a coev-shaped file missing its load-bearing fields: named refusal, zero state change — R68: the refusal names the genC the file claimed
   coev=Object.assign(coev||{},{popS:q.popS.slice(),popE:q.popE.slice(),sChamp:q.sChamp||null,eChamp:q.eChamp||null,last:q.last||null,genC:q.genC,evalS:null,evalE:null,scoreS:[],scoreE:[]}); // the file's populations restore VERBATIM — keeping your work means this exact population, not a re-seeding around the champs (that treatment is the artifact lane's, loadCoev, because the artifact ships canonical trained material, not a player's session)
   coev.ledger=PQ.makeLedger(300);(q.ledger||[]).forEach(r=>coev.ledger.write(r)); // re-anchored at genesis — the same honest treatment the artifact lane gives its rows (loadCoev names the re-anchor in its banner; this one does too)
   champNet=(coev.sChamp&&coev.sChamp.net)||null;if(champNet){champGame=PQ.newAdvGame(randPQ);}else{champGame=null;}gameId++;evalGen=null; // the loadCoev precedent, minus the unconditional game (a gen-0 file may have no champ yet) — and the game's mirror: no champ means NO SERVED GAME, else live() forwards a null champNet while a classic rally is still alive and the rAF loop dies (verbatim repro: TypeError reading 'b1' at PQ.forward(null) — the R49 P1 frozen-page class)
   $("mode").value="coev";
-  $("stats").textContent=`loaded C1 file: gen ${coev.genC} · popS ${coev.popS.length} · popE ${coev.popE.length} · sChamp ${champNet?PQ.netId(champNet):"—"} · ledger ${coev.ledger.size} rows (re-anchored at genesis) · Train continues this exact population — R67`;
-  receipt("LOAD/COEV",0,1);return;}
+  $("stats").textContent=`loaded C1 file "${f.name||"unnamed"}": gen ${coev.genC} · popS ${coev.popS.length} · popE ${coev.popE.length} · sChamp ${champNet?PQ.netId(champNet):"—"} · ledger ${coev.ledger.size} rows (re-anchored at genesis) · Train continues this exact population — R67+R68`; // R67: verbatim restore · R68: the banner names the FILE (f.name) — the player with three coev quilts can tell WHICH session they just loaded (R67 spec item 4)
+  receipt("LOAD/COEV",0,1,q.genC);return;} // R68: the receipt names the file's genC
  pop=q.pop.concat(pop.slice(q.pop.length));gen=q.gen||0;champNet=(q.best&&q.best.w1)?q.best:pop[0];champGame=null;evalGen=null;if(coev){coev.evalS=null;coev.evalE=null;} // R57: same stale-evaluator reset as loadLevel — the file-load path overwrites pop mid-generation too; R62: the VISIBLE champion adopts the quilt's best (falling back to merged pop[0] for best-less quilts) and the stale game is cleared — the loadLevel champNet=cp.pop[0];champGame=null precedent
  $("stats").textContent=`loaded gen ${gen} · ${q.pop.length} file nets · merge tail kept ${pop.length-q.pop.length} pre-existing nets (not from this file) — R61`; // R61: the merge tail is NAMED (R60 spec item 5) — the kept nets are not from the file
  receipt("LOAD",0,1);});};
