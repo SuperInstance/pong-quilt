@@ -304,18 +304,18 @@ function startGenC(){if(!coev||!coev.popS||!coev.popE){const n=+$("pop").value;c
  if(coev.popE.length>n)coev.popE.length=n; // Round 10: pin to slider on shrink (classic-loop parity)
  while(coev.popS.length<n)coev.popS.push(PQ.makeNet(randPQ));
  while(coev.popE.length<n)coev.popE.push(PQ.makeNet(randPQ));
+ coev.scoreS=[];coev.scoreE=[]; // R65: FULL-population scored records, one per evaluated candidate (pruner parity with tools/prerun-coev.js:99-103, which always passed full scored arrays) — the R64 mandate's carryGenC fix: breeding must sample the whole scored population, not the 4-entry elite archive (R56 P3/R61/R64: archive-only input made breed() a no-op copy — pop 4 forever, zero mutations, the σ-slider dead — and each next gen refilled 92 fresh-random nets, the collapse)
  coev.evalS=PQ.makeEvaluator(coev.popS,(net)=>{const r=PQ.playAdv(net,coev.popE[Math.floor(randPQ()*coev.popE.length)],randPQ);
-  games++;return{fitness:r.sFitness,sFitness:r.sFitness,frames:r.frames,hits:r.hits};},{eliteK:D.elites});
+  games++;coev.scoreS.push({net,sFitness:r.sFitness});return{fitness:r.sFitness,sFitness:r.sFitness,frames:r.frames,hits:r.hits};},{eliteK:D.elites});
  coev.evalE=PQ.makeEvaluator(coev.popE,(net)=>{const r=PQ.playAdv(coev.popS[Math.floor(randPQ()*coev.popS.length)],net,randPQ);
-  games++;return{fitness:r.eFitness,eFitness:r.eFitness,enderHits:r.enderHits};},{eliteK:D.elites});}
+  games++;coev.scoreE.push({net,eFitness:r.eFitness});return{fitness:r.eFitness,eFitness:r.eFitness,enderHits:r.enderHits};},{eliteK:D.elites});}
 function continueGenC(){
  for(let g=0;g<+$("sub").value;g++){
   if(!coev||!coev.evalS)startGenC();
   const chunk=coev.popS.length>64?24:coev.popS.length;
   const snapS=coev.evalS.step(chunk),snapE=coev.evalE.step(chunk);
   if(!snapS.done||!snapE.done)break; // still streaming; resume next frame
-  const bred=PQ.runCoevGeneration(coev.popS,coev.popE,snapS.elites.map(e=>({net:e.net,sFitness:e.sFitness})),
-   snapE.elites.map(e=>({net:e.net,eFitness:e.eFitness})),randPQ,$("sig").value/100,coev.last);
+  const bred=PQ.runCoevGeneration(coev.popS,coev.popE,coev.scoreS,coev.scoreE,randPQ,$("sig").value/100,coev.last); // R65: breed from the FULL scored populations (pruner parity, tools/prerun-coev.js:103 precedent) — replaces the 4-entry elite archive (snapS.elites) that pinned bred pop at 4 with zero mutations and the loser 2x-σ pressure as dead code (R56 P3 measured R61/R63/R64); the σ-slider reaches mutate() again (R64 P1.5)
   coev.popS=bred.popS;coev.popE=bred.popE;
   const h2h=PQ.playAdv(bred.sChamp.net,bred.eChamp.net,randPQ); // the receipted match
   coev.sChamp={net:bred.sChamp.net,fitness:h2h.sFitness};coev.eChamp={net:bred.eChamp.net,fitness:h2h.eFitness};
@@ -324,7 +324,7 @@ function continueGenC(){
    outcome:h2h.outcome,frames:h2h.frames,sFit:h2h.sFitness|0,eFit:h2h.eFitness|0,loserId:bred.loserId});
   champNet=bred.sChamp.net;if(!champGame)champGame=PQ.newAdvGame(randPQ);gameId++;gen=coev.genC; // R47: same frozen-serve fix as classic mode
   champRing.write({gen:coev.genC,fitness:h2h.sFitness});
-  $("stats").textContent=`COEV gen ${coev.genC} · games ${games} · h2h ${h2h.outcome} in ${h2h.frames}f · sChamp ${h2h.sFitness|0} (${h2h.hits}h) · eChamp ${h2h.eFitness|0} (${h2h.enderHits}b) · loser ${bred.loserId||"—"}${coev.ledger.evicted?` · ledger evicted ${coev.ledger.evicted}`:""} · breeding: elite-archive only (bred pop ${bred.popS.length}; next gen refills ${Math.max(0,+$("pop").value-bred.popS.length)} fresh random) — R61`;
+  $("stats").textContent=`COEV gen ${coev.genC} · games ${games} · h2h ${h2h.outcome} in ${h2h.frames}f · sChamp ${h2h.sFitness|0} (${h2h.hits}h) · eChamp ${h2h.eFitness|0} (${h2h.enderHits}b) · loser ${bred.loserId||"—"}${coev.ledger.evicted?` · ledger evicted ${coev.ledger.evicted}`:""} · breeding: full-population (bred pop ${bred.popS.length}; ${Math.max(0,bred.popS.length-D.elites)} mutated offspring; next-gen refill ${Math.max(0,+$("pop").value-bred.popS.length)}) — R65`; // R65: label updated with the wound it closed — R61's 'elite-archive only (bred pop N; next gen refills M fresh random)' named the collapse truthfully while it shipped; pinning it after the fix would be the new lie (tests/r65-fullpop-breeding-glue.test.js PRECISION)
   receipt(`COEV g${coev.genC} ${h2h.outcome} ${h2h.frames}f`,0,0);
   renderReceipts(); // Round 14: delegate to the single panel writer — the old direct assign clobbered the MOTH chain (P3)
   coev.evalS=null;coev.evalE=null;}}
