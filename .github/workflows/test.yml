@@ -1,0 +1,19 @@
+name: build-and-test
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # byte-identity pins compare site/dist (gitignored, sealed by the build) against
+      # root sources — the suite is only meaningful AFTER the build, which is exactly
+      # the gap a fresh-clone test run exposed during the R63/R64 PR verification.
+      - run: node tools/build-site.mjs
+      - run: node --test tests/*.test.js
+      - run: node --test tools/test-qa.js
