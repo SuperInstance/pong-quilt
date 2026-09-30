@@ -1,4 +1,12 @@
 // Round 64 pin — the Save button refuses in C1 mode, named, with no download.
+// SUPERSEDED in its test-1 arm by the R67 coev-quilt writer (R66 spec item 2):
+// with pops present the coev banner now WRITES the one-lane file (kind
+// "pong-quilt/coev@v1") — see tests/r67-coev-quilt-writer-glue.test.js. What
+// survives of R64, and stays pinned here: (a) the empty-C1 refusal is still
+// named with no download (receipt SAVE/COEV-EMPTY — was SAVE/COEV-UNSTABLE);
+// (b) the classic writer is shape-unchanged under any banner; (c) the guard
+// keys on the mode banner, not the coev object. The classic-banner-after-C1
+// franken tail remains OPEN (R66 spec item 1 [M], lane tracking).
 // Builder item: R63 mandate item 2 (R59's M1, 5th carrying). The wound
 // (verbatim-measured R56/R57/R58/R59/R63, re-confirmed present-tense on main
 // 618dc3b by the R64 scientist driver): in coev mode the save onclick writes
@@ -13,12 +21,12 @@
 // authored the SAME receipt name + classic-unchanged contract) — the guard
 // keys on the mode BANNER alone (R59 keyed mode==="coev" AND coev.genC>0):
 // the banner is the contract the player sees, and a coev-mode save is
-// coev-semantics regardless of whether training has run. Named refusal
-// SAVE/COEV-UNSTABLE, no Blob, no anchor, no download. Classic-mode save is
-// shape-unchanged. The named-but-unfixed adjacent tail (C1-trained, dropdown
-// back to classic, save still pairs coev gen/champ with the classic pop —
-// R59 said closing it needs lane tracking) is carried to the R65 spec; this
-// [S] item does not attempt it.
+// coev-semantics regardless of whether training has run. R67 replaced the
+// refusal with the writer wherever work exists; the refusal survives for the
+// empty state (SAVE/COEV-EMPTY). Classic-mode save is shape-unchanged. The
+// named-but-unfixed adjacent tail (C1-trained, dropdown back to classic, save
+// still pairs coev gen/champ with the classic pop — R59 said closing it needs
+// lane tracking) is carried to the R68 spec; this [S] item does not attempt it.
 // FAIL-first: test 1 is RED on pristine main (kind "SAVE", download captured);
 // tests 2+3 are GREEN before and after (classic regression + banner contract).
 "use strict";
@@ -80,12 +88,13 @@ function breedOneCoevGen(d) {
   if (d.coev.genC === pre) throw new Error("C1 generation did not complete in 24 drives");
 }
 
-test("GLUE: a coev-mode save after C1 training is REFUSED named — SAVE/COEV-UNSTABLE receipt, zero downloads, no Blob written", () => {
+test("GLUE: a coev-mode save after C1 training now WRITES the one-lane coev quilt — kind pong-quilt/coev@v1, no classic fields, SAVE/COEV receipt (R67 writer; the R64 refusal survives only for the empty state)", () => {
   const d = makeDemo(20260929);
   d.$mode.value = "coev"; // the player flow: flip the dropdown to C1, then Train, then Save
-  breedOneCoevGen(d); // the franken condition: gen=coev.genC, champNet=sChamp.net, pop=classic
+  breedOneCoevGen(d);
   assert.equal(d.capture.downloads.length, 0, "precondition: nothing saved yet");
-  // the franken condition really holds pre-save (the wound being closed):
+  // the franken condition this file originally pinned still holds pre-save —
+  // the shared slots are coev-semantics, the classic pop is untouched:
   assert.equal(d.gen, d.coev.genC, "page gen banner is coev.genC");
   assert.equal(PQ.netId(d.champNet), PQ.netId(d.coev.sChamp.net), "page champion IS the C1 champion");
   const classicIds = new Set(d.pop.map(PQ.netId));
@@ -93,11 +102,19 @@ test("GLUE: a coev-mode save after C1 training is REFUSED named — SAVE/COEV-UN
   assert.equal([...classicIds].filter((id) => coevIds.has(id)).length, 0,
     "classic population shares nothing with coev.popS (the three-lineage split)");
   d.$save.onclick();
-  assert.equal(d.capture.downloads.length, 0, "no download may be produced in coev mode");
-  assert.ok(d.receiptLog.some((r) => r.kind === "SAVE/COEV-UNSTABLE"),
-    `expected a SAVE/COEV-UNSTABLE refusal receipt, got ${JSON.stringify(d.receiptLog.map((r) => r.kind))}`);
+  assert.equal(d.capture.downloads.length, 1, "the writer produces exactly one download");
+  assert.ok(d.receiptLog.some((r) => r.kind === "SAVE/COEV"),
+    `expected a SAVE/COEV receipt, got ${JSON.stringify(d.receiptLog.map((r) => r.kind))}`);
+  assert.ok(!d.receiptLog.some((r) => r.kind === "SAVE/COEV-UNSTABLE"),
+    "the R64 bridge receipt is superseded wherever pops exist");
   assert.ok(!d.receiptLog.some((r) => r.kind === "SAVE"),
-    "a bare SAVE receipt means the franken-quilt shipped");
+    "a bare SAVE receipt means the franken writer ran under the coev banner");
+  const q = JSON.parse(d.capture.downloads[0].blob.parts.join(""));
+  assert.equal(q.kind, "pong-quilt/coev@v1");
+  assert.equal(q.genC, d.coev.genC);
+  assert.ok(q.popS.length === 96 && q.popE.length === 96, "both populations carried whole");
+  for (const k of ["gen", "best", "pop", "stats"]) assert.ok(!(k in q),
+    `no classic field '${k}' may exist to disagree with the weights (the R56 P3/R59 M1/R63 M2 class)`);
 });
 
 test("REGRESSION: classic-mode save is shape-unchanged — download captured, bare SAVE receipt, file carries gen/best/pop/stats", () => {
@@ -113,13 +130,13 @@ test("REGRESSION: classic-mode save is shape-unchanged — download captured, ba
   assert.ok("stats" in file, "file.stats present");
 });
 
-test("PRECISION: the guard keys on the mode banner, not the coev object — banner coev with coev===null still refuses", () => {
+test("PRECISION: the guard keys on the mode banner, not the coev object — banner coev with coev===null still refuses named, with no download", () => {
   const d = makeDemo(20260930);
   assert.equal(d.coev, null, "precondition: no C1 object exists");
   d.$mode.value = "coev"; // flip only the dropdown, never train
   d.$save.onclick();
   assert.equal(d.capture.downloads.length, 0, "banner coev + null coev: still no download");
-  assert.ok(d.receiptLog.some((r) => r.kind === "SAVE/COEV-UNSTABLE"),
-    "refusal keys on the banner the player sees, not on coev.genC");
+  assert.ok(d.receiptLog.some((r) => r.kind === "SAVE/COEV-EMPTY"),
+    "the empty-state refusal is named (SAVE/COEV-EMPTY since R67)");
   assert.ok(!d.receiptLog.some((r) => r.kind === "SAVE"));
 });
