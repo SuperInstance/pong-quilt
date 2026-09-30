@@ -137,11 +137,23 @@ function oraclePlay(seed, patch, cap) {
 }
 const OFF = { accel: 0, hitBoost: 1, shrink: 1, decisionDrift: 0, maxSpeedMul: Infinity };
 
-test("ORACLE: perfect-intercept oracle ALWAYS dies under escalation (seeds 1..10, swans off)", () => {
-  for (let seed = 1; seed <= 10; seed++) {
+test("ORACLE: perfect-intercept oracle ALWAYS dies under escalation (seeds 1..20, swans off; K≥20 per R64 spec item 4)", () => {
+  const deaths = [];
+  for (let seed = 1; seed <= 20; seed++) {
     const r = oraclePlay(seed, {}, 3000);
     assert.ok(r.died, `seed ${seed}: oracle must die before frame 3000 (got ${r.frames} frames, ${r.hits} hits)`);
+    deaths.push(r.frames);
   }
+  // R64 spec item 4 (shipped R65): the distribution is PRINTED, never baked —
+  // a specific min would over-fit one rng lineage (floors observed across
+  // sets: 553 / 376 / 553; R64's bit-identical K=24 ran min 553 / median 695 /
+  // max 1055). The pin asserts the law (all 20 die before the cap); the
+  // PLAYLOG entry carries the numbers of record for cross-round comparison.
+  const sorted = [...deaths].sort((a, b) => a - b);
+  const q = (p) => sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))];
+  const mean = sorted.reduce((a, b) => a + b, 0) / sorted.length;
+  console.log(`oracle-death distribution seeds 1..20 (cap 3000, swans off): 20/20 dead · ` +
+    `min ${sorted[0]} / p25 ${q(0.25)} / median ${q(0.5)} / mean ${mean.toFixed(1)} / p75 ${q(0.75)} / max ${sorted[sorted.length - 1]}`);
 });
 test("ORACLE control: with escalation off the same oracle survives to the cap", () => {
   for (let seed = 1; seed <= 3; seed++) {
