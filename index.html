@@ -296,9 +296,9 @@ function continueGen(){
 // and the map below reads e.net (the evaluator's record field), not e.cand.
 // Round 4 receipted the crash: undefined fitness -> undefined champion net ->
 // JSON.parse(JSON.stringify(undefined)) froze the demo on generation 1.
-function startGenC(){if(!coev){const n=+$("pop").value;coev={popS:Array.from({length:n},()=>PQ.makeNet(randPQ)),
-  popE:Array.from({length:n},()=>PQ.makeNet(randPQ)),sChamp:null,eChamp:null,genC:0,last:null,
-  ledger:PQ.makeLedger(300),evalS:null,evalE:null};}
+function startGenC(){if(!coev||!coev.popS||!coev.popE){const n=+$("pop").value;coev=Object.assign(coev||{},{popS:Array.from({length:n},()=>PQ.makeNet(randPQ)),
+  popE:Array.from({length:n},()=>PQ.makeNet(randPQ)),sChamp:coev&&coev.sChamp||null,eChamp:coev&&coev.eChamp||null,genC:coev&&coev.genC||0,last:coev&&coev.last||null,
+  ledger:coev&&coev.ledger||PQ.makeLedger(300),evalS:null,evalE:null});} // R60/R63: fails-closed guard (R60 fix relanded by R63 after the R61+R62 merge window closed — 7th carrying) — a half-built coev (champs before pops, a hand-built file, a future loader's partial state) materializes both populations at slider size instead of throwing at coev.popS.length inside the rAF tick, killing the whole page loop (R49 P1 class; pinned tests/r63-startgenc-fails-closed-glue.test.js)
  const n=+$("pop").value;
  if(coev.popS.length>n)coev.popS.length=n; // Round 10: pin to slider on shrink (classic-loop parity)
  if(coev.popE.length>n)coev.popE.length=n; // Round 10: pin to slider on shrink (classic-loop parity)
