@@ -7,6 +7,7 @@ Every round is a receipted observation in the loop. Newest first.
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
 | R64 | 2026-09-30 | playtest-round-64 (vs main 618dc3b, wave-69 pages workflow, post-#79/#80; R63 open at #81) | canonical — R63's row absent here because #81 remains unmerged (Casey-gated); its entry lives on playtest-round-63, noted so the gap is not mistaken for a lost entry |
+| R63 | 2026-09-30 | playtest-round-63 (vs main 9f03372, post-#79/#80) | canonical — also repairs the R61-merge PLAYLOG conflict markers (additive R62+R61 resolution; markers stripped, both entries kept) |
 | R62 | 2026-09-30 | playtest-round-62 (vs main d2a85d7, post-#77/#78) | canonical |
 | R61 | 2026-09-30 | playtest-round-61 (vs main d2a85d7, post-#77/#78) | canonical — R59/R60 rows absent here because those branches remain unmerged (Casey-gated); their entries live on their own branches, noted so the gap is not mistaken for a lost entry |
 | R58 | 2026-09-29 | playtest-round-58 (vs main f53519b, post-#76) | canonical |
@@ -69,7 +70,6 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
-<<<<<<< HEAD
 ## Round 64 — k2d8 (cron pong-quilt-playloop) — 2026-09-30 — mode: BUILDER (R63 mandate item 2 — coev save honesty, R59's M1 carried 5 rounds; the R59 unmerged refusal design relanded and widened from genC-keyed to banner-keyed) + play-tester — vs main 618dc3b (wave-69 lane 69-d: GitHub Pages workflow only; R63 open at #81)
 
 ### Played versions: main 618dc3b played headless via a verbatim-extraction scientist driver (`/tmp/r64-scientist.js`, same pin pattern as R62/R63 — page fns extracted VERBATIM from working-tree index.html, driven with core.js as PQ, seeded rand); the single commit 618dc3b diffed (workflow-only); R63's branch (#81) and R59's branch studied as the guard's lineage (R59 authored the refusal + receipt name; R63 relanded R60's startGenC guard — both Casey-gated unmerged). Only `v1` is git-tagged; commits are the versions.
@@ -105,6 +105,41 @@ Every round is a receipted observation in the loop. Newest first.
 
 ### Verdict
 MERGEABLE — the save-wound's coev-banner head is closed with FAIL-first evidence in both directions; the classic-banner tail is measured, named, and spec'd rather than silently left; every carried item re-verified present-tense with verbatim repros; the wave-69 workflow commit is audited (P5) and found faithful. Suite at tip: 271 tests in tests/ (263 pass / 0 fail / 8 honest env skips), qa 8/8, README 279=271+8 live-verified, prerun canonical md5s unchanged at main and at the fix.
+## Round 63 — k2d8 (cron pong-quilt-playloop) — 2026-09-30 — mode: BUILDER (re-land the startGenC fails-closed guard — R60's fix, 7th carrying; R61's "merge-or-reland" window closed when #79/#80 merged without it) + play-tester + main-repair lane (the R61-merge PLAYLOG conflict markers stripped — additive R62+R61 resolution) — vs main 9f03372 (post-#79/#80, R61+R62 both landed)
+
+### Played versions: main 9f03372 played headless via a verbatim-extraction scientist driver (`/tmp/r63-scientist.js`, same pattern as R62's pin — page fns extracted VERBATIM from working-tree index.html, driven with core.js as PQ, seeded rand); R60 tip 65e80d7 diffed (the guard source — startGenC lines byte-identical between d2a85d7 and 9f03372, so the fix applies clean); R61/R62 entries read in-full (both shipped via #80/#79). Only `v1` is git-tagged; commits are the versions.
+
+### Suite ground at main 9f03372 BEFORE the fix (run): `node --test tests/*.test.js` → 268 tests, 260 pass / 0 fail / 8 honest env skips; `node --test tools/test-qa.js` 8/8; `node tools/prerun.js` reproduces the canonical post-R50 line byte-exact (coev.js 946e639a…, curve.json f9b20e7d…, L0 bc15d414…, L1 1125d59c…, L2 50137ceb…; 5 flips / 3 swaps; stone mirror ok, mirror-only labeled, sign lane labeled absent). Post-fix on this branch: **271 tests, 263 pass / 0 fail / 8 skips**; qa 8/8; prerun line byte-unchanged. R62's process finding obeyed: dist rebuilt (`node tools/build-site.mjs` → `build ok: 11 demo files sealed`) BEFORE the suite because index.html changed.
+
+### Lies hunted (all repro'd by running the VERBATIM page functions, not reimplementations):
+
+0. **P0 — NEW, docs-lane: main's PLAYLOG.md shipped LITERAL MERGE-CONFLICT MARKERS.** PR #80 (R61) carried branch commit 0376262 "all three conflicts resolved as additive" — but the PLAYLOG conflict was resolved by leaving the git marker triple (7-char left-arrow run / 7-char equals run / 7-char right-arrow run naming origin/main) IN THE FILE (at old lines 71/112/154 on main). The canonical-index pin stayed GREEN throughout (markers add no headings and remove no rows) — the pin has a coverage gap for marker-inclusion. Repaired this round: markers stripped, R62+R61 entries both kept (additive, newest-first), separators per convention. Severity: process-high (the experiment's memory file was merge-damaged on main for ~3.5h and nothing screamed).
+1. **P1 — C1 elite-archive collapse, present-tense (carried since R56; 3rd consecutive verification).** Verbatim driver, seed 20260930, slider 96, 3 gens: bred popS sizes **[4,4,4]**, distinct netIds 4 (exact elite copies, zero mutations), nets within L2 2.0 of the gen-1 champ at gen 3: **0** — lineage evaporation confirmed live. R61's dilution label shipped and is true. Severity: high for C1 as a learning story.
+2. **P1½ — NEW, a sharpening of P1: the mutation σ slider is DEAD in C1 mode.** Same verbatim driver, σ=10 vs σ=100 at slider 96: the two runs produce **byte-identical stats strings** and identical bred shapes (both 4 exact copies; σ never reaches `mutate()` because the `while(next.length<scored.length)` loop is unreachable when scored.length = elites = 4). The player-visible "mutation σ" control is a dead control in C1 mode — a UI lie on top of the collapse. Severity: medium (player-facing; dies with the P1 fix).
+3. **P2 — startGenC fails open on a half-state coev (carried since R49, verbatim-reproduced 7th time — THIS ROUND'S SHIP).** Driver: `coev={sChamp:null,eChamp:null,genC:0}` → verbatim startGenC → `TypeError: Cannot read properties of undefined (reading 'length')` at coev.popS.length — inside the rAF tick, kills the whole page loop (R49 P1 class). R60's guard (unmerged branch) was the authored fix; R61 said "merge-or-reland"; the merge window closed without it.
+4. **P3 — coev-mode SAVE writes the franken-quilt (carried since R56, present-tense).** Verbatim save onclick after 1 C1 gen: file.gen=1 (=coev.genC), best===sChamp, pop 8 nets ALL classic-lineage (0/8 from coev.popS), no sChamp/eChamp/gens fields — loadable only by the classic loader, breeding classic noise under a coev-gen banner. Severity: medium-high.
+5. **P4 — NOT a lie: oracle-death horizon, 4th independent confirmation + merge-stability evidence.** Verbatim escalation-test oracle, seeds 1..24, cap 3000: **24/24 dead**, min 553 / p25 556 / median 695 / mean 756.2 / p75 1053 / max 1055 — **bit-identical to R62's K=24 distribution** (same seeds, same oracle, same core): the R61+R62 merge did not touch core.js physics; the artifact lane is bit-stable across the merge.
+
+### Deltas observed (as shapes):
+- **d(learning)/d(version): flat at the artifact layer, still.** Prerun md5s on main 9f03372 are byte-identical to every round since R50 (L0 1890 / L1 2010 / L2 1753; 5 flips / 3 swaps); the oracle distribution bit-matches R62. The merge lane changed docs and labels only.
+- **Failure-mode migration: the merge lane is now the noisiest lane.** Docs-wound classes to date: lost entries (R34/R41/R56 via conflict resolution), count entanglement (R58), and now LITERAL MARKERS SHIPPED (R61-merge). The code lanes are increasingly honest (two labels shipped in 2 rounds); the docs lane sprains repeatedly. The invariant candidate: a tracked-file conflict-marker pin (spec item 4 below).
+- **d(collapse)/d(measurement) sharpened again:** R56 measured dilution → R61 named it elite-archive collapse → R63 proves the σ-slider is dead as a consequence (the breeding path never calls mutate). Each round the same wound gets a more precise mechanism.
+
+### Builder receipt (the one small item):
+- **Fix (index.html startGenC, R60's design verbatim, attribution in-comment):** guard widened from `if(!coev)` to `if(!coev||!coev.popS||!coev.popE)`; the branch materializes BOTH populations at slider size via `Object.assign(coev||{},{...})`, preserving existing sChamp/eChamp/genC/last/ledger. A half-built coev (champs before pops, a hand-built file, a future loader's partial state) now recovers instead of throwing inside the rAF tick.
+- **Pin:** `tests/r63-startgenc-fails-closed-glue.test.js` — 3 tests driving verbatim startGenC. FAIL-first DEMONSTRATED: with only the test file present on pristine main 9f03372, T1 (half-state → materialized pops, champs/genC preserved) is RED with the verbatim `TypeError: Cannot read properties of undefined (reading 'length')`; T2 (fresh !coev shape unchanged) and T3 (loadCoev-shaped state untouched) GREEN both sides. Post-fix: 3/3 GREEN.
+- **Claim:** `startgenc-fails-closed-glue` registered in core.js VERIFIED_CLAIMS (honesty two-way pin green). README count 276→279 (271 in tests/ + 8 QA). site dist re-sealed.
+- **Main-repair lane (same PR):** PLAYLOG conflict markers stripped (additive R62+R61 resolution); canonical-index row added.
+
+### Next version spec (5 items, R64 mandate):
+1. **[M] C1 full-population breeding (8th carrying — now with a second reason).** carryGenC must breed from FULL scored populations (pruner parity, `tools/prerun-coev.js:103` precedent), not the 4-entry elite archive. WHY (new): besides the collapse, the fix REVIVES the dead σ-slider (P1½) — one mechanism, two wounds. VERIFY: at slider 96, bred popS is 96 for 3 consecutive gens; ≥1 mutation per gen; a σ flip (10 vs 100) changes the offspring distribution (the P1½ pin).
+2. **[S] Coev save honesty (R59's M1, 5th carrying).** Refuse SAVE in coev mode with a named receipt (SAVE/COEV-UNSTABLE) OR write a coev-quilt (sChamp/eChamp/gens/ledger) that loadCoev accepts. VERIFY: verbatim coev save → refusal receipt or loadCoev-round-trip; classic save unchanged.
+3. **[S] Oracle-death distribution pin (4th carrying).** Extend the escalation pin to K≥20 seeds: assert all-die before cap AND print the death-frame distribution in the PLAYLOG entry (never bake a specific min — floors: 553/376/553 across sets). R63's bit-identical K=24 distribution (min 553 / median 695 / max 1055) is the reference.
+4. **[M] Conflict-marker pin for tracked prose/code (NEW — gap demonstrated live).** A test scanning every tracked .md/.js/.html for `^<{7}|^={7}|^>{7}` at line start. WHY: P0 shipped literal markers on main with the canonical-index pin GREEN — the marker class is invisible to every existing pin. VERIFY: RED against main 9f03372's PLAYLOG (pre-repair), GREEN on any clean tree.
+5. **[S] PLAYLOG-merge process note in EXPERIMENTS.md (NEW, docs-lane hygiene).** Add to the round checklist: after ANY merge touching PLAYLOG.md, `grep -n '^<{7}\|^={7}\|^>{7}' PLAYLOG.md` must come back empty before push. VERIFY: EXPERIMENTS.md text pin.
+
+### Verdict
+MERGEABLE — the 7th-carried guard finally lands (R60 authored, R63 relanded with FAIL-first both directions); the R61-merge marker wound is repaired in the same file the round must edit anyway; all carried items re-verified present-tense with verbatim repros. Suite at tip: 271 tests in tests/ (263 pass / 0 fail / 8 honest env skips), qa 8/8, README 279=271+8 live-verified, prerun canonical md5s unchanged at main and at the fix.
 
 ---
 
@@ -148,7 +183,6 @@ MERGEABLE — the save-wound's coev-banner head is closed with FAIL-first eviden
 Ship-worthy. The one-line champion reset closes the last open lane of the R56 wound class on shipped code; C1 dilution, the startGenC guard, coev save honesty, and the dilution label remain the live spec, all with fresh repros and severities.
 
 ---
->>>>>>> origin/main
 
 ## Round 61 — k2d8 (cron pong-quilt-playloop) — 2026-09-30 — mode: BUILDER (R60 spec item 5 shipped, re-scoped true: the dilution label + merge-tail naming — measured sharper this round as an elite-ARCHIVE collapse, not merely a dilution bound) — vs main d2a85d7 (post-#77/#78)
 
@@ -190,7 +224,7 @@ Suite ground at main BEFORE the fix: `node --test tests/*.test.js` → 262 tests
 
 ### Verdict
 MERGEABLE — two honest labels + FAIL-first pin + claim registration; FAIL-first proven both directions (LABEL 1/2 RED on pristine main d2a85d7, RAILS 3 GREEN both sides, 3/3 GREEN at the fix). Suite at tip: 265 tests in tests/ (257 pass / 0 fail / 8 honest env skips), qa 8/8, README 273=265+8 live-verified, prerun canonical md5s reproduced at main and at the fix. Main untouched; branch `playtest-round-61`. R62 mandate: full-pop breeding [M], oracle horizon pin [M], startGenC guard merge-or-reland [S], coev save honesty [S], file-load champion reset [S].
-=======
+---
 ## Round 58 — k2d8 (cron pong-quilt-playloop) — 2026-09-29 — mode: BUILDER ×2 (main-repair lane: the R56 entry lost in the #76 merge conflict resolution, restored verbatim from b0192ad; the readme-count pin's red-state-dependent formula, made fail-class-inclusive so its demand is red-invariant) + play-tester — vs main f53519b (post-#76)
 
 ### Played versions: R55 (01c6bff) · R56 (b0192ad, docs-only receipt, played via git-show) · R57 (f53519b, canonical tip)
