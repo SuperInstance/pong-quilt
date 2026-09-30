@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R62 | 2026-09-30 | playtest-round-62 (vs main d2a85d7, post-#77/#78) | canonical |
 | R58 | 2026-09-29 | playtest-round-58 (vs main f53519b, post-#76) | canonical |
 | R57 | 2026-09-29 | playtest-round-57 (vs main b0192ad, post-#75) | canonical |
 | R56 | 2026-09-29 | playtest-round-56 (vs main 01c6bff, post-#74) | canonical |
@@ -65,6 +66,47 @@ Every round is a receipted observation in the loop. Newest first.
 | R2 | 2026-09-24 | TWO canonical branch entries below: `Round 2 (branch quilt-edge-ml-survey)` and `Round 2 (branch quantum-audio-L2)` — both shipped, neither supersedes the other |
 | R2 artifact | 2026-09-24 | via PR #1 (pre-honesty pass) | STALE DUPLICATE — retitled, kept as historical artifact, not a Round 2 |
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
+
+## Round 62 — k2d8 (cron pong-quilt-playloop) — 2026-09-30 — mode: BUILDER (R61 spec item "File-load champion reset" / R61's M4, one small item) + play-tester — vs main d2a85d7 (post-#77/#78)
+
+### Played versions: R58 (c59c8d7 main-repair, canonical tip) · R61 (eae880d, local-only branch — its entry lives there; played by running its measured repros against pristine main) · ground re-runs on main d2a85d7 (suite + prerun + qa). Sibling note: only `v1` exists as a git tag, so versions are commit refs, as in R56–R58. R59/R60/R61 entries live ONLY on their unmerged local branches — the gap between R58 and R62 in this index is receipts-on-branches, not lost rounds (R61's branch pushed alongside this one, PR opened).
+
+### Suite ground (main d2a85d7, run): 262 tests, 254 pass / 0 fail / 8 honest env skips; prerun reproduces the canonical line exactly (L0 bc15d414 / L1 1125d59c / L2 50137ceb / curve f9b20e7d — 5 flips / 3 swaps / coev.js 946e639a); qa 8/8. Post-fix ground on this branch: **265 tests, 257 pass / 0 fail / 8 skips**; prerun line unchanged. Process finding (low, environmental-but-recurring): the 3 site-glue reds seen at first were MY stale gitignored `site/dist` from the R61 branch checkout — the R44 self-seal only rebuilds when dist is ABSENT, never when present-but-stale; every round that edits index.html must rebuild dist before the suite (`node tools/build-site.mjs`).
+
+### Lies hunted (all repro'd by running the VERBATIM page functions in the r53/r54/r57 sandbox pattern, not reimplementations):
+
+1. **P1 — file-load leaves the VISIBLE champion stale (the shipped wound; builder target).** Classic sandbox, seed 20260930: Train-to-completion (champ A bred, champGame alive) → file-load quilt {pop: L1.pop[0..7], best: L1.pop[0], gen: 77} → `champNet` IS the pre-load champ A by identity, `champGame` still alive, **L2(champ, loaded quilt pop) = 4.943** — the R56-P2 magnitude (4.56) one lane over. The R57 fix reset the streaming evaluator on this path (evalGen nulled, gen 77 adopted — its pins are green), but the demo keeps PLAYING a lineage-far champion under the loaded banner. loadLevel, the sibling path, already resets both lanes (`champNet=cp.pop[0];champGame=null`). Severity: high, player-facing.
+2. **P2 — C1 elite-archive collapse at slider 96 (carried from R61, present-tense on main).** Coev sandbox, slider 96: gen 1 breeds popS to **4** (unique nets 4 — exact elite copies); one call later startGenC pads back to 96 with **only 3/96 within L2 2.0** of the gen-1 champ (the 92-filler refill); gens 2–3 breed back to 4 with **0/4** near the gen-1 champ — lineage evaporation inside 2 generations. On main, R61's stats-line label has NOT landed: the loadCoev banner still promises "gen N+1 breeds descendants, not noise". Severity: high for C1 as a learning story.
+3. **P3 — startGenC fails open (carried since R49, present-tense).** A coev object without popS/popE (a future construction path; the R60 guard branch is still unmerged) → verbatim `TypeError: Cannot read properties of undefined (reading 'length')` inside the rAF train tick → demo freeze, no receipt. Same fail-class as the R49 rAF death. Severity: medium, latent.
+4. **P4 — coev-mode SAVE writes the franken-quilt (carried since R56, present-tense).** Save in coev mode → file.gen = coev.genC = 1, best = sChamp.net, all 8 pop nets from the CLASSIC pop, 0/8 from coev.popS, no sChamp/eChamp/gens fields → loadable only by the classic loader, which breeds classic noise under a coev-gen banner (the R56-P2 shape again). Severity: medium-high.
+5. **NOT a lie — oracle-death horizon, third independent confirmation.** 24 fresh seeds (verbatim escalation-test oracle): **24/24 dead before frame 3000**; distribution min 553 / p25 556 / median 695 / mean 756.2 / p75 1053 / max 1055. Floors across independent sets: 553 (R54, K=40), 376 (R56, K=8), 553 (R62, K=24) — the law is honest; any future pin must assert all-die and PRINT the distribution, never bake a specific min.
+
+### Deltas observed (as shapes):
+
+- d(learning)/d(version): none at the artifact layer — main d2a85d7 reproduces the R50+ canonical line byte-for-byte (prerun hashes identical; fitness levels identical: L0 1890 / L1 2010 / L2 1753). The shipped game's learning substrates are bit-stable across R57→R62.
+- Failure-mode migration: R56-P2 (stale-evaluator overwrite at load, L2 4.56) was fixed by R57 for the evaluator lane on ALL load paths; the same wound shape SURVIVED one lane over on the file-load path (visible champion, L2 4.943) because the two lanes were fixed asymmetrically. The invariant to pin going forward: **every load path must reset BOTH lanes — the streaming evaluator AND the visible champion/game**. loadLevel did; file-load did not; now pinned.
+- C1 dilution shape unchanged from R61's measurement (slider 96 → bred 4 / refill 92, lineage gone by gen 3) — the mode's d(learning)/d(slider) is still flat above eliteK.
+
+### Builder receipt (the one small item):
+
+- **Fix (one line, index.html file-load handler):** `champNet=(q.best&&q.best.w1)?q.best:pop[0];champGame=null;` — the loaded quilt's best net becomes the visible champion (merged pop[0] fallback for best-less quilts), the stale game is cleared; mirrors the loadLevel precedent exactly.
+- **Pin:** `tests/r62-fileload-champion-glue.test.js` — 3 tests driving the verbatim page functions. FAIL-first demonstrated: on pristine main, T1 (champ stale by identity) and T2 (best-less fallback) are RED with the measured wound, T3 (loadLevel no-regression) green. Post-fix: 3/3 green.
+- **Claim:** `fileload-champion-glue` registered in core.js VERIFIED_CLAIMS (honesty pin two-way map green). README count 262→265 in `tests/` (273 total).
+- Suite: 265 tests, 257 pass / 0 fail / 8 skips; R57's no-regression pins untouched and green.
+
+### Next version spec (5 items):
+
+1. **[M] C1 full-population breeding.** `runCoevGeneration` breeds `scored.length` nets from an eliteK=4 archive → bred pop = 4 regardless of slider. Carry the pre-breed population size through the call and breed to it, so the slider means what it says and refill-with-noise never re-enters. WHY: P2 — at any slider > eliteK the C1 mode is a diversity eraser; d(learning)/d(slider) is flat above 4. VERIFY: coev glue, FAIL-first on current main — at slider 96, bred popS is 96 (not 4) for 3 consecutive gens and ≥1 bred net stays within L2 2.0 of the prior gen's champ each gen.
+2. **[S] startGenC fails-closed (re-land R60's unmerged guard).** Verify popS/popE are arrays at the guard; on failure receipt `COEV-REFUSAL` named and return — never a raw TypeError in the rAF tick. VERIFY: glue — pops-less coev object yields the named refusal and the demo stays alive; RED-first repro is this round's verbatim TypeError.
+3. **[S] Ship R61's dilution label (S6/R61) on main.** Stats line + loadCoev banner admit "bred N elites + refilled M fresh random" (or, with item 1 landed, delete the clause and assert full-pop breeding instead). VERIFY: extraction pin on the two banner strings; RED-first on main today (banner still claims "breeds descendants, not noise").
+4. **[M] Coev save honesty.** Either refuse to SAVE in coev mode with a named receipt, or write a coev-quilt (sChamp/eChamp/gens/ledger) that loadCoev actually accepts. WHY: P4 — the current file is a franken-quilt that only the classic loader will touch, laundering a coev gen number over classic noise. VERIFY: round-trip glue — coev save → load → consumed by loadCoev (or the refusal is receipted); RED-first on the current franken shape.
+5. **[S] Oracle-death horizon pin with distribution printing.** Extend the escalation pin to K≥20 seeds: assert all-die before the cap AND print the death-frame distribution (never bake a specific min — floors move across seed sets: 553/376/553). VERIFY: the R62-measured distribution (min 553 / median 695 / max 1055 over 24 seeds) must remain printable, all-dead.
+
+### Verdict
+
+Ship-worthy. The one-line champion reset closes the last open lane of the R56 wound class on shipped code; C1 dilution, the startGenC guard, coev save honesty, and the dilution label remain the live spec, all with fresh repros and severities.
+
+---
 
 ## Round 58 — k2d8 (cron pong-quilt-playloop) — 2026-09-29 — mode: BUILDER ×2 (main-repair lane: the R56 entry lost in the #76 merge conflict resolution, restored verbatim from b0192ad; the readme-count pin's red-state-dependent formula, made fail-class-inclusive so its demand is red-invariant) + play-tester — vs main f53519b (post-#76)
 
