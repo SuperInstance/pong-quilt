@@ -417,7 +417,7 @@ $("walexport").onclick=()=>{const out=walExportPanel();if(!out)return;
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-wal-gen${gen}.jsonl`;a.click();
  receipt(out.rows?"WAL-EXPORT":"WAL-EXPORT/EMPTY",out.report.ok?1:0,1);};
 $("load").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const q=JSON.parse(t);
- pop=q.pop.concat(pop.slice(q.pop.length));gen=q.gen||0;evalGen=null;if(coev){coev.evalS=null;coev.evalE=null;} // R57: same stale-evaluator reset as loadLevel — the file-load path overwrites pop mid-generation too
+ pop=q.pop.concat(pop.slice(q.pop.length));gen=q.gen||0;champNet=(q.best&&q.best.w1)?q.best:pop[0];champGame=null;evalGen=null;if(coev){coev.evalS=null;coev.evalE=null;} // R57: same stale-evaluator reset as loadLevel — the file-load path overwrites pop mid-generation too; R62: the VISIBLE champion adopts the quilt's best (falling back to merged pop[0] for best-less quilts) and the stale game is cleared — the loadLevel champNet=cp.pop[0];champGame=null precedent
  $("stats").textContent=`loaded gen ${gen} · ${q.pop.length} file nets · merge tail kept ${pop.length-q.pop.length} pre-existing nets (not from this file) — R61`; // R61: the merge tail is NAMED (R60 spec item 5) — the kept nets are not from the file
  receipt("LOAD",0,1);});};
 function loadLevel(l){const cp=window.PONG_QUILT_CHECKPOINTS&&window.PONG_QUILT_CHECKPOINTS[l];
