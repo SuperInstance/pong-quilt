@@ -392,7 +392,8 @@ function tick(){const m=$("mode").value;
 $("go").onclick=()=>{running=true;};$("pause").onclick=()=>{running=false;};
 $("mode").onchange=()=>{evalGen=null;if(coev){coev.evalS=null;coev.evalE=null;}champGame=null;
  $("stats").textContent=`mode ${$("mode").value} — press Train`;};
-$("save").onclick=()=>{const blob=new Blob([JSON.stringify({gen,best:champNet,pop:pop.slice(0,8),stats:{games,best:lastSnap&&lastSnap.best.fitness}})],{type:"application/json"});
+$("save").onclick=()=>{if($("mode").value==="coev"){receipt("SAVE/COEV-UNSTABLE",0,0);return;} // R64: in C1 mode the page state is coev-semantics (gen=coev.genC, champNet=sChamp) but the fields below are classic (gen,champNet,pop) — saving would write the franken-quilt (R56 P3/R59 M1/R63 M2); refuse named until a coev-quilt writer exists. Guard keys on the mode BANNER (R59's unmerged playtest-round-59 design relanded+widened: banner, not coev.genC, is the contract). The adjacent tail (C1-trained then dropdown back to classic) is named in the R65 spec — lane tracking, beyond this [S] item.
+ const blob=new Blob([JSON.stringify({gen,best:champNet,pop:pop.slice(0,8),stats:{games,best:lastSnap&&lastSnap.best.fitness}})],{type:"application/json"});
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pong-quilt-gen${gen}.json`;a.click();receipt("SAVE",0,1);};
 // === WAL export seam (Round 30): the live receipt panel, re-anchored into the fleet WAL ===
 // tools/wal-session.js (R26) proved a headless session can feed the doctor-
