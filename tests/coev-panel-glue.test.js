@@ -54,6 +54,7 @@ function makeDemo() {
   const champRing = PQ.makeRing(240);
   const startGenC = () => { throw new Error("startGenC() must not run — the harness pre-builds evaluators"); };
   const factory = new Function("PQ", "$", "randPQ", "champRing", "startGenC", "hash", "els",
+    "const D=PQ.DEFAULTS;" + // the page script defines D=PQ.DEFAULTS at top scope (R65's stats label reads D.elites)
     "let receipts=[],receiptHead='0'.repeat(64),receiptEvicted=0,gen=0,games=0;" +
     "let champNet=null,champGame=null,gameId=0,coev=null;" +
     extractReceiptPanel() + "\n" +
@@ -65,17 +66,25 @@ function makeDemo() {
 }
 
 // A real C1 state: 8+8 nets, fresh evaluators over them, a genesis ledger.
+// R65 shape note: the page's startGenC now creates the full-population scored
+// records (coev.scoreS/scoreE) together with the evaluators and continues
+// feeding them every generation — this mock mirrors that state shape exactly
+// (the arrays are part of the coev contract continueGenC consumes; a mock
+// without them is a half-state the real page can never produce).
 function makeCoevState(d) {
   const rand = d.randPQ;
   const popS = Array.from({ length: 8 }, () => PQ.makeNet(rand));
   const popE = Array.from({ length: 8 }, () => PQ.makeNet(rand));
   const coev = { popS, popE, genC: 0, last: null, ledger: PQ.makeLedger(300),
+    scoreS: [], scoreE: [],
     evalS: PQ.makeEvaluator(popS, (net) => {
       const r = PQ.playAdv(net, popE[Math.floor(rand() * popE.length)], rand);
+      coev.scoreS.push({ net, sFitness: r.sFitness });
       return { fitness: r.sFitness, sFitness: r.sFitness, frames: r.frames, hits: r.hits };
     }, { eliteK: 4 }),
     evalE: PQ.makeEvaluator(popE, (net) => {
       const r = PQ.playAdv(popS[Math.floor(rand() * popS.length)], net, rand);
+      coev.scoreE.push({ net, eFitness: r.eFitness });
       return { fitness: r.eFitness, eFitness: r.eFitness, frames: r.frames, enderHits: r.enderHits };
     }, { eliteK: 4 }) };
   d.coev = coev;

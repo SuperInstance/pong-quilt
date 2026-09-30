@@ -2,6 +2,14 @@
 // Harness lineage: verbatim-extraction glue pattern from tests/r59-coev-save-honesty-glue.test.js
 // and tests/r60-startgenc-fails-closed-glue.test.js (credit R59/R60).
 // FAIL-first: on pristine main, LABELS 1 and 2 RED (the sentences do not exist), RAILS 3 GREEN.
+// R65 SUPERSESSION (disclosed, not silent): LABEL 1 pinned the R61 wound-label
+// 'elite-archive only (bred pop N; next gen refills M fresh random)' — truthful
+// while the wound shipped. R64 mandate item 1 closed the wound (full-population
+// breeding, tests/r65-fullpop-breeding-glue.test.js), so the label now reads
+// 'full-population (bred pop N; M mutated offspring; next-gen refill K)' —
+// pinning the old sentence would be the new lie. LABEL 1 here pins the contract
+// that survives BOTH eras: the R55 COEV stats prefix + the bred-pop disclosure.
+// LABEL 1 remains RED on pre-R61 main (no COEV breeding sentence at all then).
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -45,16 +53,15 @@ function makeDemo(seed) {
   return { d, els, receiptLog };
 }
 
-test("LABEL 1 (FAIL-first): the coev stats line names the elite-archive breeding bound and the fresh-random refill", () => {
+test("LABEL 1 (R65-superseded, was FAIL-first): the coev stats line names the breeding reality — R61 named the elite-archive bound, R65 closed it; the surviving contract is the COEV prefix + the bred-pop disclosure", () => {
   const { d, els } = makeDemo(20260929);
   d.startGenC();
   for (let i = 0; i < 8 && !(d.coev.evalS === null && d.coev.genC >= 1); i++) d.continueGenC();
   assert.ok(d.coev.genC >= 1, "one full C1 generation ran");
   const stats = els.stats.textContent;
   assert.match(stats, /COEV gen 1 · games \d+ · h2h /, "R55 coev stats prefix contract intact");
-  assert.match(stats, /elite-archive only/, "the breeding bound is NAMED on the stats line");
   assert.match(stats, /bred pop \d+/, "the bred population size is disclosed");
-  assert.match(stats, /fresh random/, "the refill's random origin is disclosed");
+  assert.match(stats, /— R6\d/, "the label carries its era's round stamp (R61 wound-name, R65 wound-closed)");
 });
 
 test("LABEL 2 (FAIL-first): the file-load path names the merge tail it keeps", async () => {

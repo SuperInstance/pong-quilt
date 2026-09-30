@@ -117,6 +117,16 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
   not a new training artifact: the canonical training set remains the same
   five files, and the C1 receipt covers the birth rows that make the fifth
   file reproducible.
+- **PLAYLOG merge hygiene (Round 63 lesson; R63 mandate item 4 / R64 spec
+  item 5, second asking, shipped R65).** After ANY merge that touches
+  `PLAYLOG.md`, `grep -n '^<{7}\|^={7}\|^>{7}' PLAYLOG.md` must come back
+  EMPTY before push. The R61-merge conflict resolution shipped literal
+  `<<<<<<<`/`=======`/`>>>>>>>` markers inside PLAYLOG.md entries and they
+  survived two rounds invisible to every existing pin (R63 P0). The
+  structural pin is `tests/r65-conflict-marker-glue.test.js` (every tracked
+  `.md`/`.js`/`.html` scanned at line-start for all three marker species);
+  this checklist line is the process half — the grep runs at merge time,
+  before the pin ever has to catch you.
 - **The process is the product.** A beautiful demo with a dead loop is a
   cathedral; a humble demo with a living experiment chain is a shed that
   breeds. We build sheds that breed.
