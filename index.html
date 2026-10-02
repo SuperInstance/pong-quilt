@@ -30,6 +30,7 @@
  <label>gens/frame <input id="sub" type="range" min="1" max="8" value="1"></label>
  <label>decision every <input id="dec" type="range" min="1" max="10" value="4"> frames</label>
  <label>mutation σ <input id="sig" type="range" min="2" max="40" value="12"></label>
+ <small id="sigline"></small>
  <span id="stats">gen 0 · games 0 · best —</span>
 </div>
 <div class="row">
@@ -461,6 +462,16 @@ $("attach").onclick=()=>{try{const f=new Function($("scratch").value);const m=f(
  if(MoveSuggestion.validate(m.suggest(stateOf(PQ.newGame(Math.random)))))throw new Error("suggest() failed JEV validation on probe");
  l2Mod=m;$("l2").value="custom";$("l2stat").textContent="attached: "+m.name;$("l2stat").className="ok";receipt("ATTACH",0,1);}
  catch(e){$("l2stat").textContent="attach failed: "+e.message;$("l2stat").className="bad";}};
+// R78: the σ→lineage-visibility law, printed at the slider (R77 spec item 1 —
+// carried R74→R77, 13th carrying, first build here). The text cites the R66
+// measurement VERBATIM and never extrapolates: σ=2 and σ=12 are the only two
+// pinned points (5-seed band 16–29 at gen 2 for the σ=2 cluster; gen-2 close-
+// lineage death "usually" at σ=12 — the seed-dependent class R66 printed, not
+// asserted). Every other σ is labeled UNMEASURED — inventing a transition
+// curve between the pinned points would be fabrication, not disclosure.
+function sigLine(v){v=+v;return v===2?"σ=2 · measured: lineage VISIBLE — the gen-1 champ's cluster survives 2–3 gens (≥16 nets within L2 2.0 at gen 2, 5 seeds — R66)":v===12?"σ=12 · measured (this default): close lineage INVISIBLE from gen 2 — one step ~0.56 scatters children off the anchor; descendants real (R65), visibility dies (R66)":"σ="+v+" · UNMEASURED — R66 pinned σ=2 (visible) and σ=12 (invisible) only; this value carries no verbatim measurement";} // one line on purpose: the pin extracts it verbatim (tests/r78-sig-line-disclosure-glue.test.js)
+$("sig").addEventListener("input",function(){$("sigline").textContent=sigLine($("sig").value);}); // R78: the disclosure tracks the slider live — a dead disclosure would be the R64-class half-fix
+$("sigline").textContent=sigLine($("sig").value); // R78: first-paint disclosure — the measured law is visible before any Train
 // R18: persist the BYO endpoint — refresh must not strand a real backend.
 // URL only: a backend URL is not a credential, so it may live in localStorage.
 // The LLM key is the opposite and stays in page memory only (its field says so)
