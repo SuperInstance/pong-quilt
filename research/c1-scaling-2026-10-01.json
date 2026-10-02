@@ -1,0 +1,3018 @@
+{
+  "tool": "tools/c1-scaling.js",
+  "contract": "scaling trajectory receipt \u2014 descriptive, no learning claim (R66 law carried)",
+  "arms": [
+    {
+      "config": {
+        "pop": 24,
+        "gens": 40,
+        "seed": 20261001,
+        "sigma": 0.12
+      },
+      "summary": {
+        "pop": 24,
+        "gens": 40,
+        "seed": 20261001,
+        "sigma": 0.12,
+        "rallyFirst5": 351.4,
+        "rallyLast5": 694.4,
+        "sFitFirst5": 391.4,
+        "sFitLast5": 814.4,
+        "kills": 40,
+        "windowNote": "windows rows [1,6) vs [36,41) of 41 h2h rows",
+        "noLearningClaim": true
+      },
+      "rows": [
+        {
+          "gen": 0,
+          "outcome": "ENDER-KILL",
+          "frames": 137,
+          "sFit": 137,
+          "eFit": 1063
+        },
+        {
+          "gen": 1,
+          "outcome": "ENDER-KILL",
+          "frames": 196,
+          "sFit": 196,
+          "eFit": 1004
+        },
+        {
+          "gen": 2,
+          "outcome": "ENDER-KILL",
+          "frames": 621,
+          "sFit": 721,
+          "eFit": 579
+        },
+        {
+          "gen": 3,
+          "outcome": "ENDER-KILL",
+          "frames": 626,
+          "sFit": 726,
+          "eFit": 574
+        },
+        {
+          "gen": 4,
+          "outcome": "ENDER-KILL",
+          "frames": 169,
+          "sFit": 169,
+          "eFit": 1031
+        },
+        {
+          "gen": 5,
+          "outcome": "ENDER-KILL",
+          "frames": 145,
+          "sFit": 145,
+          "eFit": 1055
+        },
+        {
+          "gen": 6,
+          "outcome": "ENDER-KILL",
+          "frames": 613,
+          "sFit": 713,
+          "eFit": 587
+        },
+        {
+          "gen": 7,
+          "outcome": "ENDER-KILL",
+          "frames": 184,
+          "sFit": 184,
+          "eFit": 1016
+        },
+        {
+          "gen": 8,
+          "outcome": "ENDER-KILL",
+          "frames": 364,
+          "sFit": 364,
+          "eFit": 836
+        },
+        {
+          "gen": 9,
+          "outcome": "ENDER-KILL",
+          "frames": 138,
+          "sFit": 138,
+          "eFit": 1062
+        },
+        {
+          "gen": 10,
+          "outcome": "ENDER-KILL",
+          "frames": 167,
+          "sFit": 167,
+          "eFit": 1033
+        },
+        {
+          "gen": 11,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 12,
+          "outcome": "ENDER-KILL",
+          "frames": 157,
+          "sFit": 157,
+          "eFit": 1043
+        },
+        {
+          "gen": 13,
+          "outcome": "ENDER-KILL",
+          "frames": 124,
+          "sFit": 124,
+          "eFit": 1076
+        },
+        {
+          "gen": 14,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 15,
+          "outcome": "ENDER-KILL",
+          "frames": 763,
+          "sFit": 863,
+          "eFit": 437
+        },
+        {
+          "gen": 16,
+          "outcome": "ENDER-KILL",
+          "frames": 212,
+          "sFit": 212,
+          "eFit": 988
+        },
+        {
+          "gen": 17,
+          "outcome": "ENDER-KILL",
+          "frames": 161,
+          "sFit": 161,
+          "eFit": 1039
+        },
+        {
+          "gen": 18,
+          "outcome": "ENDER-KILL",
+          "frames": 680,
+          "sFit": 780,
+          "eFit": 520
+        },
+        {
+          "gen": 19,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 20,
+          "outcome": "ENDER-KILL",
+          "frames": 646,
+          "sFit": 746,
+          "eFit": 554
+        },
+        {
+          "gen": 21,
+          "outcome": "ENDER-KILL",
+          "frames": 165,
+          "sFit": 165,
+          "eFit": 1035
+        },
+        {
+          "gen": 22,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 23,
+          "outcome": "ENDER-KILL",
+          "frames": 180,
+          "sFit": 180,
+          "eFit": 1020
+        },
+        {
+          "gen": 24,
+          "outcome": "ENDER-KILL",
+          "frames": 625,
+          "sFit": 625,
+          "eFit": 575
+        },
+        {
+          "gen": 25,
+          "outcome": "ENDER-KILL",
+          "frames": 987,
+          "sFit": 1187,
+          "eFit": 213
+        },
+        {
+          "gen": 26,
+          "outcome": "ENDER-KILL",
+          "frames": 128,
+          "sFit": 128,
+          "eFit": 1072
+        },
+        {
+          "gen": 27,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 28,
+          "outcome": "ENDER-KILL",
+          "frames": 124,
+          "sFit": 124,
+          "eFit": 1076
+        },
+        {
+          "gen": 29,
+          "outcome": "ENDER-KILL",
+          "frames": 682,
+          "sFit": 782,
+          "eFit": 518
+        },
+        {
+          "gen": 30,
+          "outcome": "ENDER-KILL",
+          "frames": 660,
+          "sFit": 760,
+          "eFit": 540
+        },
+        {
+          "gen": 31,
+          "outcome": "ENDER-KILL",
+          "frames": 158,
+          "sFit": 158,
+          "eFit": 1042
+        },
+        {
+          "gen": 32,
+          "outcome": "ENDER-KILL",
+          "frames": 271,
+          "sFit": 271,
+          "eFit": 929
+        },
+        {
+          "gen": 33,
+          "outcome": "ENDER-KILL",
+          "frames": 129,
+          "sFit": 129,
+          "eFit": 1071
+        },
+        {
+          "gen": 34,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 35,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 36,
+          "outcome": "ENDER-KILL",
+          "frames": 760,
+          "sFit": 860,
+          "eFit": 440
+        },
+        {
+          "gen": 37,
+          "outcome": "ENDER-KILL",
+          "frames": 117,
+          "sFit": 117,
+          "eFit": 1083
+        },
+        {
+          "gen": 38,
+          "outcome": "ENDER-KILL",
+          "frames": 729,
+          "sFit": 829,
+          "eFit": 501
+        },
+        {
+          "gen": 39,
+          "outcome": "ENDER-KILL",
+          "frames": 666,
+          "sFit": 766,
+          "eFit": 564
+        },
+        {
+          "gen": 40,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "pop": 24,
+        "gens": 40,
+        "seed": 20261002,
+        "sigma": 0.12
+      },
+      "summary": {
+        "pop": 24,
+        "gens": 40,
+        "seed": 20261002,
+        "sigma": 0.12,
+        "rallyFirst5": 455,
+        "rallyLast5": 333.4,
+        "sFitFirst5": 475,
+        "sFitLast5": 373.4,
+        "kills": 40,
+        "windowNote": "windows rows [1,6) vs [36,41) of 41 h2h rows",
+        "noLearningClaim": true
+      },
+      "rows": [
+        {
+          "gen": 0,
+          "outcome": "ENDER-KILL",
+          "frames": 775,
+          "sFit": 875,
+          "eFit": 425
+        },
+        {
+          "gen": 1,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 2,
+          "outcome": "ENDER-KILL",
+          "frames": 623,
+          "sFit": 723,
+          "eFit": 577
+        },
+        {
+          "gen": 3,
+          "outcome": "ENDER-KILL",
+          "frames": 154,
+          "sFit": 154,
+          "eFit": 1046
+        },
+        {
+          "gen": 4,
+          "outcome": "ENDER-KILL",
+          "frames": 147,
+          "sFit": 147,
+          "eFit": 1053
+        },
+        {
+          "gen": 5,
+          "outcome": "ENDER-KILL",
+          "frames": 151,
+          "sFit": 151,
+          "eFit": 1049
+        },
+        {
+          "gen": 6,
+          "outcome": "ENDER-KILL",
+          "frames": 159,
+          "sFit": 159,
+          "eFit": 1041
+        },
+        {
+          "gen": 7,
+          "outcome": "ENDER-KILL",
+          "frames": 123,
+          "sFit": 123,
+          "eFit": 1077
+        },
+        {
+          "gen": 8,
+          "outcome": "ENDER-KILL",
+          "frames": 955,
+          "sFit": 955,
+          "eFit": 245
+        },
+        {
+          "gen": 9,
+          "outcome": "ENDER-KILL",
+          "frames": 1122,
+          "sFit": 1322,
+          "eFit": 108
+        },
+        {
+          "gen": 10,
+          "outcome": "ENDER-KILL",
+          "frames": 714,
+          "sFit": 814,
+          "eFit": 516
+        },
+        {
+          "gen": 11,
+          "outcome": "ENDER-KILL",
+          "frames": 670,
+          "sFit": 770,
+          "eFit": 530
+        },
+        {
+          "gen": 12,
+          "outcome": "ENDER-KILL",
+          "frames": 264,
+          "sFit": 264,
+          "eFit": 936
+        },
+        {
+          "gen": 13,
+          "outcome": "ENDER-KILL",
+          "frames": 624,
+          "sFit": 724,
+          "eFit": 576
+        },
+        {
+          "gen": 14,
+          "outcome": "ENDER-KILL",
+          "frames": 628,
+          "sFit": 728,
+          "eFit": 572
+        },
+        {
+          "gen": 15,
+          "outcome": "ENDER-KILL",
+          "frames": 119,
+          "sFit": 119,
+          "eFit": 1081
+        },
+        {
+          "gen": 16,
+          "outcome": "ENDER-KILL",
+          "frames": 125,
+          "sFit": 125,
+          "eFit": 1075
+        },
+        {
+          "gen": 17,
+          "outcome": "ENDER-KILL",
+          "frames": 640,
+          "sFit": 740,
+          "eFit": 560
+        },
+        {
+          "gen": 18,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 19,
+          "outcome": "ENDER-KILL",
+          "frames": 126,
+          "sFit": 126,
+          "eFit": 1074
+        },
+        {
+          "gen": 20,
+          "outcome": "ENDER-KILL",
+          "frames": 162,
+          "sFit": 162,
+          "eFit": 1038
+        },
+        {
+          "gen": 21,
+          "outcome": "ENDER-KILL",
+          "frames": 1031,
+          "sFit": 1031,
+          "eFit": 169
+        },
+        {
+          "gen": 22,
+          "outcome": "ENDER-KILL",
+          "frames": 160,
+          "sFit": 160,
+          "eFit": 1040
+        },
+        {
+          "gen": 23,
+          "outcome": "ENDER-KILL",
+          "frames": 121,
+          "sFit": 121,
+          "eFit": 1079
+        },
+        {
+          "gen": 24,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 25,
+          "outcome": "ENDER-KILL",
+          "frames": 123,
+          "sFit": 123,
+          "eFit": 1077
+        },
+        {
+          "gen": 26,
+          "outcome": "ENDER-KILL",
+          "frames": 121,
+          "sFit": 121,
+          "eFit": 1079
+        },
+        {
+          "gen": 27,
+          "outcome": "ENDER-KILL",
+          "frames": 140,
+          "sFit": 140,
+          "eFit": 1060
+        },
+        {
+          "gen": 28,
+          "outcome": "ENDER-KILL",
+          "frames": 183,
+          "sFit": 183,
+          "eFit": 1017
+        },
+        {
+          "gen": 29,
+          "outcome": "ENDER-KILL",
+          "frames": 284,
+          "sFit": 284,
+          "eFit": 916
+        },
+        {
+          "gen": 30,
+          "outcome": "ENDER-KILL",
+          "frames": 123,
+          "sFit": 123,
+          "eFit": 1077
+        },
+        {
+          "gen": 31,
+          "outcome": "ENDER-KILL",
+          "frames": 234,
+          "sFit": 234,
+          "eFit": 966
+        },
+        {
+          "gen": 32,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 33,
+          "outcome": "ENDER-KILL",
+          "frames": 160,
+          "sFit": 160,
+          "eFit": 1040
+        },
+        {
+          "gen": 34,
+          "outcome": "ENDER-KILL",
+          "frames": 787,
+          "sFit": 887,
+          "eFit": 413
+        },
+        {
+          "gen": 35,
+          "outcome": "ENDER-KILL",
+          "frames": 641,
+          "sFit": 741,
+          "eFit": 589
+        },
+        {
+          "gen": 36,
+          "outcome": "ENDER-KILL",
+          "frames": 123,
+          "sFit": 123,
+          "eFit": 1077
+        },
+        {
+          "gen": 37,
+          "outcome": "ENDER-KILL",
+          "frames": 662,
+          "sFit": 762,
+          "eFit": 538
+        },
+        {
+          "gen": 38,
+          "outcome": "ENDER-KILL",
+          "frames": 121,
+          "sFit": 121,
+          "eFit": 1079
+        },
+        {
+          "gen": 39,
+          "outcome": "ENDER-KILL",
+          "frames": 116,
+          "sFit": 116,
+          "eFit": 1084
+        },
+        {
+          "gen": 40,
+          "outcome": "ENDER-KILL",
+          "frames": 645,
+          "sFit": 745,
+          "eFit": 555
+        }
+      ]
+    },
+    {
+      "config": {
+        "pop": 96,
+        "gens": 40,
+        "seed": 20261001,
+        "sigma": 0.12
+      },
+      "summary": {
+        "pop": 96,
+        "gens": 40,
+        "seed": 20261001,
+        "sigma": 0.12,
+        "rallyFirst5": 172,
+        "rallyLast5": 685.8,
+        "sFitFirst5": 172,
+        "sFitLast5": 805.8,
+        "kills": 40,
+        "windowNote": "windows rows [1,6) vs [36,41) of 41 h2h rows",
+        "noLearningClaim": true
+      },
+      "rows": [
+        {
+          "gen": 0,
+          "outcome": "ENDER-KILL",
+          "frames": 122,
+          "sFit": 122,
+          "eFit": 1078
+        },
+        {
+          "gen": 1,
+          "outcome": "ENDER-KILL",
+          "frames": 202,
+          "sFit": 202,
+          "eFit": 998
+        },
+        {
+          "gen": 2,
+          "outcome": "ENDER-KILL",
+          "frames": 153,
+          "sFit": 153,
+          "eFit": 1047
+        },
+        {
+          "gen": 3,
+          "outcome": "ENDER-KILL",
+          "frames": 147,
+          "sFit": 147,
+          "eFit": 1053
+        },
+        {
+          "gen": 4,
+          "outcome": "ENDER-KILL",
+          "frames": 189,
+          "sFit": 189,
+          "eFit": 1011
+        },
+        {
+          "gen": 5,
+          "outcome": "ENDER-KILL",
+          "frames": 169,
+          "sFit": 169,
+          "eFit": 1031
+        },
+        {
+          "gen": 6,
+          "outcome": "ENDER-KILL",
+          "frames": 168,
+          "sFit": 168,
+          "eFit": 1032
+        },
+        {
+          "gen": 7,
+          "outcome": "ENDER-KILL",
+          "frames": 204,
+          "sFit": 204,
+          "eFit": 996
+        },
+        {
+          "gen": 8,
+          "outcome": "ENDER-KILL",
+          "frames": 624,
+          "sFit": 724,
+          "eFit": 576
+        },
+        {
+          "gen": 9,
+          "outcome": "ENDER-KILL",
+          "frames": 138,
+          "sFit": 138,
+          "eFit": 1062
+        },
+        {
+          "gen": 10,
+          "outcome": "ENDER-KILL",
+          "frames": 310,
+          "sFit": 310,
+          "eFit": 890
+        },
+        {
+          "gen": 11,
+          "outcome": "ENDER-KILL",
+          "frames": 129,
+          "sFit": 129,
+          "eFit": 1071
+        },
+        {
+          "gen": 12,
+          "outcome": "ENDER-KILL",
+          "frames": 140,
+          "sFit": 140,
+          "eFit": 1060
+        },
+        {
+          "gen": 13,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 14,
+          "outcome": "ENDER-KILL",
+          "frames": 711,
+          "sFit": 811,
+          "eFit": 489
+        },
+        {
+          "gen": 15,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 16,
+          "outcome": "ENDER-KILL",
+          "frames": 124,
+          "sFit": 124,
+          "eFit": 1076
+        },
+        {
+          "gen": 17,
+          "outcome": "ENDER-KILL",
+          "frames": 1162,
+          "sFit": 1362,
+          "eFit": 38
+        },
+        {
+          "gen": 18,
+          "outcome": "ENDER-KILL",
+          "frames": 812,
+          "sFit": 912,
+          "eFit": 388
+        },
+        {
+          "gen": 19,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 20,
+          "outcome": "ENDER-KILL",
+          "frames": 456,
+          "sFit": 456,
+          "eFit": 744
+        },
+        {
+          "gen": 21,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 22,
+          "outcome": "ENDER-KILL",
+          "frames": 237,
+          "sFit": 237,
+          "eFit": 963
+        },
+        {
+          "gen": 23,
+          "outcome": "ENDER-KILL",
+          "frames": 480,
+          "sFit": 480,
+          "eFit": 720
+        },
+        {
+          "gen": 24,
+          "outcome": "ENDER-KILL",
+          "frames": 119,
+          "sFit": 119,
+          "eFit": 1081
+        },
+        {
+          "gen": 25,
+          "outcome": "ENDER-KILL",
+          "frames": 778,
+          "sFit": 878,
+          "eFit": 422
+        },
+        {
+          "gen": 26,
+          "outcome": "ENDER-KILL",
+          "frames": 131,
+          "sFit": 131,
+          "eFit": 1069
+        },
+        {
+          "gen": 27,
+          "outcome": "ENDER-KILL",
+          "frames": 117,
+          "sFit": 117,
+          "eFit": 1083
+        },
+        {
+          "gen": 28,
+          "outcome": "ENDER-KILL",
+          "frames": 133,
+          "sFit": 133,
+          "eFit": 1067
+        },
+        {
+          "gen": 29,
+          "outcome": "ENDER-KILL",
+          "frames": 217,
+          "sFit": 217,
+          "eFit": 983
+        },
+        {
+          "gen": 30,
+          "outcome": "ENDER-KILL",
+          "frames": 283,
+          "sFit": 283,
+          "eFit": 917
+        },
+        {
+          "gen": 31,
+          "outcome": "ENDER-KILL",
+          "frames": 685,
+          "sFit": 785,
+          "eFit": 545
+        },
+        {
+          "gen": 32,
+          "outcome": "ENDER-KILL",
+          "frames": 115,
+          "sFit": 115,
+          "eFit": 1085
+        },
+        {
+          "gen": 33,
+          "outcome": "ENDER-KILL",
+          "frames": 960,
+          "sFit": 1060,
+          "eFit": 240
+        },
+        {
+          "gen": 34,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 35,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 36,
+          "outcome": "ENDER-KILL",
+          "frames": 204,
+          "sFit": 204,
+          "eFit": 996
+        },
+        {
+          "gen": 37,
+          "outcome": "ENDER-KILL",
+          "frames": 691,
+          "sFit": 691,
+          "eFit": 509
+        },
+        {
+          "gen": 38,
+          "outcome": "ENDER-KILL",
+          "frames": 886,
+          "sFit": 1086,
+          "eFit": 344
+        },
+        {
+          "gen": 39,
+          "outcome": "ENDER-KILL",
+          "frames": 521,
+          "sFit": 621,
+          "eFit": 679
+        },
+        {
+          "gen": 40,
+          "outcome": "ENDER-KILL",
+          "frames": 1127,
+          "sFit": 1427,
+          "eFit": 73
+        }
+      ]
+    },
+    {
+      "config": {
+        "pop": 96,
+        "gens": 40,
+        "seed": 20261002,
+        "sigma": 0.12
+      },
+      "summary": {
+        "pop": 96,
+        "gens": 40,
+        "seed": 20261002,
+        "sigma": 0.12,
+        "rallyFirst5": 469.6,
+        "rallyLast5": 637.8,
+        "sFitFirst5": 509.6,
+        "sFitLast5": 737.8,
+        "kills": 40,
+        "windowNote": "windows rows [1,6) vs [36,41) of 41 h2h rows",
+        "noLearningClaim": true
+      },
+      "rows": [
+        {
+          "gen": 0,
+          "outcome": "ENDER-KILL",
+          "frames": 156,
+          "sFit": 156,
+          "eFit": 1044
+        },
+        {
+          "gen": 1,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 2,
+          "outcome": "ENDER-KILL",
+          "frames": 115,
+          "sFit": 115,
+          "eFit": 1085
+        },
+        {
+          "gen": 3,
+          "outcome": "ENDER-KILL",
+          "frames": 131,
+          "sFit": 131,
+          "eFit": 1069
+        },
+        {
+          "gen": 4,
+          "outcome": "ENDER-KILL",
+          "frames": 1027,
+          "sFit": 1227,
+          "eFit": 173
+        },
+        {
+          "gen": 5,
+          "outcome": "ENDER-KILL",
+          "frames": 955,
+          "sFit": 955,
+          "eFit": 245
+        },
+        {
+          "gen": 6,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 7,
+          "outcome": "ENDER-KILL",
+          "frames": 814,
+          "sFit": 914,
+          "eFit": 386
+        },
+        {
+          "gen": 8,
+          "outcome": "ENDER-KILL",
+          "frames": 436,
+          "sFit": 436,
+          "eFit": 764
+        },
+        {
+          "gen": 9,
+          "outcome": "ENDER-KILL",
+          "frames": 109,
+          "sFit": 109,
+          "eFit": 1091
+        },
+        {
+          "gen": 10,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 11,
+          "outcome": "ENDER-KILL",
+          "frames": 125,
+          "sFit": 125,
+          "eFit": 1075
+        },
+        {
+          "gen": 12,
+          "outcome": "ENDER-KILL",
+          "frames": 661,
+          "sFit": 761,
+          "eFit": 539
+        },
+        {
+          "gen": 13,
+          "outcome": "ENDER-KILL",
+          "frames": 532,
+          "sFit": 632,
+          "eFit": 668
+        },
+        {
+          "gen": 14,
+          "outcome": "ENDER-KILL",
+          "frames": 196,
+          "sFit": 196,
+          "eFit": 1004
+        },
+        {
+          "gen": 15,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 16,
+          "outcome": "ENDER-KILL",
+          "frames": 677,
+          "sFit": 777,
+          "eFit": 523
+        },
+        {
+          "gen": 17,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1600,
+          "eFit": 5
+        },
+        {
+          "gen": 18,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 5
+        },
+        {
+          "gen": 19,
+          "outcome": "ENDER-KILL",
+          "frames": 953,
+          "sFit": 1153,
+          "eFit": 277
+        },
+        {
+          "gen": 20,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 21,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 22,
+          "outcome": "ENDER-KILL",
+          "frames": 152,
+          "sFit": 152,
+          "eFit": 1048
+        },
+        {
+          "gen": 23,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 24,
+          "outcome": "ENDER-KILL",
+          "frames": 621,
+          "sFit": 721,
+          "eFit": 579
+        },
+        {
+          "gen": 25,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 26,
+          "outcome": "ENDER-KILL",
+          "frames": 587,
+          "sFit": 687,
+          "eFit": 613
+        },
+        {
+          "gen": 27,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 28,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1600,
+          "eFit": 0
+        },
+        {
+          "gen": 29,
+          "outcome": "ENDER-KILL",
+          "frames": 902,
+          "sFit": 1102,
+          "eFit": 298
+        },
+        {
+          "gen": 30,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 31,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 32,
+          "outcome": "ENDER-KILL",
+          "frames": 864,
+          "sFit": 1064,
+          "eFit": 336
+        },
+        {
+          "gen": 33,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 34,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 5
+        },
+        {
+          "gen": 35,
+          "outcome": "ENDER-KILL",
+          "frames": 368,
+          "sFit": 368,
+          "eFit": 832
+        },
+        {
+          "gen": 36,
+          "outcome": "ENDER-KILL",
+          "frames": 893,
+          "sFit": 1093,
+          "eFit": 337
+        },
+        {
+          "gen": 37,
+          "outcome": "ENDER-KILL",
+          "frames": 189,
+          "sFit": 189,
+          "eFit": 1011
+        },
+        {
+          "gen": 38,
+          "outcome": "ENDER-KILL",
+          "frames": 797,
+          "sFit": 897,
+          "eFit": 403
+        },
+        {
+          "gen": 39,
+          "outcome": "ENDER-KILL",
+          "frames": 682,
+          "sFit": 782,
+          "eFit": 518
+        },
+        {
+          "gen": 40,
+          "outcome": "ENDER-KILL",
+          "frames": 628,
+          "sFit": 728,
+          "eFit": 572
+        }
+      ]
+    },
+    {
+      "config": {
+        "pop": 192,
+        "gens": 40,
+        "seed": 20261001,
+        "sigma": 0.12
+      },
+      "summary": {
+        "pop": 192,
+        "gens": 40,
+        "seed": 20261001,
+        "sigma": 0.12,
+        "rallyFirst5": 418.8,
+        "rallyLast5": 750.4,
+        "sFitFirst5": 458.8,
+        "sFitLast5": 910.4,
+        "kills": 40,
+        "windowNote": "windows rows [1,6) vs [36,41) of 41 h2h rows",
+        "noLearningClaim": true
+      },
+      "rows": [
+        {
+          "gen": 0,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 1,
+          "outcome": "ENDER-KILL",
+          "frames": 128,
+          "sFit": 128,
+          "eFit": 1072
+        },
+        {
+          "gen": 2,
+          "outcome": "ENDER-KILL",
+          "frames": 643,
+          "sFit": 743,
+          "eFit": 557
+        },
+        {
+          "gen": 3,
+          "outcome": "ENDER-KILL",
+          "frames": 586,
+          "sFit": 586,
+          "eFit": 614
+        },
+        {
+          "gen": 4,
+          "outcome": "ENDER-KILL",
+          "frames": 612,
+          "sFit": 712,
+          "eFit": 588
+        },
+        {
+          "gen": 5,
+          "outcome": "ENDER-KILL",
+          "frames": 125,
+          "sFit": 125,
+          "eFit": 1075
+        },
+        {
+          "gen": 6,
+          "outcome": "ENDER-KILL",
+          "frames": 986,
+          "sFit": 986,
+          "eFit": 214
+        },
+        {
+          "gen": 7,
+          "outcome": "ENDER-KILL",
+          "frames": 763,
+          "sFit": 763,
+          "eFit": 437
+        },
+        {
+          "gen": 8,
+          "outcome": "ENDER-KILL",
+          "frames": 111,
+          "sFit": 111,
+          "eFit": 1089
+        },
+        {
+          "gen": 9,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 10,
+          "outcome": "ENDER-KILL",
+          "frames": 680,
+          "sFit": 780,
+          "eFit": 520
+        },
+        {
+          "gen": 11,
+          "outcome": "ENDER-KILL",
+          "frames": 162,
+          "sFit": 162,
+          "eFit": 1038
+        },
+        {
+          "gen": 12,
+          "outcome": "ENDER-KILL",
+          "frames": 112,
+          "sFit": 112,
+          "eFit": 1088
+        },
+        {
+          "gen": 13,
+          "outcome": "ENDER-KILL",
+          "frames": 760,
+          "sFit": 860,
+          "eFit": 470
+        },
+        {
+          "gen": 14,
+          "outcome": "ENDER-KILL",
+          "frames": 568,
+          "sFit": 668,
+          "eFit": 662
+        },
+        {
+          "gen": 15,
+          "outcome": "ENDER-KILL",
+          "frames": 1135,
+          "sFit": 1335,
+          "eFit": 65
+        },
+        {
+          "gen": 16,
+          "outcome": "ENDER-KILL",
+          "frames": 662,
+          "sFit": 762,
+          "eFit": 538
+        },
+        {
+          "gen": 17,
+          "outcome": "ENDER-KILL",
+          "frames": 227,
+          "sFit": 227,
+          "eFit": 973
+        },
+        {
+          "gen": 18,
+          "outcome": "ENDER-KILL",
+          "frames": 126,
+          "sFit": 126,
+          "eFit": 1074
+        },
+        {
+          "gen": 19,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 20,
+          "outcome": "ENDER-KILL",
+          "frames": 126,
+          "sFit": 126,
+          "eFit": 1074
+        },
+        {
+          "gen": 21,
+          "outcome": "ENDER-KILL",
+          "frames": 123,
+          "sFit": 123,
+          "eFit": 1077
+        },
+        {
+          "gen": 22,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 10
+        },
+        {
+          "gen": 23,
+          "outcome": "ENDER-KILL",
+          "frames": 163,
+          "sFit": 163,
+          "eFit": 1037
+        },
+        {
+          "gen": 24,
+          "outcome": "ENDER-KILL",
+          "frames": 125,
+          "sFit": 125,
+          "eFit": 1075
+        },
+        {
+          "gen": 25,
+          "outcome": "ENDER-KILL",
+          "frames": 601,
+          "sFit": 701,
+          "eFit": 599
+        },
+        {
+          "gen": 26,
+          "outcome": "ENDER-KILL",
+          "frames": 961,
+          "sFit": 961,
+          "eFit": 239
+        },
+        {
+          "gen": 27,
+          "outcome": "ENDER-KILL",
+          "frames": 680,
+          "sFit": 780,
+          "eFit": 550
+        },
+        {
+          "gen": 28,
+          "outcome": "ENDER-KILL",
+          "frames": 110,
+          "sFit": 110,
+          "eFit": 1090
+        },
+        {
+          "gen": 29,
+          "outcome": "ENDER-KILL",
+          "frames": 189,
+          "sFit": 189,
+          "eFit": 1011
+        },
+        {
+          "gen": 30,
+          "outcome": "ENDER-KILL",
+          "frames": 122,
+          "sFit": 122,
+          "eFit": 1078
+        },
+        {
+          "gen": 31,
+          "outcome": "ENDER-KILL",
+          "frames": 122,
+          "sFit": 122,
+          "eFit": 1078
+        },
+        {
+          "gen": 32,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 33,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 34,
+          "outcome": "ENDER-KILL",
+          "frames": 1184,
+          "sFit": 1484,
+          "eFit": 106
+        },
+        {
+          "gen": 35,
+          "outcome": "ENDER-KILL",
+          "frames": 129,
+          "sFit": 129,
+          "eFit": 1071
+        },
+        {
+          "gen": 36,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 5
+        },
+        {
+          "gen": 37,
+          "outcome": "ENDER-KILL",
+          "frames": 236,
+          "sFit": 236,
+          "eFit": 964
+        },
+        {
+          "gen": 38,
+          "outcome": "ENDER-KILL",
+          "frames": 983,
+          "sFit": 1083,
+          "eFit": 217
+        },
+        {
+          "gen": 39,
+          "outcome": "ENDER-KILL",
+          "frames": 133,
+          "sFit": 133,
+          "eFit": 1067
+        },
+        {
+          "gen": 40,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1600,
+          "eFit": 15
+        }
+      ]
+    },
+    {
+      "config": {
+        "pop": 192,
+        "gens": 40,
+        "seed": 20261002,
+        "sigma": 0.12
+      },
+      "summary": {
+        "pop": 192,
+        "gens": 40,
+        "seed": 20261002,
+        "sigma": 0.12,
+        "rallyFirst5": 480.6,
+        "rallyLast5": 271,
+        "sFitFirst5": 540.6,
+        "sFitLast5": 291,
+        "kills": 40,
+        "windowNote": "windows rows [1,6) vs [36,41) of 41 h2h rows",
+        "noLearningClaim": true
+      },
+      "rows": [
+        {
+          "gen": 0,
+          "outcome": "ENDER-KILL",
+          "frames": 640,
+          "sFit": 740,
+          "eFit": 560
+        },
+        {
+          "gen": 1,
+          "outcome": "ENDER-KILL",
+          "frames": 251,
+          "sFit": 251,
+          "eFit": 949
+        },
+        {
+          "gen": 2,
+          "outcome": "ENDER-KILL",
+          "frames": 132,
+          "sFit": 132,
+          "eFit": 1068
+        },
+        {
+          "gen": 3,
+          "outcome": "ENDER-KILL",
+          "frames": 743,
+          "sFit": 843,
+          "eFit": 457
+        },
+        {
+          "gen": 4,
+          "outcome": "ENDER-KILL",
+          "frames": 629,
+          "sFit": 729,
+          "eFit": 601
+        },
+        {
+          "gen": 5,
+          "outcome": "ENDER-KILL",
+          "frames": 648,
+          "sFit": 748,
+          "eFit": 582
+        },
+        {
+          "gen": 6,
+          "outcome": "ENDER-KILL",
+          "frames": 544,
+          "sFit": 544,
+          "eFit": 656
+        },
+        {
+          "gen": 7,
+          "outcome": "ENDER-KILL",
+          "frames": 1071,
+          "sFit": 1071,
+          "eFit": 129
+        },
+        {
+          "gen": 8,
+          "outcome": "ENDER-KILL",
+          "frames": 161,
+          "sFit": 161,
+          "eFit": 1039
+        },
+        {
+          "gen": 9,
+          "outcome": "ENDER-KILL",
+          "frames": 124,
+          "sFit": 124,
+          "eFit": 1076
+        },
+        {
+          "gen": 10,
+          "outcome": "ENDER-KILL",
+          "frames": 604,
+          "sFit": 704,
+          "eFit": 596
+        },
+        {
+          "gen": 11,
+          "outcome": "ENDER-KILL",
+          "frames": 124,
+          "sFit": 124,
+          "eFit": 1076
+        },
+        {
+          "gen": 12,
+          "outcome": "ENDER-KILL",
+          "frames": 130,
+          "sFit": 130,
+          "eFit": 1070
+        },
+        {
+          "gen": 13,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 14,
+          "outcome": "ENDER-KILL",
+          "frames": 618,
+          "sFit": 718,
+          "eFit": 582
+        },
+        {
+          "gen": 15,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 16,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 17,
+          "outcome": "ENDER-KILL",
+          "frames": 1126,
+          "sFit": 1326,
+          "eFit": 134
+        },
+        {
+          "gen": 18,
+          "outcome": "ENDER-KILL",
+          "frames": 145,
+          "sFit": 145,
+          "eFit": 1055
+        },
+        {
+          "gen": 19,
+          "outcome": "ENDER-KILL",
+          "frames": 783,
+          "sFit": 883,
+          "eFit": 417
+        },
+        {
+          "gen": 20,
+          "outcome": "ENDER-KILL",
+          "frames": 704,
+          "sFit": 704,
+          "eFit": 496
+        },
+        {
+          "gen": 21,
+          "outcome": "ENDER-KILL",
+          "frames": 664,
+          "sFit": 664,
+          "eFit": 536
+        },
+        {
+          "gen": 22,
+          "outcome": "ENDER-KILL",
+          "frames": 125,
+          "sFit": 125,
+          "eFit": 1075
+        },
+        {
+          "gen": 23,
+          "outcome": "ENDER-KILL",
+          "frames": 131,
+          "sFit": 131,
+          "eFit": 1069
+        },
+        {
+          "gen": 24,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 5
+        },
+        {
+          "gen": 25,
+          "outcome": "ENDER-KILL",
+          "frames": 654,
+          "sFit": 654,
+          "eFit": 546
+        },
+        {
+          "gen": 26,
+          "outcome": "ENDER-KILL",
+          "frames": 987,
+          "sFit": 1187,
+          "eFit": 213
+        },
+        {
+          "gen": 27,
+          "outcome": "ENDER-KILL",
+          "frames": 512,
+          "sFit": 612,
+          "eFit": 718
+        },
+        {
+          "gen": 28,
+          "outcome": "ENDER-KILL",
+          "frames": 901,
+          "sFit": 901,
+          "eFit": 299
+        },
+        {
+          "gen": 29,
+          "outcome": "ENDER-KILL",
+          "frames": 130,
+          "sFit": 130,
+          "eFit": 1070
+        },
+        {
+          "gen": 30,
+          "outcome": "ENDER-KILL",
+          "frames": 119,
+          "sFit": 119,
+          "eFit": 1081
+        },
+        {
+          "gen": 31,
+          "outcome": "ENDER-KILL",
+          "frames": 124,
+          "sFit": 124,
+          "eFit": 1076
+        },
+        {
+          "gen": 32,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 33,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 34,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 35,
+          "outcome": "ENDER-KILL",
+          "frames": 960,
+          "sFit": 1160,
+          "eFit": 240
+        },
+        {
+          "gen": 36,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 37,
+          "outcome": "ENDER-KILL",
+          "frames": 127,
+          "sFit": 127,
+          "eFit": 1073
+        },
+        {
+          "gen": 38,
+          "outcome": "ENDER-KILL",
+          "frames": 209,
+          "sFit": 209,
+          "eFit": 991
+        },
+        {
+          "gen": 39,
+          "outcome": "ENDER-KILL",
+          "frames": 780,
+          "sFit": 880,
+          "eFit": 420
+        },
+        {
+          "gen": 40,
+          "outcome": "ENDER-KILL",
+          "frames": 119,
+          "sFit": 119,
+          "eFit": 1081
+        }
+      ]
+    },
+    {
+      "config": {
+        "pop": 96,
+        "gens": 160,
+        "seed": 20261001,
+        "sigma": 0.12
+      },
+      "summary": {
+        "pop": 96,
+        "gens": 160,
+        "seed": 20261001,
+        "sigma": 0.12,
+        "rallyFirst5": 172,
+        "rallyLast5": 849.4,
+        "sFitFirst5": 172,
+        "sFitLast5": 1009.4,
+        "kills": 160,
+        "windowNote": "windows rows [1,6) vs [156,161) of 161 h2h rows",
+        "noLearningClaim": true,
+        "singleArmClaim": true,
+        "singleArmNote": "horizon read rests on one seed (20261001); same seed rises 172->685.8 at 40 gens in arms[2] \u2014 band pending multi-seed"
+      },
+      "rows": [
+        {
+          "gen": 0,
+          "outcome": "ENDER-KILL",
+          "frames": 122,
+          "sFit": 122,
+          "eFit": 1078
+        },
+        {
+          "gen": 1,
+          "outcome": "ENDER-KILL",
+          "frames": 202,
+          "sFit": 202,
+          "eFit": 998
+        },
+        {
+          "gen": 2,
+          "outcome": "ENDER-KILL",
+          "frames": 153,
+          "sFit": 153,
+          "eFit": 1047
+        },
+        {
+          "gen": 3,
+          "outcome": "ENDER-KILL",
+          "frames": 147,
+          "sFit": 147,
+          "eFit": 1053
+        },
+        {
+          "gen": 4,
+          "outcome": "ENDER-KILL",
+          "frames": 189,
+          "sFit": 189,
+          "eFit": 1011
+        },
+        {
+          "gen": 5,
+          "outcome": "ENDER-KILL",
+          "frames": 169,
+          "sFit": 169,
+          "eFit": 1031
+        },
+        {
+          "gen": 6,
+          "outcome": "ENDER-KILL",
+          "frames": 168,
+          "sFit": 168,
+          "eFit": 1032
+        },
+        {
+          "gen": 7,
+          "outcome": "ENDER-KILL",
+          "frames": 204,
+          "sFit": 204,
+          "eFit": 996
+        },
+        {
+          "gen": 8,
+          "outcome": "ENDER-KILL",
+          "frames": 624,
+          "sFit": 724,
+          "eFit": 576
+        },
+        {
+          "gen": 9,
+          "outcome": "ENDER-KILL",
+          "frames": 138,
+          "sFit": 138,
+          "eFit": 1062
+        },
+        {
+          "gen": 10,
+          "outcome": "ENDER-KILL",
+          "frames": 310,
+          "sFit": 310,
+          "eFit": 890
+        },
+        {
+          "gen": 11,
+          "outcome": "ENDER-KILL",
+          "frames": 129,
+          "sFit": 129,
+          "eFit": 1071
+        },
+        {
+          "gen": 12,
+          "outcome": "ENDER-KILL",
+          "frames": 140,
+          "sFit": 140,
+          "eFit": 1060
+        },
+        {
+          "gen": 13,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 14,
+          "outcome": "ENDER-KILL",
+          "frames": 711,
+          "sFit": 811,
+          "eFit": 489
+        },
+        {
+          "gen": 15,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 16,
+          "outcome": "ENDER-KILL",
+          "frames": 124,
+          "sFit": 124,
+          "eFit": 1076
+        },
+        {
+          "gen": 17,
+          "outcome": "ENDER-KILL",
+          "frames": 1162,
+          "sFit": 1362,
+          "eFit": 38
+        },
+        {
+          "gen": 18,
+          "outcome": "ENDER-KILL",
+          "frames": 812,
+          "sFit": 912,
+          "eFit": 388
+        },
+        {
+          "gen": 19,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 20,
+          "outcome": "ENDER-KILL",
+          "frames": 456,
+          "sFit": 456,
+          "eFit": 744
+        },
+        {
+          "gen": 21,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 22,
+          "outcome": "ENDER-KILL",
+          "frames": 237,
+          "sFit": 237,
+          "eFit": 963
+        },
+        {
+          "gen": 23,
+          "outcome": "ENDER-KILL",
+          "frames": 480,
+          "sFit": 480,
+          "eFit": 720
+        },
+        {
+          "gen": 24,
+          "outcome": "ENDER-KILL",
+          "frames": 119,
+          "sFit": 119,
+          "eFit": 1081
+        },
+        {
+          "gen": 25,
+          "outcome": "ENDER-KILL",
+          "frames": 778,
+          "sFit": 878,
+          "eFit": 422
+        },
+        {
+          "gen": 26,
+          "outcome": "ENDER-KILL",
+          "frames": 131,
+          "sFit": 131,
+          "eFit": 1069
+        },
+        {
+          "gen": 27,
+          "outcome": "ENDER-KILL",
+          "frames": 117,
+          "sFit": 117,
+          "eFit": 1083
+        },
+        {
+          "gen": 28,
+          "outcome": "ENDER-KILL",
+          "frames": 133,
+          "sFit": 133,
+          "eFit": 1067
+        },
+        {
+          "gen": 29,
+          "outcome": "ENDER-KILL",
+          "frames": 217,
+          "sFit": 217,
+          "eFit": 983
+        },
+        {
+          "gen": 30,
+          "outcome": "ENDER-KILL",
+          "frames": 283,
+          "sFit": 283,
+          "eFit": 917
+        },
+        {
+          "gen": 31,
+          "outcome": "ENDER-KILL",
+          "frames": 685,
+          "sFit": 785,
+          "eFit": 545
+        },
+        {
+          "gen": 32,
+          "outcome": "ENDER-KILL",
+          "frames": 115,
+          "sFit": 115,
+          "eFit": 1085
+        },
+        {
+          "gen": 33,
+          "outcome": "ENDER-KILL",
+          "frames": 960,
+          "sFit": 1060,
+          "eFit": 240
+        },
+        {
+          "gen": 34,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 35,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 36,
+          "outcome": "ENDER-KILL",
+          "frames": 204,
+          "sFit": 204,
+          "eFit": 996
+        },
+        {
+          "gen": 37,
+          "outcome": "ENDER-KILL",
+          "frames": 691,
+          "sFit": 691,
+          "eFit": 509
+        },
+        {
+          "gen": 38,
+          "outcome": "ENDER-KILL",
+          "frames": 886,
+          "sFit": 1086,
+          "eFit": 344
+        },
+        {
+          "gen": 39,
+          "outcome": "ENDER-KILL",
+          "frames": 521,
+          "sFit": 621,
+          "eFit": 679
+        },
+        {
+          "gen": 40,
+          "outcome": "ENDER-KILL",
+          "frames": 1127,
+          "sFit": 1427,
+          "eFit": 73
+        },
+        {
+          "gen": 41,
+          "outcome": "ENDER-KILL",
+          "frames": 1077,
+          "sFit": 1277,
+          "eFit": 123
+        },
+        {
+          "gen": 42,
+          "outcome": "ENDER-KILL",
+          "frames": 521,
+          "sFit": 621,
+          "eFit": 679
+        },
+        {
+          "gen": 43,
+          "outcome": "ENDER-KILL",
+          "frames": 763,
+          "sFit": 863,
+          "eFit": 437
+        },
+        {
+          "gen": 44,
+          "outcome": "ENDER-KILL",
+          "frames": 285,
+          "sFit": 285,
+          "eFit": 915
+        },
+        {
+          "gen": 45,
+          "outcome": "ENDER-KILL",
+          "frames": 110,
+          "sFit": 110,
+          "eFit": 1090
+        },
+        {
+          "gen": 46,
+          "outcome": "ENDER-KILL",
+          "frames": 198,
+          "sFit": 198,
+          "eFit": 1002
+        },
+        {
+          "gen": 47,
+          "outcome": "ENDER-KILL",
+          "frames": 560,
+          "sFit": 660,
+          "eFit": 640
+        },
+        {
+          "gen": 48,
+          "outcome": "ENDER-KILL",
+          "frames": 121,
+          "sFit": 121,
+          "eFit": 1079
+        },
+        {
+          "gen": 49,
+          "outcome": "ENDER-KILL",
+          "frames": 254,
+          "sFit": 254,
+          "eFit": 946
+        },
+        {
+          "gen": 50,
+          "outcome": "ENDER-KILL",
+          "frames": 738,
+          "sFit": 838,
+          "eFit": 492
+        },
+        {
+          "gen": 51,
+          "outcome": "ENDER-KILL",
+          "frames": 131,
+          "sFit": 131,
+          "eFit": 1069
+        },
+        {
+          "gen": 52,
+          "outcome": "ENDER-KILL",
+          "frames": 422,
+          "sFit": 422,
+          "eFit": 778
+        },
+        {
+          "gen": 53,
+          "outcome": "ENDER-KILL",
+          "frames": 123,
+          "sFit": 123,
+          "eFit": 1077
+        },
+        {
+          "gen": 54,
+          "outcome": "ENDER-KILL",
+          "frames": 118,
+          "sFit": 118,
+          "eFit": 1082
+        },
+        {
+          "gen": 55,
+          "outcome": "ENDER-KILL",
+          "frames": 827,
+          "sFit": 927,
+          "eFit": 373
+        },
+        {
+          "gen": 56,
+          "outcome": "ENDER-KILL",
+          "frames": 795,
+          "sFit": 895,
+          "eFit": 405
+        },
+        {
+          "gen": 57,
+          "outcome": "ENDER-KILL",
+          "frames": 469,
+          "sFit": 469,
+          "eFit": 731
+        },
+        {
+          "gen": 58,
+          "outcome": "ENDER-KILL",
+          "frames": 562,
+          "sFit": 662,
+          "eFit": 638
+        },
+        {
+          "gen": 59,
+          "outcome": "ENDER-KILL",
+          "frames": 298,
+          "sFit": 298,
+          "eFit": 902
+        },
+        {
+          "gen": 60,
+          "outcome": "ENDER-KILL",
+          "frames": 161,
+          "sFit": 161,
+          "eFit": 1039
+        },
+        {
+          "gen": 61,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 62,
+          "outcome": "ENDER-KILL",
+          "frames": 132,
+          "sFit": 132,
+          "eFit": 1068
+        },
+        {
+          "gen": 63,
+          "outcome": "ENDER-KILL",
+          "frames": 417,
+          "sFit": 417,
+          "eFit": 783
+        },
+        {
+          "gen": 64,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 65,
+          "outcome": "ENDER-KILL",
+          "frames": 831,
+          "sFit": 1031,
+          "eFit": 369
+        },
+        {
+          "gen": 66,
+          "outcome": "ENDER-KILL",
+          "frames": 591,
+          "sFit": 591,
+          "eFit": 609
+        },
+        {
+          "gen": 67,
+          "outcome": "ENDER-KILL",
+          "frames": 616,
+          "sFit": 716,
+          "eFit": 584
+        },
+        {
+          "gen": 68,
+          "outcome": "ENDER-KILL",
+          "frames": 711,
+          "sFit": 711,
+          "eFit": 489
+        },
+        {
+          "gen": 69,
+          "outcome": "ENDER-KILL",
+          "frames": 458,
+          "sFit": 458,
+          "eFit": 742
+        },
+        {
+          "gen": 70,
+          "outcome": "ENDER-KILL",
+          "frames": 520,
+          "sFit": 620,
+          "eFit": 680
+        },
+        {
+          "gen": 71,
+          "outcome": "ENDER-KILL",
+          "frames": 641,
+          "sFit": 741,
+          "eFit": 559
+        },
+        {
+          "gen": 72,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 5
+        },
+        {
+          "gen": 73,
+          "outcome": "ENDER-KILL",
+          "frames": 1084,
+          "sFit": 1284,
+          "eFit": 116
+        },
+        {
+          "gen": 74,
+          "outcome": "ENDER-KILL",
+          "frames": 125,
+          "sFit": 125,
+          "eFit": 1075
+        },
+        {
+          "gen": 75,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 76,
+          "outcome": "ENDER-KILL",
+          "frames": 699,
+          "sFit": 699,
+          "eFit": 501
+        },
+        {
+          "gen": 77,
+          "outcome": "ENDER-KILL",
+          "frames": 939,
+          "sFit": 1039,
+          "eFit": 261
+        },
+        {
+          "gen": 78,
+          "outcome": "ENDER-KILL",
+          "frames": 528,
+          "sFit": 628,
+          "eFit": 672
+        },
+        {
+          "gen": 79,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 80,
+          "outcome": "ENDER-KILL",
+          "frames": 295,
+          "sFit": 295,
+          "eFit": 905
+        },
+        {
+          "gen": 81,
+          "outcome": "ENDER-KILL",
+          "frames": 510,
+          "sFit": 510,
+          "eFit": 690
+        },
+        {
+          "gen": 82,
+          "outcome": "ENDER-KILL",
+          "frames": 590,
+          "sFit": 590,
+          "eFit": 610
+        },
+        {
+          "gen": 83,
+          "outcome": "ENDER-KILL",
+          "frames": 132,
+          "sFit": 132,
+          "eFit": 1068
+        },
+        {
+          "gen": 84,
+          "outcome": "ENDER-KILL",
+          "frames": 130,
+          "sFit": 130,
+          "eFit": 1070
+        },
+        {
+          "gen": 85,
+          "outcome": "ENDER-KILL",
+          "frames": 977,
+          "sFit": 1177,
+          "eFit": 253
+        },
+        {
+          "gen": 86,
+          "outcome": "ENDER-KILL",
+          "frames": 1094,
+          "sFit": 1194,
+          "eFit": 106
+        },
+        {
+          "gen": 87,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 5
+        },
+        {
+          "gen": 88,
+          "outcome": "ENDER-KILL",
+          "frames": 405,
+          "sFit": 405,
+          "eFit": 795
+        },
+        {
+          "gen": 89,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 90,
+          "outcome": "ENDER-KILL",
+          "frames": 575,
+          "sFit": 675,
+          "eFit": 655
+        },
+        {
+          "gen": 91,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 92,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 93,
+          "outcome": "ENDER-KILL",
+          "frames": 268,
+          "sFit": 268,
+          "eFit": 932
+        },
+        {
+          "gen": 94,
+          "outcome": "ENDER-KILL",
+          "frames": 1104,
+          "sFit": 1304,
+          "eFit": 96
+        },
+        {
+          "gen": 95,
+          "outcome": "ENDER-KILL",
+          "frames": 904,
+          "sFit": 1104,
+          "eFit": 326
+        },
+        {
+          "gen": 96,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 97,
+          "outcome": "ENDER-KILL",
+          "frames": 504,
+          "sFit": 604,
+          "eFit": 696
+        },
+        {
+          "gen": 98,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 5
+        },
+        {
+          "gen": 99,
+          "outcome": "ENDER-KILL",
+          "frames": 943,
+          "sFit": 1043,
+          "eFit": 257
+        },
+        {
+          "gen": 100,
+          "outcome": "ENDER-KILL",
+          "frames": 963,
+          "sFit": 1063,
+          "eFit": 237
+        },
+        {
+          "gen": 101,
+          "outcome": "ENDER-KILL",
+          "frames": 958,
+          "sFit": 1158,
+          "eFit": 242
+        },
+        {
+          "gen": 102,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 103,
+          "outcome": "ENDER-KILL",
+          "frames": 611,
+          "sFit": 711,
+          "eFit": 589
+        },
+        {
+          "gen": 104,
+          "outcome": "ENDER-KILL",
+          "frames": 827,
+          "sFit": 1027,
+          "eFit": 373
+        },
+        {
+          "gen": 105,
+          "outcome": "ENDER-KILL",
+          "frames": 678,
+          "sFit": 678,
+          "eFit": 522
+        },
+        {
+          "gen": 106,
+          "outcome": "ENDER-KILL",
+          "frames": 567,
+          "sFit": 667,
+          "eFit": 633
+        },
+        {
+          "gen": 107,
+          "outcome": "ENDER-KILL",
+          "frames": 621,
+          "sFit": 721,
+          "eFit": 579
+        },
+        {
+          "gen": 108,
+          "outcome": "ENDER-KILL",
+          "frames": 758,
+          "sFit": 858,
+          "eFit": 442
+        },
+        {
+          "gen": 109,
+          "outcome": "ENDER-KILL",
+          "frames": 900,
+          "sFit": 900,
+          "eFit": 300
+        },
+        {
+          "gen": 110,
+          "outcome": "ENDER-KILL",
+          "frames": 120,
+          "sFit": 120,
+          "eFit": 1080
+        },
+        {
+          "gen": 111,
+          "outcome": "ENDER-KILL",
+          "frames": 1172,
+          "sFit": 1472,
+          "eFit": 28
+        },
+        {
+          "gen": 112,
+          "outcome": "ENDER-KILL",
+          "frames": 162,
+          "sFit": 162,
+          "eFit": 1038
+        },
+        {
+          "gen": 113,
+          "outcome": "ENDER-KILL",
+          "frames": 751,
+          "sFit": 851,
+          "eFit": 449
+        },
+        {
+          "gen": 114,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 115,
+          "outcome": "ENDER-KILL",
+          "frames": 555,
+          "sFit": 655,
+          "eFit": 645
+        },
+        {
+          "gen": 116,
+          "outcome": "ENDER-KILL",
+          "frames": 960,
+          "sFit": 1160,
+          "eFit": 240
+        },
+        {
+          "gen": 117,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 118,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 119,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 120,
+          "outcome": "ENDER-KILL",
+          "frames": 425,
+          "sFit": 425,
+          "eFit": 775
+        },
+        {
+          "gen": 121,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1300,
+          "eFit": 0
+        },
+        {
+          "gen": 122,
+          "outcome": "ENDER-KILL",
+          "frames": 707,
+          "sFit": 807,
+          "eFit": 493
+        },
+        {
+          "gen": 123,
+          "outcome": "ENDER-KILL",
+          "frames": 692,
+          "sFit": 792,
+          "eFit": 508
+        },
+        {
+          "gen": 124,
+          "outcome": "ENDER-KILL",
+          "frames": 447,
+          "sFit": 447,
+          "eFit": 753
+        },
+        {
+          "gen": 125,
+          "outcome": "ENDER-KILL",
+          "frames": 919,
+          "sFit": 1119,
+          "eFit": 311
+        },
+        {
+          "gen": 126,
+          "outcome": "ENDER-KILL",
+          "frames": 989,
+          "sFit": 1189,
+          "eFit": 211
+        },
+        {
+          "gen": 127,
+          "outcome": "ENDER-KILL",
+          "frames": 125,
+          "sFit": 125,
+          "eFit": 1075
+        },
+        {
+          "gen": 128,
+          "outcome": "ENDER-KILL",
+          "frames": 1137,
+          "sFit": 1337,
+          "eFit": 123
+        },
+        {
+          "gen": 129,
+          "outcome": "ENDER-KILL",
+          "frames": 197,
+          "sFit": 197,
+          "eFit": 1003
+        },
+        {
+          "gen": 130,
+          "outcome": "ENDER-KILL",
+          "frames": 778,
+          "sFit": 878,
+          "eFit": 422
+        },
+        {
+          "gen": 131,
+          "outcome": "ENDER-KILL",
+          "frames": 201,
+          "sFit": 201,
+          "eFit": 999
+        },
+        {
+          "gen": 132,
+          "outcome": "ENDER-KILL",
+          "frames": 125,
+          "sFit": 125,
+          "eFit": 1075
+        },
+        {
+          "gen": 133,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 5
+        },
+        {
+          "gen": 134,
+          "outcome": "ENDER-KILL",
+          "frames": 254,
+          "sFit": 254,
+          "eFit": 946
+        },
+        {
+          "gen": 135,
+          "outcome": "ENDER-KILL",
+          "frames": 861,
+          "sFit": 1061,
+          "eFit": 339
+        },
+        {
+          "gen": 136,
+          "outcome": "ENDER-KILL",
+          "frames": 1035,
+          "sFit": 1235,
+          "eFit": 165
+        },
+        {
+          "gen": 137,
+          "outcome": "ENDER-KILL",
+          "frames": 922,
+          "sFit": 1122,
+          "eFit": 308
+        },
+        {
+          "gen": 138,
+          "outcome": "ENDER-KILL",
+          "frames": 832,
+          "sFit": 1032,
+          "eFit": 368
+        },
+        {
+          "gen": 139,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        },
+        {
+          "gen": 140,
+          "outcome": "ENDER-KILL",
+          "frames": 553,
+          "sFit": 653,
+          "eFit": 647
+        },
+        {
+          "gen": 141,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1200,
+          "eFit": 0
+        },
+        {
+          "gen": 142,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 5
+        },
+        {
+          "gen": 143,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 144,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 5
+        },
+        {
+          "gen": 145,
+          "outcome": "ENDER-KILL",
+          "frames": 516,
+          "sFit": 616,
+          "eFit": 684
+        },
+        {
+          "gen": 146,
+          "outcome": "ENDER-KILL",
+          "frames": 832,
+          "sFit": 1032,
+          "eFit": 368
+        },
+        {
+          "gen": 147,
+          "outcome": "ENDER-KILL",
+          "frames": 197,
+          "sFit": 197,
+          "eFit": 1003
+        },
+        {
+          "gen": 148,
+          "outcome": "ENDER-KILL",
+          "frames": 567,
+          "sFit": 667,
+          "eFit": 633
+        },
+        {
+          "gen": 149,
+          "outcome": "ENDER-KILL",
+          "frames": 1058,
+          "sFit": 1258,
+          "eFit": 142
+        },
+        {
+          "gen": 150,
+          "outcome": "ENDER-KILL",
+          "frames": 299,
+          "sFit": 299,
+          "eFit": 901
+        },
+        {
+          "gen": 151,
+          "outcome": "ENDER-KILL",
+          "frames": 534,
+          "sFit": 634,
+          "eFit": 696
+        },
+        {
+          "gen": 152,
+          "outcome": "ENDER-KILL",
+          "frames": 476,
+          "sFit": 476,
+          "eFit": 724
+        },
+        {
+          "gen": 153,
+          "outcome": "ENDER-KILL",
+          "frames": 785,
+          "sFit": 885,
+          "eFit": 445
+        },
+        {
+          "gen": 154,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 0
+        },
+        {
+          "gen": 155,
+          "outcome": "ENDER-KILL",
+          "frames": 1039,
+          "sFit": 1039,
+          "eFit": 161
+        },
+        {
+          "gen": 156,
+          "outcome": "ENDER-KILL",
+          "frames": 285,
+          "sFit": 285,
+          "eFit": 915
+        },
+        {
+          "gen": 157,
+          "outcome": "ENDER-KILL",
+          "frames": 636,
+          "sFit": 736,
+          "eFit": 564
+        },
+        {
+          "gen": 158,
+          "outcome": "ENDER-KILL",
+          "frames": 926,
+          "sFit": 1126,
+          "eFit": 304
+        },
+        {
+          "gen": 159,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1500,
+          "eFit": 5
+        },
+        {
+          "gen": 160,
+          "outcome": "SURVIVOR-CAP",
+          "frames": 1200,
+          "sFit": 1400,
+          "eFit": 0
+        }
+      ]
+    }
+  ]
+}
