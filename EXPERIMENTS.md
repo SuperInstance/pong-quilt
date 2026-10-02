@@ -24,7 +24,16 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
    *calculus-like understanding*: where did the learning curve move, which
    failure modes migrated, what is d(learning)/d(version)? Did the shape of
    improvement change (faster convergence, new failure mode appearing,
-   difficulty cliff smoothing)?
+   difficulty cliff smoothing)? **Every round that plays the v1 tag for a
+   new draw must APPEND that draw to `research/v1-draws.jsonl`** — one JSON
+   line (draw, round, date, tag, commit, seed, per-level
+   {fitness, frames, hits, speed}) — instead of re-deriving hand tallies
+   in PLAYLOG prose; the PLAYLOG entry then cites the ledger pin's
+   TALLY-MATCH output, and the expected tallies in
+   `tests/r76-v1-draw-ledger-glue.test.js` move exactly once, in the file,
+   never in prose. The discipline is pinned by
+   `tests/r77-ledger-append-discipline.test.js` (Round 77): if the protocol
+   ever stops naming the ledger + the append step, the suite turns red.
 4. **Hunt the demo's lies.** Anything simulated, hardcoded, or smoothed?
    Any claim the code can't cash? Any UI that hides failure? Book every find
    with severity and a minimal repro. Fabrication = disqualification.

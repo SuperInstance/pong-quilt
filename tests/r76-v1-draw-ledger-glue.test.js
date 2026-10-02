@@ -53,17 +53,18 @@ function tally(rows) {
   return t;
 }
 
-// The R76 PLAYLOG twelve-draw table (11 value-tallied draws; draw 1 excluded
-// by its nulls — the earlier-era sample, per the R72 note).
+// The current PLAYLOG thirteen-draw table (12 value-tallied draws; draw 1
+// excluded by its nulls — the earlier-era sample, per the R72 note). R77
+// appended draw 13; the tally moved exactly once, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 2225: 3, 2935: 7, 3223: 1 },
-  L1: { 738: 2, 1691: 1, 3940: 1, 6114: 1, 6150: 1, 6400: 1, 6500: 3, 6575: 1 },
-  L2: { 2383: 3, 4766: 1, 4878: 1, 4919: 1, 6125: 5 },
+  L0: { 2225: 3, 2935: 7, 3223: 1, 3295: 1 },
+  L1: { 738: 2, 1691: 1, 3940: 1, 5778: 1, 6114: 1, 6150: 1, 6400: 1, 6500: 3, 6575: 1 },
+  L2: { 2383: 3, 4766: 1, 4878: 1, 4919: 1, 6075: 1, 6125: 5 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {
   const rows = loadLedger();
-  assert.ok(rows.length >= 12, `expected >= 12 draws, got ${rows.length}`);
+  assert.ok(rows.length >= 13, `expected >= 13 draws, got ${rows.length}`);
   rows.forEach((r, i) => {
     assert.equal(r.draw, i + 1, `row ${i} draw number contiguous`);
     assert.equal(r.tag, "v1", `draw ${r.draw} tag`);
@@ -87,7 +88,7 @@ test("FITNESS-LAW: every complete row satisfies fitness === frames + 25*hits", (
   }
 });
 
-test("TALLY-MATCH: value-tallied rows reproduce the R76 PLAYLOG twelve-draw table", () => {
+test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG thirteen-draw table", () => {
   const t = tally(loadLedger());
   for (const lv of LEVELS) {
     assert.deepEqual(t[lv], EXPECTED_TALLIES[lv],
