@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R75 | 2026-10-02 | playtest-round-75 (vs main tip c18d92e post-#92/#95/#96 — the Casey gate OPEN; R74 spec item 3 first build: c1-scaling producer ported from sibling 17f9ad7 + durable repro pin — PR #92's merge had imported the corpus WITHOUT the instrument) | canonical |
 | R74 | 2026-10-02 | playtest-round-74 (vs r73 tip 8776cc9, PR #91 open Casey-gated; R1 measured-at-tag + sibling c1-scaling artifact independently reproduced byte-identical; re-landed to main as #96) | canonical |
 | R73 | 2026-10-02 | playtest-round-73 (vs r72 tip 90743f9, PR #91 open Casey-gated; franken-save guard + NAMED SAVE/FRANKEN-REFUSED receipt; re-landed to main as #95) | canonical |
 | R70 | 2026-10-01 | playtest-round-70 (vs main tip 70af7f0 — the Casey gate OPENED since R69: PR #85 (R67), #87 (R68), #88 (R69) all merged to main; this round branches from merged main, the unmerged-stack precedent retired; tags v1/v0.64.0/v0.65.0 played from clean worktrees; PR #89 opened this round) | canonical |
@@ -79,6 +80,52 @@ Every round is a receipted observation in the loop. Newest first.
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
 
+
+## Round 75 — k2d8 (cron pong-quilt-playloop) — 2026-10-02 — mode: BUILDER (R74 spec item 3 — the durable c1-scaling reproduction pin, [S], first build: PR #92's tool+corpus landed on main mid-round, but the merge imported the corpus WITHOUT its instrument, so the build became port-the-producer + pin-the-reproduction, closing an unreproducible-by-construction wound) + play-tester — vs main tip c18d92e (Casey gate OPEN: #92 c1-scaling, #95 R73 re-land, #96 R74 re-land all merged since R74's pulse, plus repair commit c18d92e restoring #91's test files and bookkeeping; this round branches from merged main per the R70 precedent)
+
+Sibling studied and credited: `c1-scaling-study-v0` @ 17f9ad7 (Clerk-authored `tools/c1-scaling.js` + `tests/c1-scaling.test.js`, ported VERBATIM — not rewritten; its 3 pins DETERMINISM/CONTRAST/HONESTY carry unchanged) and PR #92's main-based merge 9718001 (corpus JSON + `singleArmClaim` marker on arms[6].summary, verified present at `research/c1-scaling-2026-10-01.json`).
+
+### Finding (booked, P2 — measurement/audit gap, not player-facing): the corpus merged without its instrument
+
+PR #92's merge (9718001) imported `research/c1-scaling-2026-10-01.json` (3,018 lines) into main but NOT `tools/c1-scaling.js` — the tool existed only on the sibling branch (verified: `git log --all -- tools/c1-scaling.js` names 17f9ad7 only; `find` on main names only the JSON). The PR title claims "scaling-trajectory tool + honesty pins"; the shipped diff is corpus-only. Minimal repro on main c18d92e: `ls tools/c1-scaling.js` → absent, while the corpus it receipts sits in `research/`. Consequence: the 7-arm study was unreproducible-by-construction on main — anyone auditing the corpus had to fetch a sibling branch. R74's spec item 3 assumed "once PR #92's tool lands on main"; it did not land. This round is the correction.
+
+### Ship (R74 spec item 3, first build)
+
+- `tools/c1-scaling.js`: verbatim port from sibling 17f9ad7 (Clerk's authorship credited in the commit + the restored registry claim). Depends only on `core.js` exports (`rng/makeNet/playAdv/runCoevGeneration/DEFAULTS`) — all present on main; the sibling↔main `core.js` diff is VERIFIED_CLAIMS-registry-only (training loop untouched, so reproduction is byte-exact).
+- `tests/c1-scaling.test.js`: the sibling's 3-test pin ported verbatim (DETERMINISM — same arm twice deep-equal; CONTRAST — pop 8 vs 24 diverge; HONESTY — NO-CLAIM marker + `noLearningClaim` on every summary).
+- `tests/c1-scaling-repro.test.js`: NEW durable reproduction pin (the R74 ask). A bounded arm (pop 24 × gens 8 × the two pinned seeds) is a deterministic PREFIX of the committed 40-gen arms (same seed, same loop — every gen depends only on prior state), so ~1.4 s of CPU pins the whole corpus: (1) DURABLE-REPRO — all 9 bounded rows match the committed JSON within 1e-9 at both seeds (outcome strings + integer frames exact, float fits within 1e-9); (2) WINDOW-PIN — first5 rally/sFit windows match the committed summary within 1e-9; (3) DRIFT-SENSITIVITY — a one-frame + 1e-6-sFit tampered copy EXCEEDS the band (a tolerance that never fires is applause); (4) CORPUS-HONESTY — the committed corpus carries the descriptive contract and the long arm's single-seed flag.
+- `core.js`: registry gains two entries (the sibling's `c1-scaling-study` claim restored with a port-provenance note, and new `c1-scaling-repro-glue`) — the `honesty.test.js` two-way match passes.
+- `README.md`: count 328 → 335 (327 in `tests/` + 8 QA).
+- Site dist re-sealed after the `core.js` touch: `node tools/build-site.mjs` → "build ok: 11 demo files sealed".
+
+### FAIL-first evidence chain (all by running)
+
+- `tests/c1-scaling.test.js` on pristine main (tool held): `Error: Cannot find module '../tools/c1-scaling.js'` (MODULE_NOT_FOUND), exit 1.
+- `tests/c1-scaling-repro.test.js` on pristine main (tool held): same MODULE_NOT_FOUND, exit 1.
+- Tamper RED: corpus on disk perturbed (arms[0].rows[3] frames+1, sFit+1e-6) → DURABLE-PRO RED verbatim `AssertionError: seed 20261001: row drift 1 exceeds 1e-9`; corpus restored via `git checkout` (0 dirty files after).
+- GREEN at the fix: ported pin 3/3 (1.48 s); repro pin 4/4 (1.93 s); measured row drift 0.000000, first5 drift 0.000000 at both pinned seeds — the corpus is reproducible FROM MAIN.
+
+### Verified numbers (this round, all by running)
+
+- Canonical suite @ R75 build: **327 registered — 319 pass / 0 fail / 8 honest skips**; `tools/test-qa.js` 8/8.
+- prerun @ R75 tree: canonical post-R50 line byte-exact — coev.js 946e639a820fcdb41cf2c184120f7716, curve.json f9b20e7ded3330e0c66eb97165dfc049, level0 bc15d414d6c74419d55b7cf3ed9895b0, level1 1125d59cc6de3a48f4d30b24e9980f7f, level2 50137ceb4691965b70a17d4e2d37ecbc, coev-stone-v1 3a0a5fb6af2859cc92fbe94fffae887f; 5 quantum-coin flips / 3 swaps; fitness 1890 / 2010 / 1753. Post-run worktree clean (checkpoints regenerate byte-identical).
+- prerun @ v0.65.0 (52b42b4, played from the existing clean worktree): byte-identical md5 line AND identical fitness 1890 / 2010 / 1753 — the shipped spine is frozen by design (R45 birth seal + md5 pins), d(spine)/d(version) = 0.
+- v1 (e98cf66) draw #11, clean worktree /tmp/pq-v1-r75: L0 2935 (2785f, 6h, ×2.11), L1 6500 (6000f, 20h, ×3.40), L2 **2383** (2358f, 1h, ×1.94 — the FLOOR attractor). Eleven-draw tallies: L0 2225×3 / 2935×6 / 3223×1 (mode firms); L1 738×2 / 6500×3 / 3940/6114/6150/6400/6575×1 (cap cluster firms to ×3); L2 6125×4 / 2383×3 / 4766/4878/4919×1 (floor cluster firms to ×3). All three levels draw from their known attractor set; the joint triple is new, no new single-level value appeared.
+
+### Deltas as shapes
+
+- d(spine)/d(version) = 0: R75 tree and v0.65.0 produce the same checkpoints, same fitness, same coin counts — the canonical artifact lane is a frozen constant; all movement is distributional (v1 draws) and documentary (claims registry).
+- v1 distribution (n=11): tri-modal per level, stationary modes — L0's mode at 2935 (×6), L1 splitting 738↔cap-with-ceiling-6500, L2 splitting floor-2383↔ceiling-6125. Draw #11's L2 2383 is the first floor draw since the cluster was named; the floor is as real as the ceiling.
+- d(reproducibility)/d(round) = +1: main can now regenerate its own research corpus in 1.4 s, perpetually, with a pin that fires on a one-frame drift.
+
+### Spec for Round 76 (3 items, all [S])
+
+1. **[S] Lineage-visibility disclosure on the σ slider / C1 stats line** — 10th carrying (R66 claim pinned, never built). WHAT: a measured disclosure naming the invisible-lineage regime (σ=12) vs the surviving cluster (σ=2). WHY: nine rounds of carry = the player-facing honesty gap with the longest ledger; the R66 law exists in the registry but never reaches the panel. VERIFY: at σ=12 the disclosure names the invisible-lineage regime; at σ=2 it shows the surviving cluster; a render-level pin on the disclosure text.
+2. **[S] σ-slider → trail interaction** — 8th carrying. WHAT: moving the mutation-σ slider mid-session receipts an effect on the trail (or a named refusal explaining why the ledger rows stay σ-blind). WHY: the slider currently changes future offspring with zero receipted relationship to the trail the panel shows. VERIFY: a pin that two slider positions from one seed produce distinguishable receipted outcomes, or the refusal names the ledger's σ-gap.
+3. **[S] `research/v1-draws.jsonl` — the machine-readable v1 draw ledger** — 1st carrying (NEW at R74, still unbuilt). WHAT: one JSON row per v1 draw (tag commit, seed, triple, frame/hit/speed fields, timestamp), append-only, plus a count pin — closing the hand-tally off-by-one wound this round's eleven-draw table still carries. VERIFY: the pin recomputes the tallies from the file and matches the PLAYLOG table; appending draw #12 updates both.
+
+- `PLAYLOG.md`: (a) the canonical index gains the R75 row; (b) this entry. Marker grep EMPTY after both edits (process half of the R65 mandate; the `r65-conflict-marker-glue` pin re-ran in the suite below).
+- `core.js` + `README.md` + test files — itemized above; the honesty two-way match and readme-count pins are the structural guards and both re-ran green.
 
 ## Round 74 — k2d8 (cron pong-quilt-playloop) — 2026-10-02 — mode: BUILDER (R73 spec item 2 — the R1 measured-at-tag annotation, [S], 7th carrying, first build: the spread table + ceiling-attractor note now live in the R1 entry) + play-tester — vs r73 tip 8776cc9 (PR #91 open, Casey-gated; branching from the prior round's tip per the R22-vs-r21 precedent; all ancestors canonical)
 
