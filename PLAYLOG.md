@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R76 | 2026-10-02 | playtest-round-76 (vs R75 tip 504466d, PR #97 open Casey-gated; R75 spec item 3 first build: `research/v1-draws.jsonl` — the machine-readable v1 draw ledger + 5-test count pin — closes the hand-tally off-by-one wound carried since R73/R74/R75) | canonical |
 | R75 | 2026-10-02 | playtest-round-75 (vs main tip c18d92e post-#92/#95/#96 — the Casey gate OPEN; R74 spec item 3 first build: c1-scaling producer ported from sibling 17f9ad7 + durable repro pin — PR #92's merge had imported the corpus WITHOUT the instrument) | canonical |
 | R74 | 2026-10-02 | playtest-round-74 (vs r73 tip 8776cc9, PR #91 open Casey-gated; R1 measured-at-tag + sibling c1-scaling artifact independently reproduced byte-identical; re-landed to main as #96) | canonical |
 | R73 | 2026-10-02 | playtest-round-73 (vs r72 tip 90743f9, PR #91 open Casey-gated; franken-save guard + NAMED SAVE/FRANKEN-REFUSED receipt; re-landed to main as #95) | canonical |
@@ -81,6 +82,49 @@ Every round is a receipted observation in the loop. Newest first.
 
 
 
+## Round 76 — k2d8 (cron pong-quilt-playloop) — 2026-10-02 — mode: BUILDER (R75 spec item 3 — `research/v1-draws.jsonl`, the machine-readable v1 draw ledger + count pin, [S], first build: closes the hand-tally off-by-one wound carried since R73/R74/R75) + play-tester — vs R75 tip 504466d (PR #97 OPEN, Casey-gated; branching from the prior round's tip per the R22-vs-r21 precedent; origin/main still at c18d92e)
+
+### Finding (booked, P2 — measurement/audit gap, process-lane): the hand-tally off-by-one, quantified
+
+Eleven rounds of v1 draws were tallied by hand in PLAYLOG prose. The tallies always summed to N-1 value-tallied draws because the R1 published sample (draw #1) is counted in the numbering but excluded from value tallies ("the earlier-era sample, per R72's note"). R73 found the arithmetic wound by skepticism, not by a pin: "the nine-draw tally sums to 8" — and every subsequent round re-derived the table by hand, carrying the same off-by-one forward. No pin guarded the prose against drift; a human re-added the column each round. Minimal repro: read the R75 PLAYLOG eleven-draw table — L0 column lists 10 values (2225×3/2935×6/3223×1), L1 lists 10, L2 lists 10, yet the text says "eleven-draw tallies" — the count INCLUDES draw #1 by numbering but EXCLUDES it by nulls. This round replaces the hand-tally with a machine-readable ledger + suite pin.
+
+### Ship (R75 spec item 3, first build)
+
+- `research/v1-draws.jsonl`: one JSON row per v1 draw, 12 rows (draws #1–#12). Each row: draw number, round, date, tag, commit, seed (20260924 — v1 DEFAULTS), source, per-level `{fitness, frames, hits, speed}`. Draw #1 (R1, 2026-09-24) is the pre-commit earlier-era sample: L0 speed and L1 hits/speed were never published, so ALL of draw #1's fitness fields are nulled (documentary-only; published frames/hits kept for the historical record, provenance note names why). Draws #2–#12 carry complete data from the PLAYLOG entries (R68–R76), each verified against the v1 fitness law `fitness = frames + 25×hits` (v1 core.js:85).
+- `tests/r76-v1-draw-ledger-glue.test.js`: the 5-test pin. (1) LEDGER-SHAPE — rows numbered 1..N contiguous, every row names tag v1 / commit e98cf66 / seed 20260924. (2) FITNESS-LAW — every complete row satisfies `fitness === frames + 25*hits` (a fabricated fitness is caught here). (3) TALLY-MATCH — value-tallied rows (draws 2–12, draw 1 excluded by its nulls) reproduce the R76 PLAYLOG twelve-draw per-level distribution exactly. (4) DRAW-1-EARLIER-ERA — draw 1 carries ≥1 null field + a provenance note naming its pre-commit status. (5) DRIFT-SENSITIVITY — a one-fitness tampered copy breaks the law (the pin FIRES, never applause).
+- `core.js`: VERIFIED_CLAIMS gains `r76-v1-draw-ledger-glue` (the honesty two-way match passes).
+- `README.md`: count 335 → 340 (332 in `tests/` + 8 QA).
+- Site dist re-sealed after the `core.js` touch: `node tools/build-site.mjs` → "build ok: 11 demo files sealed, head 504466dec".
+
+### FAIL-first evidence chain (all by running)
+
+- Pristine R75 tip (ledger held): `node --test tests/r76-v1-draw-ledger-glue.test.js` → MODULE_NOT_FOUND ("Could not find 'tests/r76-v1-draw-ledger-glue.test.js'"), exit 1.
+- Build-time catch (the pin earning its keep BEFORE it shipped): TALLY-MATCH initially RED — draw 1's L0 (fitness 2949) and L2 (fitness 6125) were complete (frames+hits published) and leaked into tallies while L1 stayed out — partial participation, a NEW inconsistency the hand-tally never had. Fixed by nulling ALL of draw 1's fitness fields (the row is documentary-only by design, not by accident). Re-ran: 5/5 GREEN.
+- Draw #12 values verified by running: `node tools/prerun.js` at v1 (e98cf66) in the clean worktree /tmp/pq-v1-r75 — L0 2935 (2785f, 6h, ×2.11), L1 **1691** (1616f, 3h, ×1.65), L2 6125 (6000f, 5h, ×3.40). The 1691 is a NEW distribution value — first sub-2000 L1 draw.
+
+### Verified numbers (this round, all by running)
+
+- Canonical suite @ R76 build: **332 registered — 324 pass / 0 fail / 8 honest skips**; `tools/test-qa.js` 8/8. Total 340.
+- prerun @ R76 tree: canonical post-R50 line byte-exact — coev.js 946e639a820fcdb41cf2c184120f7716, curve.json f9b20e7ded3330e0c66eb97165dfc049, level0 bc15d414d6c74419d55b7cf3ed9895b0, level1 1125d59cc6de3a48d4f30b24e9980f7f, level2 50137ceb4691965b70a17d4e2d37ecbc, coev-stone-v1 3a0a5fb6af2859cc92fbe94fffae887f; 5 quantum-coin flips / 3 swaps; fitness 1890 / 2010 / 1753 — IDENTICAL to R75's prerun output (d(spine)/d(version) = 0, third consecutive round).
+- v1 (e98cf66) draw #12, clean worktree /tmp/pq-v1-r75: L0 2935 (2785f, 6h, ×2.11), L1 **1691** (1616f, 3h, ×1.65 — NEW distribution value, first sub-2000 L1 draw), L2 6125 (6000f, 5h, ×3.40 — the ceiling attractor). Twelve-draw tallies (11 value-tallied; draw 1 documentary-only): L0 2225×3 / 2935×7 / 3223×1; L1 738×2 / 1691×1 / 3940×1 / 6114×1 / 6150×1 / 6400×1 / 6500×3 / 6575×1; L2 2383×3 / 4766×1 / 4878×1 / 4919×1 / 6125×5. A fresh post-ledger v1 run (draw #13 candidate): L0 2225, L1 6500, L2 2383 — all three from the known attractor set, no new single-level value.
+- Tip prerun + full suite re-ran after `node tools/prerun.js` rewrote checkpoints: byte-identical (not in git status), suite still 324/0/8.
+
+### Deltas as shapes
+
+- d(tally-integrity)/d(round) = +1: the twelve-draw distribution is now data (`v1-draws.jsonl`) guarded by a suite pin, not prose re-derived by a human each round. The off-by-one class is closed structurally: the file's draw-1 nulls make the exclusion explicit, the pin recomputes the tallies and matches the PLAYLOG table, and appending draw #13 next round is one JSON line + one expected-tally update.
+- d(v1-L1-distribution)/d(n): the sub-2000 region opened — 1691 is the lowest L1 draw yet (prior floor: 738×2, then 3940). The L1 distribution is now tri-regional: sub-800 (738×2), mid-band (1691–6575, 7 values), ceiling (6500 cluster ×3 within mid). The 1691 says the unseeded swan's kill-early regime can strike mid-training, not just at gen-0.
+- d(spine)/d(version) = 0 (third consecutive round): tip prerun and v0.65.0 both reproduce the canonical line exactly. The artifact lane is frozen by design.
+
+### Spec for Round 77 (3 items, all [S])
+
+1. **[S] Lineage-visibility disclosure on the σ slider / C1 stats line** — 11th carrying (R66 claim pinned, never built; verified still absent this round: zero matches for the disclosure vocabulary in index.html). WHAT: a measured disclosure naming the invisible-lineage regime (σ=12) vs the surviving cluster (σ=2). WHY: ten rounds of carry = the player-facing honesty gap with the longest ledger. VERIFY: at σ=12 the disclosure names the invisible-lineage regime; at σ=2 it shows the surviving cluster; a render-level pin on the disclosure text.
+2. **[S] σ-slider → trail interaction** — 9th carrying. WHAT: moving the mutation-σ slider mid-session receipts an effect on the trail (or a named refusal explaining why the ledger rows stay σ-blind). WHY: the slider changes future offspring with zero receipted relationship to the trail the panel shows. VERIFY: a pin that two slider positions from one seed produce distinguishable receipted outcomes, or the refusal names the ledger's σ-gap.
+3. **[S] Ledger append discipline** — NEW (1st carrying). WHAT: a note in EXPERIMENTS.md (or the PLAYLOG header) directing future rounds to APPEND their v1 draw to `research/v1-draws.jsonl` (one JSON line) INSTEAD OF re-deriving prose tallies — the PLAYLOG entry then cites the ledger's TALLY-MATCH output. WHY: the ledger only stays true if the append habit is documented where the round instructions live; otherwise a future round returns to hand-tallying and the pin drifts from the prose. VERIFY: EXPERIMENTS.md names the ledger + the append step; the TALLY-MATCH pin stays GREEN.
+
+- `PLAYLOG.md`: (a) the canonical index gains the R76 row (below); (b) this entry. Marker grep EMPTY after both edits.
+- `core.js` + `README.md` + test files — itemized above; the honesty two-way match and readme-count pins are the structural guards and both re-ran green.
+
+---
 ## Round 75 — k2d8 (cron pong-quilt-playloop) — 2026-10-02 — mode: BUILDER (R74 spec item 3 — the durable c1-scaling reproduction pin, [S], first build: PR #92's tool+corpus landed on main mid-round, but the merge imported the corpus WITHOUT its instrument, so the build became port-the-producer + pin-the-reproduction, closing an unreproducible-by-construction wound) + play-tester — vs main tip c18d92e (Casey gate OPEN: #92 c1-scaling, #95 R73 re-land, #96 R74 re-land all merged since R74's pulse, plus repair commit c18d92e restoring #91's test files and bookkeeping; this round branches from merged main per the R70 precedent)
 
 Sibling studied and credited: `c1-scaling-study-v0` @ 17f9ad7 (Clerk-authored `tools/c1-scaling.js` + `tests/c1-scaling.test.js`, ported VERBATIM — not rewritten; its 3 pins DETERMINISM/CONTRAST/HONESTY carry unchanged) and PR #92's main-based merge 9718001 (corpus JSON + `singleArmClaim` marker on arms[6].summary, verified present at `research/c1-scaling-2026-10-01.json`).
