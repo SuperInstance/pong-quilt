@@ -53,14 +53,14 @@ function tally(rows) {
   return t;
 }
 
-// The current PLAYLOG fifteen-draw table (14 value-tallied draws; draw 1
+// The current PLAYLOG sixteen-draw table (15 value-tallied draws; draw 1
 // excluded by its nulls — the earlier-era sample, per the R72 note). R77
-// appended draw 13, R78 draw 14, R79 draw 15; the tally moved exactly once
-// per draw, here, not in prose.
+// appended draw 13, R78 draw 14, R79 draw 15, R80 draw 16; the tally moved
+// exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 3, 2935: 8, 3223: 1, 3295: 1 },
-  L1: { 738: 2, 1242: 1, 1691: 1, 3940: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6400: 1, 6500: 3, 6575: 1 },
-  L2: { 589: 2, 2383: 3, 4766: 1, 4878: 1, 4919: 1, 6075: 1, 6125: 5 },
+  L0: { 1918: 1, 2225: 3, 2935: 9, 3223: 1, 3295: 1 },
+  L1: { 738: 2, 1242: 1, 1691: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6400: 1, 6500: 3, 6575: 1 },
+  L2: { 589: 2, 2383: 3, 3242: 1, 4766: 1, 4878: 1, 4919: 1, 6075: 1, 6125: 5 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {
@@ -89,7 +89,7 @@ test("FITNESS-LAW: every complete row satisfies fitness === frames + 25*hits", (
   }
 });
 
-test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG fifteen-draw table", () => {
+test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG sixteen-draw table", () => {
   const t = tally(loadLedger());
   for (const lv of LEVELS) {
     assert.deepEqual(t[lv], EXPECTED_TALLIES[lv],
