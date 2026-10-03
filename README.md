@@ -54,21 +54,23 @@ script prints the md5 of every emitted file):
 
 | Level | Gen | Best fitness | Frames | Hits | Max speed |
 |-------|-----|-------------|--------|------|-----------|
-| L0 random | 0 | 5,767 | 4,567 | 12 | ×2.83 |
-| L1 mid-training | 60 | 8,800 | 6,000 (cap) | 28 | ×3.40 |
-| L2 trained | 260 | 8,700 | 6,000 (cap) | 27 | ×3.40 |
+| L0 random | 0 | 1,890 | 1,690 | 2 | ×4.06 |
+| L1 mid-training | 60 | 2,010 | 1,810 | 2 | ×4.44 |
+| L2 trained | 260 | 1,753 | 1,453 | 3 | ×3.41 |
 
 Reproduce any row: `node tools/prerun.js` (≈40 s) regenerates all three levels
 plus `checkpoints/curve.json` and prints their md5s. Current artifacts:
 `level0.js bc15d414…`, `level1.js 1125d59c…`, `level2.js 50137ceb…`,
 `curve.json f9b20e7d…` (the post-R50 line; EXPERIMENTS.md keeps the earlier lines)
 
-Two honest notes on the shape: **L1 > L2** under the new weights — the gen-60
-champion hit 28 times where the gen-260 one hit 27, and one more hit outweighs
-100 frames. Non-monotonicity is the artifact, not the embarrassment. And under
-×100 the plateau is hits-driven by construction: once the frame cap is reached,
-fitness gains can only come from hits, so the strip wobbles around hit counts
-(28 ↔ 27) instead of smoothing upward. Loading a level and pressing Train
+Two honest notes on the shape: **L1 > L2** under the new weights — the
+gen-60 champion survived 1,810 frames where the gen-260 one managed 1,453,
+and 357 extra frames outweigh one fewer hit (each hit = 100 frames).
+Non-monotonicity is the artifact, not the embarrassment. And under ×100 at
+these horizons fitness is survival-dominated: none of the three champions
+reaches the 6,000-frame cap (longest 1,810), so the strip is frames-shaped —
+it climbs as survival improves and hits are incidental (2, 2, 3 across the
+three levels). Loading a level and pressing Train
 continues real evolution from that population.
 
 ## Wristband — verified claims (Round 3)
@@ -78,7 +80,7 @@ The demo renders a wristband panel from a single registry in `core.js`
 browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
-(364 tests total: 356 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(367 tests total: 359 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
 is pinned in EXPERIMENTS.md).
 
