@@ -56,7 +56,7 @@ script prints the md5 of every emitted file):
 |-------|-----|-------------|--------|------|-----------|
 | L0 random | 0 | 5,767 | 4,567 | 12 | ×2.83 |
 | L1 mid-training | 60 | 8,800 | 6,000 (cap) | 28 | ×3.40 |
-| L2 near-human | 260 | 8,700 | 6,000 (cap) | 27 | ×3.40 |
+| L2 trained | 260 | 8,700 | 6,000 (cap) | 27 | ×3.40 |
 
 Reproduce any row: `node tools/prerun.js` (≈40 s) regenerates all three levels
 plus `checkpoints/curve.json` and prints their md5s. Current artifacts:
@@ -78,7 +78,7 @@ The demo renders a wristband panel from a single registry in `core.js`
 browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
 claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
-(360 tests total: 352 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+(364 tests total: 356 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
 is pinned in EXPERIMENTS.md).
 

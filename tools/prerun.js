@@ -1,4 +1,4 @@
-// Pre-run the quilt: evolve real checkpoints (L0 random, L1 mid, L2 near-human)
+// Pre-run the quilt: evolve real checkpoints (L0 random, L1 mid, L2 trained)
 // with the SAME core the browser runs. Output = checkpoint JS files the demo
 // loads, so "pick up from a real starting state" is literally true.
 //
