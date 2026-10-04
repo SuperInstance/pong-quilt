@@ -23,8 +23,9 @@
 //  (2) FITNESS-LAW — every row with complete fields satisfies
 //      fitness === frames + 25*hits. A fabricated fitness is caught here.
 //  (3) TALLY-MATCH — value-tallied rows (those with no null fields) produce
-//      per-level fitness tallies equal to the R76 PLAYLOG twelve-draw table
-//      (now twenty-one draws — the comment moved per round).
+//      per-level fitness tallies equal to the current PLAYLOG table. N is
+//      whatever the ledger's row count says (never a hand-typed count — the
+//      R86 find: every prose count site lagged one append behind the file).
 //      The hand-tally is retired; the file is the source of truth.
 //  (4) DRAW-1-EARLIER-ERA — draw 1 (the R1 pre-commit sample) carries at
 //      least one null field and a note naming its provenance: it is counted
@@ -54,9 +55,15 @@ function tally(rows) {
   return t;
 }
 
-// The current PLAYLOG twenty-draw table (19 value-tallied draws; draw 1
-// excluded by its nulls — the earlier-era sample, per the R72 note). R77
-// appended draw 13, R78 draw 14, R79 draw 15, R80 draw 16, R81 draw 17
+// The current PLAYLOG table — N is the ledger's row count (draw 1 excluded
+// from value tallies by its nulls — the earlier-era sample, per the R72
+// note), never a hand-typed number: R86 found the header comment lagging one
+// round behind the file (the ledger held 21 rows / 20 value-tallied while
+// the prose still named the previous round's counts — R85's shipped-list
+// claim that the comment moved was false), so the count words are RETIRED
+// from prose and the pin below asserts the comment stays N-free.
+// Per-draw history: R77 appended draw 13, R78 draw 14,
+// R79 draw 15, R80 draw 16, R81 draw 17
 // (L2 6225 — a NEW cap-cluster maximum, 9 terminal hits at the 6000f cap),
 // R82 draw 18 (L2 6125×6 — the cap mode strengthens; L1 1242 repeats — the
 // kill-early floor value is now a 2-member band); R83 draw 19 (no NEW
@@ -67,11 +74,14 @@ function tally(rows) {
 // all-repeat streak BREAKS at 3 — but both new values land INTERIOR to
 // established bands: L1 6250 fills the 6150–6400 cap-cluster gap, L2 4851
 // fills the 4766–4878 mid-band gap — gap-filling convergence, not support
-// expansion); the tally moved exactly once per draw, here, not in prose.
+// expansion); R86 draw 22 (the interior gap-fill deepens: L1 6525 fills the
+// 6500–6575 cap-cluster gap and L2 5710 fills the 4919–6075 mid→cap gap —
+// two new values, both interior, the support still does not expand);
+// the tally moved exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 3, 2935: 14, 3223: 1, 3295: 1 },
-  L1: { 738: 3, 1242: 3, 1691: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6575: 1 },
-  L2: { 589: 3, 2383: 3, 3242: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 6075: 1, 6125: 6, 6225: 1 },
+  L0: { 1918: 1, 2225: 3, 2935: 15, 3223: 1, 3295: 1 },
+  L1: { 738: 3, 1242: 3, 1691: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
+  L2: { 589: 3, 2383: 3, 3242: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 6, 6225: 1 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {
@@ -100,7 +110,7 @@ test("FITNESS-LAW: every complete row satisfies fitness === frames + 25*hits", (
   }
 });
 
-test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG twenty-one-draw table", () => {
+test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG table", () => {
   const t = tally(loadLedger());
   for (const lv of LEVELS) {
     assert.deepEqual(t[lv], EXPECTED_TALLIES[lv],
@@ -117,6 +127,14 @@ test("DRAW-1-EARLIER-ERA: the R1 pre-commit sample carries nulls + a provenance 
     "draw 1 must carry at least one null field (it is the earlier-era sample)");
   assert.ok(d1.note && /pre-commit/i.test(d1.note),
     "draw 1 must name its pre-commit provenance in the note");
+});
+
+test("COMMENT-N-FREE (R86): the header comment carries no hand-typed draw count — it cannot lag the file", () => {
+  const self = fs.readFileSync(__filename, "utf8");
+  const header = self.split("const EXPECTED_TALLIES")[0];
+  assert.ok(!/\b(twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)[- ](one |two |three |four |five |six |seven |eight |nine )?draw/i.test(header),
+    "a hand-typed N-draw count in prose rots one append behind the ledger (R86 find: the header read twenty-draw/19 while the ledger held 21/20) — N lives in the ledger row count, not in words");
+  assert.ok(!/\(\d+ value-tallied draws\)/.test(header), "a hand-typed value-tallied count is the same rot class");
 });
 
 test("DRIFT-SENSITIVITY: a one-fitness tampered copy breaks the law", () => {
