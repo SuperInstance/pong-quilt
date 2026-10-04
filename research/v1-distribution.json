@@ -3,13 +3,14 @@
   "generatedBy": "tools/v1-dist.js",
   "rule": "tally over value-tallied rows (fitness non-null); bands = maximal runs of distinct fitness values with adjacency gap > bandGap; maxGap = largest adjacency gap",
   "bandGap": 1000,
-  "draws": 25,
-  "valueTallied": 24,
+  "draws": 26,
+  "valueTallied": 25,
   "levels": {
     "L0": {
       "tally": {
         "1918": 1,
         "2225": 3,
+        "2841": 1,
         "2935": 18,
         "3223": 1,
         "3295": 1
@@ -22,6 +23,10 @@
         {
           "fitness": 2225,
           "count": 3
+        },
+        {
+          "fitness": 2841,
+          "count": 1
         },
         {
           "fitness": 2935,
@@ -52,6 +57,10 @@
               "count": 3
             },
             {
+              "fitness": 2841,
+              "count": 1
+            },
+            {
               "fitness": 2935,
               "count": 18
             },
@@ -68,8 +77,8 @@
       ],
       "maxGap": {
         "from": 2225,
-        "to": 2935,
-        "size": 710
+        "to": 2841,
+        "size": 616
       },
       "spread": {
         "fitnessMin": 1918,
@@ -83,6 +92,7 @@
         "738": 4,
         "1242": 3,
         "1691": 1,
+        "2100": 1,
         "2833": 1,
         "3490": 1,
         "3940": 1,
@@ -108,6 +118,10 @@
         },
         {
           "fitness": 1691,
+          "count": 1
+        },
+        {
+          "fitness": 2100,
           "count": 1
         },
         {
@@ -167,7 +181,7 @@
         {
           "span": [
             738,
-            1691
+            6575
           ],
           "members": [
             {
@@ -181,15 +195,11 @@
             {
               "fitness": 1691,
               "count": 1
-            }
-          ]
-        },
-        {
-          "span": [
-            2833,
-            6575
-          ],
-          "members": [
+            },
+            {
+              "fitness": 2100,
+              "count": 1
+            },
             {
               "fitness": 2833,
               "count": 1
@@ -246,9 +256,9 @@
         }
       ],
       "maxGap": {
-        "from": 1691,
-        "to": 2833,
-        "size": 1142
+        "from": 3940,
+        "to": 4900,
+        "size": 960
       },
       "spread": {
         "fitnessMin": 738,
@@ -261,6 +271,7 @@
       "tally": {
         "589": 4,
         "2383": 3,
+        "2977": 1,
         "3242": 1,
         "3687": 1,
         "4766": 2,
@@ -280,6 +291,10 @@
         {
           "fitness": 2383,
           "count": 3
+        },
+        {
+          "fitness": 2977,
+          "count": 1
         },
         {
           "fitness": 3242,
@@ -344,6 +359,10 @@
             {
               "fitness": 2383,
               "count": 3
+            },
+            {
+              "fitness": 2977,
+              "count": 1
             },
             {
               "fitness": 3242,
