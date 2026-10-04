@@ -28,14 +28,18 @@ test("build output exists (site-glue self-seals when dist/ is absent)", () => {
 for (const f of ["index.html", "core.js", "qa.js"]) {
   test(`demo copy byte-identical: ${f}`, () => {
     assert.ok(fs.existsSync(dist("demo", f)) && fs.existsSync(src(f)));
-    assert.ok(fs.readFileSync(src(f)).equals(fs.readFileSync(dist("demo", f))));
+    assert.ok(fs.readFileSync(src(f)).equals(fs.readFileSync(dist("demo", f))),
+      `STALE-DIST: demo/${f} differs from the working tree — the sealed build lags the sources. ` +
+      `Fix: node tools/build-site.mjs, then re-run (R88 named-failure seal)`);
   });
 }
 for (const ck of ["level0", "level1", "level2"]) {
   test(`demo checkpoint byte-identical: ${ck}`, () => {
     const a = src("checkpoints", `${ck}.js`), b = dist("demo", "checkpoints", `${ck}.js`);
     assert.ok(fs.existsSync(a) && fs.existsSync(b));
-    assert.ok(fs.readFileSync(a).equals(fs.readFileSync(b)));
+    assert.ok(fs.readFileSync(a).equals(fs.readFileSync(b)),
+      `STALE-DIST: demo/checkpoints/${ck}.js differs from the working tree — the sealed build lags the sources. ` +
+      `Fix: node tools/build-site.mjs, then re-run (R88 named-failure seal)`);
   });
 }
 
@@ -51,7 +55,30 @@ test("provenance covers all demo files with real sha256s", () => {
 test("provenance spot-check: demo/core.js matches the working tree", () => {
   const spot = prov.manifest.find((m) => m.file === "demo/core.js");
   const actual = crypto.createHash("sha256").update(fs.readFileSync(src("core.js"))).digest("hex");
-  assert.equal(spot.sha256, actual);
+  assert.equal(spot.sha256, actual,
+    `STALE-DIST: demo/core.js's sealed sha256 disagrees with the working tree — the sealed build lags the sources. ` +
+    `Fix: node tools/build-site.mjs, then re-run (R88 named-failure seal)`);
+});
+
+// ---- R88: the stale-dist seal — a FULL drift computation over the sealed
+// manifest, failing NAMED. The R85 hazard: on a long-lived checkout, dist/
+// sealed from an older base silently poisons these byte-identity checks
+// while the tip is innocent, and the bare content-mismatch dump could not
+// distinguish "my edit needs a reseal" from "the tree is broken". This test
+// compares every sealed sha256 against the LIVE SOURCE (not the dist copy),
+// so a source-side drift is named with the fix, never dumped as a mismatch.
+test("STALE-DIST seal: sources match the sealed build (FAIL names the rebuild)", () => {
+  const liveSha = (abs) => crypto.createHash("sha256").update(fs.readFileSync(abs)).digest("hex");
+  const drifted = [];
+  for (const m of prov.manifest) {
+    const liveAbs = src(m.file.replace(/^demo\//, ""));
+    if (fs.existsSync(liveAbs) && liveSha(liveAbs) !== m.sha256) drifted.push(m.file);
+  }
+  assert.deepEqual(drifted, [],
+    drifted.length
+      ? `STALE-DIST: sources drifted from the sealed build (sealed at head ${prov.head}): ` +
+        `${drifted.join(", ")} — run \`node tools/build-site.mjs\` to reseal, then re-run the suite.`
+      : "");
 });
 
 let handle;
