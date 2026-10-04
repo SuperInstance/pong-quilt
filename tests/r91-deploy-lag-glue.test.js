@@ -223,7 +223,11 @@ test("CLI-STUB-LAG-NAMED: a lagging-but-faithful deploy exits 0 with the lag rec
   try {
     const r = await runTool(url);
     assert.equal(r.status, 0, `lag scenario must exit 0 (stdout:\n${r.stdout}\nstderr:\n${r.stderr})`);
-    assert.match(r.stdout, /deploy lags this checkout by 1 commit\(s\)/);
+    // the count is a garnish, never a gate (site-playtest.mjs:54) — after an
+    // update-branch merge (first parent = main) the rev-list distance from
+    // HEAD~1 to HEAD can exceed 1; the CONTRACT under test is that the lag is
+    // NAMED with its distance, byte-faithful, and not a finding.
+    assert.match(r.stdout, /deploy lags this checkout by \d+ commit\(s\)/);
     assert.match(r.stdout, /not a finding/);
     assert.match(r.stdout, /all checks passed/);
   } finally {
