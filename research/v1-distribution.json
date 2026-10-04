@@ -3,13 +3,13 @@
   "generatedBy": "tools/v1-dist.js",
   "rule": "tally over value-tallied rows (fitness non-null); bands = maximal runs of distinct fitness values with adjacency gap > bandGap; maxGap = largest adjacency gap",
   "bandGap": 1000,
-  "draws": 26,
-  "valueTallied": 25,
+  "draws": 27,
+  "valueTallied": 26,
   "levels": {
     "L0": {
       "tally": {
         "1918": 1,
-        "2225": 3,
+        "2225": 4,
         "2841": 1,
         "2935": 18,
         "3223": 1,
@@ -22,7 +22,7 @@
         },
         {
           "fitness": 2225,
-          "count": 3
+          "count": 4
         },
         {
           "fitness": 2841,
@@ -54,7 +54,7 @@
             },
             {
               "fitness": 2225,
-              "count": 3
+              "count": 4
             },
             {
               "fitness": 2841,
@@ -89,7 +89,7 @@
     },
     "L1": {
       "tally": {
-        "738": 4,
+        "738": 5,
         "1242": 3,
         "1691": 1,
         "2100": 1,
@@ -110,7 +110,7 @@
       "values": [
         {
           "fitness": 738,
-          "count": 4
+          "count": 5
         },
         {
           "fitness": 1242,
@@ -186,7 +186,7 @@
           "members": [
             {
               "fitness": 738,
-              "count": 4
+              "count": 5
             },
             {
               "fitness": 1242,
@@ -274,6 +274,7 @@
         "2977": 1,
         "3242": 1,
         "3687": 1,
+        "4137": 1,
         "4766": 2,
         "4851": 1,
         "4878": 1,
@@ -302,6 +303,10 @@
         },
         {
           "fitness": 3687,
+          "count": 1
+        },
+        {
+          "fitness": 4137,
           "count": 1
         },
         {
@@ -353,7 +358,7 @@
         {
           "span": [
             2383,
-            3687
+            6225
           ],
           "members": [
             {
@@ -371,15 +376,11 @@
             {
               "fitness": 3687,
               "count": 1
-            }
-          ]
-        },
-        {
-          "span": [
-            4766,
-            6225
-          ],
-          "members": [
+            },
+            {
+              "fitness": 4137,
+              "count": 1
+            },
             {
               "fitness": 4766,
               "count": 2
