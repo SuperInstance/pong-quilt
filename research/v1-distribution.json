@@ -3,14 +3,14 @@
   "generatedBy": "tools/v1-dist.js",
   "rule": "tally over value-tallied rows (fitness non-null); bands = maximal runs of distinct fitness values with adjacency gap > bandGap; maxGap = largest adjacency gap",
   "bandGap": 1000,
-  "draws": 23,
-  "valueTallied": 22,
+  "draws": 24,
+  "valueTallied": 23,
   "levels": {
     "L0": {
       "tally": {
         "1918": 1,
         "2225": 3,
-        "2935": 16,
+        "2935": 17,
         "3223": 1,
         "3295": 1
       },
@@ -25,7 +25,7 @@
         },
         {
           "fitness": 2935,
-          "count": 16
+          "count": 17
         },
         {
           "fitness": 3223,
@@ -53,7 +53,7 @@
             },
             {
               "fitness": 2935,
-              "count": 16
+              "count": 17
             },
             {
               "fitness": 3223,
@@ -80,7 +80,7 @@
     },
     "L1": {
       "tally": {
-        "738": 3,
+        "738": 4,
         "1242": 3,
         "1691": 1,
         "3490": 1,
@@ -99,7 +99,7 @@
       "values": [
         {
           "fitness": 738,
-          "count": 3
+          "count": 4
         },
         {
           "fitness": 1242,
@@ -167,7 +167,7 @@
           "members": [
             {
               "fitness": 738,
-              "count": 3
+              "count": 4
             },
             {
               "fitness": 1242,
@@ -259,7 +259,7 @@
         "4919": 1,
         "5710": 1,
         "6075": 1,
-        "6125": 6,
+        "6125": 7,
         "6225": 1
       },
       "values": [
@@ -301,7 +301,7 @@
         },
         {
           "fitness": 6125,
-          "count": 6
+          "count": 7
         },
         {
           "fitness": 6225,
@@ -369,7 +369,7 @@
             },
             {
               "fitness": 6125,
-              "count": 6
+              "count": 7
             },
             {
               "fitness": 6225,

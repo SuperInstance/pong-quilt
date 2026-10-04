@@ -81,12 +81,16 @@ function tally(rows) {
 // between the 1691 kill-early member and the 3940 mid-band opener — the
 // first L1 support expansion since draw 16; L0 2935 repeats the mode and
 // L2 589 repeats the zero-hit floor — the support expands on exactly one
-// axis, downward-mid on L1);
+// axis, downward-mid on L1); R88 draw 24 (the all-repeat RETURN: every
+// level lands back on an established mode — L0 2935×17, L1 738×4 the
+// kill-early floor strengthens to its 4th draw, L2 6125×7 the cap mode
+// strengthens to its 7th — one round after the support expanded on L1,
+// the distribution re-centralizes on its three centers);
 // the tally moved exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 3, 2935: 16, 3223: 1, 3295: 1 },
-  L1: { 738: 3, 1242: 3, 1691: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
-  L2: { 589: 4, 2383: 3, 3242: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 6, 6225: 1 },
+  L0: { 1918: 1, 2225: 3, 2935: 17, 3223: 1, 3295: 1 },
+  L1: { 738: 4, 1242: 3, 1691: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
+  L2: { 589: 4, 2383: 3, 3242: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 7, 6225: 1 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {
