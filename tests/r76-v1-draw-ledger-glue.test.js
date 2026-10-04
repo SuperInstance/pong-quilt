@@ -77,11 +77,16 @@ function tally(rows) {
 // expansion); R86 draw 22 (the interior gap-fill deepens: L1 6525 fills the
 // 6500–6575 cap-cluster gap and L2 5710 fills the 4919–6075 mid→cap gap —
 // two new values, both interior, the support still does not expand);
+// R87 draw 23 (the gap-filling streak BREAKS: L1 3490 mints NEW TERRITORY
+// between the 1691 kill-early member and the 3940 mid-band opener — the
+// first L1 support expansion since draw 16; L0 2935 repeats the mode and
+// L2 589 repeats the zero-hit floor — the support expands on exactly one
+// axis, downward-mid on L1);
 // the tally moved exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 3, 2935: 15, 3223: 1, 3295: 1 },
-  L1: { 738: 3, 1242: 3, 1691: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
-  L2: { 589: 3, 2383: 3, 3242: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 6, 6225: 1 },
+  L0: { 1918: 1, 2225: 3, 2935: 16, 3223: 1, 3295: 1 },
+  L1: { 738: 3, 1242: 3, 1691: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
+  L2: { 589: 4, 2383: 3, 3242: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 6, 6225: 1 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {

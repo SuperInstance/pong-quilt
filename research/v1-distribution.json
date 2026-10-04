@@ -1,0 +1,394 @@
+{
+  "source": "research/v1-draws.jsonl",
+  "generatedBy": "tools/v1-dist.js",
+  "rule": "tally over value-tallied rows (fitness non-null); bands = maximal runs of distinct fitness values with adjacency gap > bandGap; maxGap = largest adjacency gap",
+  "bandGap": 1000,
+  "draws": 23,
+  "valueTallied": 22,
+  "levels": {
+    "L0": {
+      "tally": {
+        "1918": 1,
+        "2225": 3,
+        "2935": 16,
+        "3223": 1,
+        "3295": 1
+      },
+      "values": [
+        {
+          "fitness": 1918,
+          "count": 1
+        },
+        {
+          "fitness": 2225,
+          "count": 3
+        },
+        {
+          "fitness": 2935,
+          "count": 16
+        },
+        {
+          "fitness": 3223,
+          "count": 1
+        },
+        {
+          "fitness": 3295,
+          "count": 1
+        }
+      ],
+      "bands": [
+        {
+          "span": [
+            1918,
+            3295
+          ],
+          "members": [
+            {
+              "fitness": 1918,
+              "count": 1
+            },
+            {
+              "fitness": 2225,
+              "count": 3
+            },
+            {
+              "fitness": 2935,
+              "count": 16
+            },
+            {
+              "fitness": 3223,
+              "count": 1
+            },
+            {
+              "fitness": 3295,
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "maxGap": {
+        "from": 2225,
+        "to": 2935,
+        "size": 710
+      },
+      "spread": {
+        "fitnessMin": 1918,
+        "fitnessMax": 3295,
+        "hitsMin": 1,
+        "hitsMax": 7
+      }
+    },
+    "L1": {
+      "tally": {
+        "738": 3,
+        "1242": 3,
+        "1691": 1,
+        "3490": 1,
+        "3940": 1,
+        "4900": 1,
+        "5156": 1,
+        "5778": 1,
+        "6114": 1,
+        "6150": 1,
+        "6250": 1,
+        "6400": 1,
+        "6500": 4,
+        "6525": 1,
+        "6575": 1
+      },
+      "values": [
+        {
+          "fitness": 738,
+          "count": 3
+        },
+        {
+          "fitness": 1242,
+          "count": 3
+        },
+        {
+          "fitness": 1691,
+          "count": 1
+        },
+        {
+          "fitness": 3490,
+          "count": 1
+        },
+        {
+          "fitness": 3940,
+          "count": 1
+        },
+        {
+          "fitness": 4900,
+          "count": 1
+        },
+        {
+          "fitness": 5156,
+          "count": 1
+        },
+        {
+          "fitness": 5778,
+          "count": 1
+        },
+        {
+          "fitness": 6114,
+          "count": 1
+        },
+        {
+          "fitness": 6150,
+          "count": 1
+        },
+        {
+          "fitness": 6250,
+          "count": 1
+        },
+        {
+          "fitness": 6400,
+          "count": 1
+        },
+        {
+          "fitness": 6500,
+          "count": 4
+        },
+        {
+          "fitness": 6525,
+          "count": 1
+        },
+        {
+          "fitness": 6575,
+          "count": 1
+        }
+      ],
+      "bands": [
+        {
+          "span": [
+            738,
+            1691
+          ],
+          "members": [
+            {
+              "fitness": 738,
+              "count": 3
+            },
+            {
+              "fitness": 1242,
+              "count": 3
+            },
+            {
+              "fitness": 1691,
+              "count": 1
+            }
+          ]
+        },
+        {
+          "span": [
+            3490,
+            6575
+          ],
+          "members": [
+            {
+              "fitness": 3490,
+              "count": 1
+            },
+            {
+              "fitness": 3940,
+              "count": 1
+            },
+            {
+              "fitness": 4900,
+              "count": 1
+            },
+            {
+              "fitness": 5156,
+              "count": 1
+            },
+            {
+              "fitness": 5778,
+              "count": 1
+            },
+            {
+              "fitness": 6114,
+              "count": 1
+            },
+            {
+              "fitness": 6150,
+              "count": 1
+            },
+            {
+              "fitness": 6250,
+              "count": 1
+            },
+            {
+              "fitness": 6400,
+              "count": 1
+            },
+            {
+              "fitness": 6500,
+              "count": 4
+            },
+            {
+              "fitness": 6525,
+              "count": 1
+            },
+            {
+              "fitness": 6575,
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "maxGap": {
+        "from": 1691,
+        "to": 3490,
+        "size": 1799
+      },
+      "spread": {
+        "fitnessMin": 738,
+        "fitnessMax": 6575,
+        "hitsMin": 1,
+        "hitsMax": 23
+      }
+    },
+    "L2": {
+      "tally": {
+        "589": 4,
+        "2383": 3,
+        "3242": 1,
+        "4766": 2,
+        "4851": 1,
+        "4878": 1,
+        "4919": 1,
+        "5710": 1,
+        "6075": 1,
+        "6125": 6,
+        "6225": 1
+      },
+      "values": [
+        {
+          "fitness": 589,
+          "count": 4
+        },
+        {
+          "fitness": 2383,
+          "count": 3
+        },
+        {
+          "fitness": 3242,
+          "count": 1
+        },
+        {
+          "fitness": 4766,
+          "count": 2
+        },
+        {
+          "fitness": 4851,
+          "count": 1
+        },
+        {
+          "fitness": 4878,
+          "count": 1
+        },
+        {
+          "fitness": 4919,
+          "count": 1
+        },
+        {
+          "fitness": 5710,
+          "count": 1
+        },
+        {
+          "fitness": 6075,
+          "count": 1
+        },
+        {
+          "fitness": 6125,
+          "count": 6
+        },
+        {
+          "fitness": 6225,
+          "count": 1
+        }
+      ],
+      "bands": [
+        {
+          "span": [
+            589,
+            589
+          ],
+          "members": [
+            {
+              "fitness": 589,
+              "count": 4
+            }
+          ]
+        },
+        {
+          "span": [
+            2383,
+            3242
+          ],
+          "members": [
+            {
+              "fitness": 2383,
+              "count": 3
+            },
+            {
+              "fitness": 3242,
+              "count": 1
+            }
+          ]
+        },
+        {
+          "span": [
+            4766,
+            6225
+          ],
+          "members": [
+            {
+              "fitness": 4766,
+              "count": 2
+            },
+            {
+              "fitness": 4851,
+              "count": 1
+            },
+            {
+              "fitness": 4878,
+              "count": 1
+            },
+            {
+              "fitness": 4919,
+              "count": 1
+            },
+            {
+              "fitness": 5710,
+              "count": 1
+            },
+            {
+              "fitness": 6075,
+              "count": 1
+            },
+            {
+              "fitness": 6125,
+              "count": 6
+            },
+            {
+              "fitness": 6225,
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "maxGap": {
+        "from": 589,
+        "to": 2383,
+        "size": 1794
+      },
+      "spread": {
+        "fitnessMin": 589,
+        "fitnessMax": 6225,
+        "hitsMin": 0,
+        "hitsMax": 11
+      }
+    }
+  }
+}
