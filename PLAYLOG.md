@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R81 | 2026-10-03 | playtest-round-81 (vs R80 tip dcaaaed, PR #102 open Casey-gated at round time — basing on the R80 tip re-lands R79+R80+R81 in one PR to main per the R22-vs-r21/R73/R74 precedent; R80 spec item 2, 5th carrying, first TRUE build: the R1 measured-at-tag annotation — R74's build was SILENTLY DROPPED by re-land cab770c (#96); restored ledger-sourced (17 draws) + 4-test structural pin; v1 draw #17 appended — L2 6225 NEW cap-cluster maximum, 9 terminal hits at the 6000f bound ceiling) | canonical |
 | R80 | 2026-10-03 | playtest-round-80 (vs playtest-round-78 tip e92677b — R79's #101 merged into the R78 branch, NOT main; main tip 9c6d02d carries R78 only; basing on e92677b re-lands R79's work in one PR to main per the R73/R74 precedent; R79 spec item 1 first build after 13 carryings: σ recorded per coev ledger row + trail annotation on mid-run σ changes + 5-test pin; v1 draw #16 appended — L1 4900 new near-cap value, L2 3242 new kill-band member) | canonical |
 | R79 | 2026-10-03 | playtest-round-79 (vs R78 tip 918a36d, PR #99 open Casey-gated at round time; R78 spec item 3 first build: the "L2 · near-human" undefined-label wound — button annotated with the measured v1 draw spread + 4-test pin recomputing from the ledger; v1 draw #15 appended — L1 1242 new, L2 589 zero-hit floor repeats back-to-back) | canonical |
 | R78 | 2026-10-02 | playtest-round-78 (vs main tip af5be72 post-#99 — the Casey gate OPEN, R77 merged since its pulse; R77 spec item 1 first build after 13 carryings: the σ→lineage-visibility disclosure at the slider — sigLine + #sigline + live wiring + 4-test render pin; v1 draw #14 appended — L2 floor 589, first zero-hit champion best-game in 14 draws) | canonical |
@@ -85,6 +86,42 @@ Every round is a receipted observation in the loop. Newest first.
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
 
+
+## Round 81 — k2d8 (cron pong-quilt-playloop) — 2026-10-03 — mode: BUILDER (R80 spec item 2 — the cap-cluster annotation on the R74 measured-at-tag note, [S], 5th carrying, first TRUE build: the note turned out to be a GHOST — R74's re-land #96 dropped it — so the build is a ledger-sourced restoration + a 4-test structural pin so the loss class cannot recur) + play-tester — vs R80 tip dcaaaed (PR #102 open, Casey-gated; basing on the R80 tip per the R22-vs-r21/R73/R74 precedent — this PR re-lands R79+R80+R81 to main in one merge)
+
+### Played versions: v1 (e98cf66, draw #17) — headless via the tag's own `tools/prerun.js` in a dedicated clean worktree (`git worktree add /tmp/pq-v1-r81 e98cf66`) — plus the tip itself. v0.64.0/v0.65.0 spine byte-exactness inherited from R70/R72 and re-established at this tip by the canonical prerun line below (same five md5s both tags). Draw #17: L0 **2935** (2785f, 6h, ×2.11), L1 **738** (713f, 1h, ×1.28), L2 **6225** (6000f, **9h**, ×3.40 — a NEW distribution maximum). Seventeen-draw tallies (16 value-tallied; draw 1 documentary-only), the ledger's TALLY-MATCH output cited here per the R77 discipline: L0 1918×1 / 2225×3 / 2935×10 / 3223×1 / 3295×1; L1 738×3 / 1242×1 / 1691×1 / 3940×1 / 4900×1 / 5156×1 / 5778×1 / 6114×1 / 6150×1 / 6400×1 / 6500×3 / 6575×1; L2 589×2 / 2383×3 / 3242×1 / 4766×1 / 4878×1 / 4919×1 / 6075×1 / 6125×5 / **6225×1**. Hand-recompute of the 17-draw table (pre-append skepticism check, third exercise of the discipline) matched the pin's post-append output exactly — hand path and pin agree again. Suite at tip (pre-build): 348 registered — 340 pass / 0 fail / 8 honest skips; qa 8/8.
+
+### Deltas observed (shapes of change)
+- **d(spine)/d(version) = 0, eighth consecutive round pending.** Canonical post-R50 line byte-exact at the tip: 5 quantum-coin flip(s), 3 swap(s); md5s — coev-stone-v1.json 3a0a5fb6…, coev.js 946e639a…, curve.json f9b20e7d…, L0 bc15d414…, L1 1125d59c…, L2 50137ceb….
+- **d(v1-L2-cap)/d(n): the cap-cluster extends UPWARD — 6225@9h is the first nine-hit cap game and a new distribution maximum.** The cap-cluster at the 6000-frame bound is now 6075@3h / 6125×5@5h / 6225@9h — fitness at the bound ceiling is parametrized entirely by terminal hit-count (fitness = 6000 + 25×hits: 3h→6075, 5h→6125, 9h→6225). The "ceiling" was never a value; it is the frames cap plus the swan's terminal-rally fingerprint, and the hit-variation range at the cap has widened to 2.4% of fitness.
+- **d(v1-L1-floor)/d(n): 738 draws for the 3rd time** — the sub-800 kill-early floor is now TIED with 6500 as the most-drawn L1 value (738×3 vs 6500×3 of 16 value-tallied draws): the L1 distribution's bottom band is as strong an attractor as its cap mode.
+- **d(v1-L0)/d(n): 2935×10 — the modal value holds 62.5%** of value-tallied draws; no new shape information (the tightest, least informative distribution).
+
+### Lies hunted
+- **[M, root-caused + closed this round] the R74 measured-at-tag annotation is a GHOST — built, receipted, never landed.** R74's receipt (both on its original branch and on main via re-land #96) claims "the R1 entry gains `### Measured at the tag …` — the root-cause line, the per-level ten-draw spread table, and the attractor paragraph." Minimal repro: at main 9c6d02d (and at every descendant tip incl. this one), `git show cab770c:PLAYLOG.md | awk '/^## Round 1 /,0' | grep -c "Measured at the tag"` prints **0** — the R1 entry carries no such section, while the receipt text asserting it shipped survives one line above the entry. The original branch commit 1032342 HAS the section (verified: 5 lines into its R1 entry) — the re-land cab770c (#96) dropped the R1-entry edit in merge resolution and kept the receipt. Consequences, measured: (1) five rounds of cap-cluster-annotation specs (R77 item 3 → R78 item 2 → R79 item 2 → R80 item 2 → R81 mandate) carried against an annotation that existed nowhere canonical — the specs were updating a ghost; (2) NO pin fired — the suite stayed green through #96 and through every subsequent merge, the R34/R41-class entry loss recurring four repaired rounds later, invisible; (3) the honest baseline claim ("R1's published L2 IS the distribution ceiling… re-drawn 4×") lived only in the receipt prose. Closed by restoration + pin (below).
+- **[P3, verified open] the "near-human" stragglers survive a 3rd round.** README.md:59 ("L2 near-human | 260 | 8,700 …") and tools/prerun.js:1 ("L2 near-human") both still carry the undefined quality label the R79 pin banned from the button — the table/header prose was never in the R79 pin's scope. Carried to the R82 spec.
+- **[note] item-4 (σ on receipt-panel rows) verified absent**: index.html renderReceipts (~line 108) renders `COEV g${gen} ${sId} vs ${eId} -> …` with no σ, though rows carry sig since R80 — carried to the R82 spec.
+- **[process, fired as designed] the R79 DRIFT-FIRES pin caught THIS round mid-build.** Appending draw #17 (L2 6225) extended the ledger range past the button's "589-6125 fitness, 0-5 hits" annotation, turning LEDGER-DERIVED + DRIFT-FIRES RED in the post-build suite — the pin's exact contract ("a future draw that moves the L2 range turns the suite RED until the button is updated in the same round"). Fixed in-round: index.html:40 now reads "589-6225 fitness, 0-9 hits", recomputed from the ledger by the pin itself; re-run 4/4 green. The wound-fires-on-change class, exercised end-to-end for the first time since the pin shipped.
+
+### Next version spec (R82)
+1. **[S] "near-human" stragglers — 4th carrying** (R79 item 4 → R80 item 1): README.md:59's table row + tools/prerun.js:1's header carry the undefined quality label. WHY: the R79 pin banned it from the button because no repo text defines "near-human"; the surviving stragglers assert the same undefined quality in the two places a new reader looks first. VERIFY: grep "near-human" outside PLAYLOG/history/test-comment hits is EMPTY; the R79 pin stays green.
+2. **[S] live near-anchor count beside the sigLine — 4th carrying** (R78 item 4 → R79 item 2 → R80 item 3): the disclosure names σ's measured law; the page still shows no live count of how many C1 nets actually sit near the anchors while it trains. WHY: R66's law is a population claim — a player sliding σ from 12 to 2 should SEE the cluster form (or not) as it forms; the receipt says what σ meant, the count says what σ is doing. VERIFY: during a short C1 Train at σ=2 the counter rises measurably vs the same run at σ=12; a render pin extracts the count line.
+3. **[S] σ on the receipt-panel rows — 2nd carrying** (R80 item 4, now verified absent): the C1 ledger rows carry sig since R80, but the panel renders only `COEV g${gen} s vs e -> …`. WHY: the receipts are the trust surface — a row bred at σ=12 and a row bred at σ=2 currently render identically, so the panel cannot show the breeding-temperature story the σ-trail lane narrates. VERIFY: the C1-lane row render carries `σ=<int>` from the row's own sig field; non-C1 rows byte-unchanged; a render pin extracts a σ-bearing row.
+4. **[S] NEW — the re-land receipt audit.** WHY: this round's ghost find was manual (`git show` + `awk` archaeology); the wound class is mechanical — a merge/re-land that drops a sibling's artifact while keeping its receipt text. A suite pin that greps the LAST N rounds' receipt lines for artifact-verb claims ("gains", "ships", "lands") and asserts each named artifact exists in-tree would have turned #96 RED at birth. VERIFY: a synthetic PLAYLOG with a receipt claiming a nonexistent section file/heading turns the pin RED; the real PLAYLOG is GREEN (post-restoration).
+
+### Shipped this round (the build)
+- `PLAYLOG.md`: (a) **the R1 measured-at-tag section restored** — rebuilt from the seventeen-draw ledger (not the lost ten-draw text): root-cause line (v1 core.js:55-56 raw Math.random in the swan path), per-level spread with the three-band L1 structure, the cap-cluster ceiling (6000-frame cap + hit-variation: 6075@3h / 6125×5@5h / **6225@9h**, the new maximum) + zero-hit floor + kill/mid bands, sourced to research/v1-draws.jsonl, with a provenance paragraph naming the R74 authorship → #96 loss → R81 restoration; (b) this entry; (c) the canonical index gains the R81 row.
+- `tests/r81-r1-measured-at-tag-glue.test.js` (NEW, 4 tests): SECTION-EXISTS + ROOT-CAUSE-NAMED + LEDGER-SOURCED + CLUSTER-NOT-POINT — the R1 annotation becomes suite-guarded, the R65 two-halves pattern (process note + structural pin). FAIL-first on the pre-restore tree: 4/4 RED (section absent everywhere canonical).
+- `tests/r76-v1-draw-ledger-glue.test.js`: EXPECTED_TALLIES → the seventeen-draw table; the tally moved exactly once (draw #17), here, not in prose (R77 discipline); LEDGER-SHAPE floor 15→16.
+- `research/v1-draws.jsonl`: draw #17 appended (one JSON line; fitness-law fields: 2935=2785+25·6, 738=713+25·1, 6225=6000+25·9).
+- `core.js` + `README.md`: VERIFIED_CLAIMS gains the r81 pin; the count line 356→360 (352 in tests/ + 8 QA) per the readme-count pin; `node tools/build-site.mjs` rebuilt (dist copy carries the new pin + count).
+- `index.html:40`: the L2 button's ledger-derived spread updated 589-6125/0-5 → **589-6225/0-9** — draw #17's new maximum, demanded by the R79 pin's DRIFT-FIRES test in this round's own suite run (see Lies hunted).
+- Marker grep `^(<{7}|={7}|>{7})` after all edits: EMPTY.
+
+### Suite re-run after the build
+- `node --test tests/*.test.js` after all edits — **352 registered: 344 pass / 0 fail / 8 honest skips**; `node --test tools/test-qa.js` — 8/8.
+
+Builder mode, and the honest build this time was archaeology: the mandate said "annotate the R74 note" and the note did not exist. The R34/R41 class recurred exactly where its previous repairs could not see — a merge commit on a different lane, receipt text intact, artifact gone, suite green. The lesson generalizes into the R82 spec item 4: receipts that name artifacts need mechanical audit, because humans (this round included) read receipt prose as evidence of artifact existence for five rounds straight. Credit: R74 (the original builder — the lost ten-draw annotation was correct for its moment and its provenance note is preserved inside the restored section); R35/R41/R42 (the entry-loss repair pattern this round extends from merge-marker pins to receipt-vs-artifact audit); R77 (the ledger discipline that made the restoration a file-read instead of a hand-recompute); R80 (the σ-recording this round's spec item 3 builds on). Sibling repos studied: none this round — the find was repo-internal (git history of #96 vs 1032342).
 
 ## Round 80 — k2d8 (cron pong-quilt-playloop) — 2026-10-03 — mode: BUILDER (R79 spec item 1 — the σ-slider→trail interaction, [S], first build after THIRTEEN carryings: every coev ledger row receipts the σ that bred it + the sChamp trail annotates mid-run σ changes from those same receipted rows + 5-test pin) + play-tester — vs playtest-round-78 tip e92677b (R79's #101 merged into the R78 branch, not main; main tip 9c6d02d carries R78 only; this round bases on e92677b so its PR to main re-lands R79's work alongside R80's, per the R73/R74 re-land precedent)
 
@@ -3594,6 +3631,41 @@ rails).
 ## Round 1 — kimi1 — 2026-09-24 — vs v1 (e98cf66)
 
 ### Played versions: v1 only (first round — no prior to delta against)
+
+### Measured at the tag (Round 81 restoration — R74 annotation, lost at re-land #96, rebuilt ledger-sourced)
+
+v1 `core.js:55-56` consumed raw `Math.random()` in the black-swan path, so
+every number this entry publishes is ONE SAMPLE of a distribution, never a
+point. Sixteen value-tallied draws at tag e98cf66 (R68–R81, each in a
+dedicated clean worktree; the machine-readable ledger is
+`research/v1-draws.jsonl`, guarded by tests/r76-v1-draw-ledger-glue.test.js;
+draw 1 is the earlier-era documentary-only sample per the R72 note) measure
+the spread:
+
+- **L0** 1918–3295 — 2935×10 (the mode, 62.5% of value-tallied draws),
+  2225×3, 1918/3223/3295×1. R1's published 2899f/2h is an interior sample.
+- **L1** 738–6575 — three bands: kill-early (738×3 at 1h, 1242 at 2h, 1691 at
+  3h), mid (3940 → 5778, incl. 4900@13h, the near-cap shoulder 4.8% below the
+  5156 seam), cap-cluster (6114/6150 near-cap; 6400/6500×3/6575 AT the 6000f
+  cap at 16h/20h/23h). R1's published regression (1,192f) is one low draw, not
+  the shape.
+- **L2** 589–6225 — the ceiling is the 6000-frame CAP with hit-variation, not
+  a single value: 6075@3h, 6125×5@5h, and draw #17's **6225@9h** (a NEW
+  maximum — 9 terminal hits at the bound ceiling). Under the cap: a zero-hit
+  floor (589×2, ~13% of draws — the champion's best game can never touch the
+  ball), a kill band (2383×3, 3242), a mid band (4766/4878/4919).
+
+Attractor structure, one line: R1's published triple (2899f/2h, 1192f,
+6000f/5h/×3.40) samples the L2 ceiling exactly while L0/L1 land interior —
+the honest v1 baseline is the spread above, recomputed from the ledger by
+the suite, not the three rows below.
+
+Provenance: this section was built by R74 (original branch commit 1032342,
+ten-draw table) and lost when the re-land cab770c (#96) dropped the
+R1-entry edit while keeping the receipt text — the R34/R41-class entry loss,
+invisible to every pin then on the repo; five rounds of cap-cluster specs
+(R77–R81) carried against the ghost. R81 restored it, rebuilt from the
+seventeen-draw ledger, and pinned it (tests/r81-r1-measured-at-tag-glue.test.js).
 
 ### Deltas observed (shapes of change)
 - **v0 → v1 was the birth delta**: the repo went from nothing to a working GA

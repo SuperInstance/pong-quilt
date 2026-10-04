@@ -53,19 +53,20 @@ function tally(rows) {
   return t;
 }
 
-// The current PLAYLOG sixteen-draw table (15 value-tallied draws; draw 1
+// The current PLAYLOG seventeen-draw table (16 value-tallied draws; draw 1
 // excluded by its nulls — the earlier-era sample, per the R72 note). R77
-// appended draw 13, R78 draw 14, R79 draw 15, R80 draw 16; the tally moved
-// exactly once per draw, here, not in prose.
+// appended draw 13, R78 draw 14, R79 draw 15, R80 draw 16, R81 draw 17
+// (L2 6225 — a NEW cap-cluster maximum, 9 terminal hits at the 6000f cap);
+// the tally moved exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 3, 2935: 9, 3223: 1, 3295: 1 },
-  L1: { 738: 2, 1242: 1, 1691: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6400: 1, 6500: 3, 6575: 1 },
-  L2: { 589: 2, 2383: 3, 3242: 1, 4766: 1, 4878: 1, 4919: 1, 6075: 1, 6125: 5 },
+  L0: { 1918: 1, 2225: 3, 2935: 10, 3223: 1, 3295: 1 },
+  L1: { 738: 3, 1242: 1, 1691: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6400: 1, 6500: 3, 6575: 1 },
+  L2: { 589: 2, 2383: 3, 3242: 1, 4766: 1, 4878: 1, 4919: 1, 6075: 1, 6125: 5, 6225: 1 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {
   const rows = loadLedger();
-  assert.ok(rows.length >= 15, `expected >= 15 draws, got ${rows.length}`);
+  assert.ok(rows.length >= 16, `expected >= 16 draws, got ${rows.length}`);
   rows.forEach((r, i) => {
     assert.equal(r.draw, i + 1, `row ${i} draw number contiguous`);
     assert.equal(r.tag, "v1", `draw ${r.draw} tag`);
@@ -89,7 +90,7 @@ test("FITNESS-LAW: every complete row satisfies fitness === frames + 25*hits", (
   }
 });
 
-test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG sixteen-draw table", () => {
+test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG seventeen-draw table", () => {
   const t = tally(loadLedger());
   for (const lv of LEVELS) {
     assert.deepEqual(t[lv], EXPECTED_TALLIES[lv],
