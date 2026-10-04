@@ -106,7 +106,7 @@ function renderReceipts(){const ev=receiptEvicted?`\n[${receipts.length} shown /
  if($("mode").value!=="coev"||!coev||!coev.ledger){$("receipts").textContent=moth+ev;return;}
  const lev=coev.ledger.evicted?`\n[8 shown / ${coev.ledger.evicted} evicted]`:"";
  $("receipts").textContent=`— MOTH receipts —\n${moth}${ev}\n— C1 ledger —\n${coev.ledger.tail(8).map(r=>
-  `COEV g${r.gen} ${r.sId} vs ${r.eId} -> ${r.outcome} ${r.frames}f loser=${r.loserId||"—"} ${r.hash}←${r.prev.slice(0,8)}`).join("\n")}${lev}`;}
+  `COEV g${r.gen} ${r.sId} vs ${r.eId} -> ${r.outcome} ${r.frames}f${r.sig!==undefined?` σ=${r.sig}`:""} loser=${r.loserId||"—"} ${r.hash}←${r.prev.slice(0,8)}`).join("\n")}${lev}`;} // R84: the receipted row names the σ that bred it (R83 spec item 1, 4th carrying) — the row's OWN sig field (recorded R80), so a row bred before σ recording prints nothing, never a fabricated default; the MOTH lines above stay byte-unchanged (r68 contract); the trail's mid-run σ annotation (R80) and this per-row σ are one VIEW over the same rows, not two records that could drift
 function receipt(kind,move,conf,laneGen){const row={i:receipts.length,kind,move,conf:+conf.toFixed(2),gen:laneGen===undefined?gen:laneGen,prev:receiptHead}; // R68: a C1-lane receipt records ITS generation (laneGen), never the classic slot — a SAVE/LOAD under the coev banner names the genC it belongs to, so the row's own provenance column stops asserting a generation the C1 lane never used
  receiptHead=hash(JSON.stringify(row));row.hash=receiptHead;receipts.push(row);
  if(receipts.length>40){receipts.shift();receiptEvicted++;} // counted, like makeLedger — a bounded panel that admits it forgets

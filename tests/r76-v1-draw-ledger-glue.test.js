@@ -23,7 +23,8 @@
 //  (2) FITNESS-LAW — every row with complete fields satisfies
 //      fitness === frames + 25*hits. A fabricated fitness is caught here.
 //  (3) TALLY-MATCH — value-tallied rows (those with no null fields) produce
-//      per-level fitness tallies equal to the R76 PLAYLOG twelve-draw table.
+//      per-level fitness tallies equal to the R76 PLAYLOG twelve-draw table
+//      (now twenty draws — the comment moved per round).
 //      The hand-tally is retired; the file is the source of truth.
 //  (4) DRAW-1-EARLIER-ERA — draw 1 (the R1 pre-commit sample) carries at
 //      least one null field and a note naming its provenance: it is counted
@@ -53,20 +54,26 @@ function tally(rows) {
   return t;
 }
 
-// The current PLAYLOG seventeen-draw table (16 value-tallied draws; draw 1
+// The current PLAYLOG twenty-draw table (19 value-tallied draws; draw 1
 // excluded by its nulls — the earlier-era sample, per the R72 note). R77
 // appended draw 13, R78 draw 14, R79 draw 15, R80 draw 16, R81 draw 17
-// (L2 6225 — a NEW cap-cluster maximum, 9 terminal hits at the 6000f cap);
-// the tally moved exactly once per draw, here, not in prose.
+// (L2 6225 — a NEW cap-cluster maximum, 9 terminal hits at the 6000f cap),
+// R82 draw 18 (L2 6125×6 — the cap mode strengthens; L1 1242 repeats — the
+// kill-early floor value is now a 2-member band); R83 draw 19 (no NEW
+// values anywhere: L0 2935×12, L1 6500×4, L2 589×3 — a second consecutive
+// all-repeat draw, the distribution is converging); R84 draw 20 (a THIRD
+// consecutive all-repeat draw — L0 2935, L1 1242, L2 4766, every value an
+// established band member: convergence, not coincidence); the tally moved
+// exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 3, 2935: 10, 3223: 1, 3295: 1 },
-  L1: { 738: 3, 1242: 1, 1691: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6400: 1, 6500: 3, 6575: 1 },
-  L2: { 589: 2, 2383: 3, 3242: 1, 4766: 1, 4878: 1, 4919: 1, 6075: 1, 6125: 5, 6225: 1 },
+  L0: { 1918: 1, 2225: 3, 2935: 13, 3223: 1, 3295: 1 },
+  L1: { 738: 3, 1242: 3, 1691: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6400: 1, 6500: 4, 6575: 1 },
+  L2: { 589: 3, 2383: 3, 3242: 1, 4766: 2, 4878: 1, 4919: 1, 6075: 1, 6125: 6, 6225: 1 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {
   const rows = loadLedger();
-  assert.ok(rows.length >= 16, `expected >= 16 draws, got ${rows.length}`);
+  assert.ok(rows.length >= 18, `expected >= 18 draws, got ${rows.length}`);
   rows.forEach((r, i) => {
     assert.equal(r.draw, i + 1, `row ${i} draw number contiguous`);
     assert.equal(r.tag, "v1", `draw ${r.draw} tag`);
@@ -90,7 +97,7 @@ test("FITNESS-LAW: every complete row satisfies fitness === frames + 25*hits", (
   }
 });
 
-test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG seventeen-draw table", () => {
+test("TALLY-MATCH: value-tallied rows reproduce the current PLAYLOG twenty-draw table", () => {
   const t = tally(loadLedger());
   for (const lv of LEVELS) {
     assert.deepEqual(t[lv], EXPECTED_TALLIES[lv],
