@@ -79,10 +79,12 @@ The demo renders a wristband panel from a single registry in `core.js`
 (`PQ.VERIFIED_CLAIMS`). Green = the claim has a node-pinned proof; amber =
 browser-only, admitted as such. `tests/honesty.test.js` pins the two-way match:
 every claim's `proofTest` file exists, and every file in `tests/` backs a
-claim. To re-verify: `node --test tests/*.test.js && node --test tools/test-qa.js`
-(403 tests total: 395 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
+claim. To re-verify: `node tools/build-site.mjs --check` first (one-second seal
+check — the R93 tool, the R94 protocol gate), then `node --test tests/*.test.js` && `node --test tools/test-qa.js`
+(429 tests total: 421 in `tests/` + 8 in `tools/test-qa.js` — counts verified by
 running, pinned by `tests/readme-count.test.js`; the canonical command itself
-is pinned in EXPERIMENTS.md).
+is pinned in EXPERIMENTS.md; the two docs' artifact citations are audited by
+`node tools/receipt-audit.js --doc` — the R96 mode, 42 claims green at the build).
 
 | Claim | Proof | Verify by |
 |-------|-------|-----------|

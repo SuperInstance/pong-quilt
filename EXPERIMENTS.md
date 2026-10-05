@@ -11,7 +11,15 @@ by adversarial rounds. The process is the product; PLAYLOG.md is its memory.
 
 ## Scientist protocol (every play-tester round)
 
-1. **Run it.** `node tools/prerun.js` (core math, real numbers), read
+1. **Check the seal first.** `node tools/build-site.mjs --check` — one
+   command, one second: exit 0 with a one-line receipt when the gitignored
+   `site/dist` matches the demo sources, exit 1 NAMING the drifted files +
+   sealed head (STALE-DIST) or the absent seal (NO-SEAL) when it does not.
+   The stale-dist trap is workspace-per-workspace (discovered running at
+   R92 and R93, each time only by a full ~104-second suite run); the R93
+   tool exists precisely so the check costs one command instead. This is
+   step 0 — before the suite, before prerun.
+2. **Run it.** `node tools/prerun.js` (core math, real numbers), read
    `index.html`, `core.js`. Where possible drive the demo headless (jsdom or a
    browser). Never trust the README — verify claims by running.
    Canonical suite command: **`node --test tests/*.test.js`** (glob form), plus

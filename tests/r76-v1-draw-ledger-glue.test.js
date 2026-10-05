@@ -99,12 +99,38 @@ function tally(rows) {
 // R91 draw 27 (the one-axis gap-fill: L2 4137 fills the 3687→4766 mid-band
 // gap — interior, a maxGap filler one round after the triple; L0 2225 repeats
 // the floor rung a 4th time, L1 738 repeats the kill-early floor a 5th time —
-// modes hold while one rung is added);
+// modes hold while one rung is added); R92 draw 28 (the all-repeat RETURN,
+// second time this pattern: one round after a gap-fill, every level lands
+// back on an established mode — L0 2935×19 the mode at 70% of value-tallied
+// draws, L1 738×6 the kill-early floor, L2 6125×8 the cap mode — the
+// converge/fill/converge alternation holds a third cycle); R93 draw 29
+// (the all-repeat HOLDS: a third all-repeat draw in six — L0 2935×20 the
+// mode at ~71% of value-tallied draws, L1 738×7 the kill-early floor,
+// L2 3687×2 the 3242–4766 mid-band rung REPEATS its first back-reference —
+// the draw-25 gap-fill is now a 2-member band, convergence deepening after
+// the fill, no axis expands); R94 draw 30 (the all-repeat CONSOLIDATES:
+// a fourth all-repeat in seven draws, and this time even the axes that
+// usually wander stay home — L0 2935×21 the mode, L1 6500×5 the
+// 6000-frame/20-hit plateau mode, L2
+// 6125×9 the cap mode; two draws after the R92/R93 alternation the
+// converge side of converge/fill is dominating, no gap has refilled since
+// R91);
+// R95 draw 31 (the L2 one-axis gap-fill: L2 4730 fills the 4137→4766
+// mid-band gap one rung below the 4766 pair — interior, the first new L2
+// value since draw 27; L0 2935×22 the mode at ~71% of value-tallied draws,
+// L1 6500×6 the plateau mode strengthens — modes hold while one rung is
+// added, the converge/fill alternation's fill side returns on a single axis);
+// R96 draw 32 (the all-repeat RETURNS, second in three draws: every level
+// lands on an established value — L0 2935×23 the mode at ~71%, L1 6525×2
+// the draw-22 cap value repeats for the first time (the cap-cluster gains
+// its second member above the 6500 plateau), L2 3687×3 the mid-band rung
+// consolidates; the converge/fill alternation completes its third full
+// cycle — fill, converge, converge — convergence deepening after the fill);
 // the tally moved exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 4, 2841: 1, 2935: 18, 3223: 1, 3295: 1 },
-  L1: { 738: 5, 1242: 3, 1691: 1, 2100: 1, 2833: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
-  L2: { 589: 4, 2383: 3, 2977: 1, 3242: 1, 3687: 1, 4137: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 7, 6225: 1 },
+  L0: { 1918: 1, 2225: 4, 2841: 1, 2935: 23, 3223: 1, 3295: 1 },
+  L1: { 738: 7, 1242: 3, 1691: 1, 2100: 1, 2833: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 6, 6525: 2, 6575: 1 },
+  L2: { 589: 4, 2383: 3, 2977: 1, 3242: 1, 3687: 3, 4137: 1, 4730: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 9, 6225: 1 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {

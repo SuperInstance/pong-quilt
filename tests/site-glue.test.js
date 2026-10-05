@@ -224,3 +224,69 @@ test("widget wiring contract: every interactive mount exists and app.js only spe
     assert.ok(html.includes(`id="${form}"`) && new RegExp(`<form id="${form}"[^>]*action="/api/(replay|judge)"`).test(html),
       `${form} must keep its no-JS fallback action`);
 });
+
+// ---- R93: build-site --check dry-run (R88 item 5 → R93, 5th carrying, first
+// build). The R88 seal is test-only; --check gives the human/script lane the
+// same named state without a 104-second suite run (R92 + R93 lived the wound:
+// both rounds discovered stale seals only by running the full suite). Hermetic
+// fixtures drive the CLI through BUILD_SITE_ROOT (the named test seam); the
+// drift computation is SHARED with the r88 pin above (imported, not re-written).
+const { spawnSync } = require("node:child_process");
+const os = require("node:os");
+
+const BUILD_CLI = path.join(__dirname, "..", "tools", "build-site.mjs");
+function makeFixture(t, { seal = true, drift = false } = {}) {
+  const fx = fs.mkdtempSync(path.join(os.tmpdir(), `r93-check-${t}-`));
+  for (const d of ["checkpoints", "tools", "site/generated"]) fs.mkdirSync(path.join(fx, d), { recursive: true });
+  fs.writeFileSync(path.join(fx, "core.js"), "core-v1\n");
+  fs.writeFileSync(path.join(fx, "index.html"), "idx\n");
+  fs.writeFileSync(path.join(fx, "qa.js"), "qa\n");
+  fs.writeFileSync(path.join(fx, "tools", "wal-export.js"), "wal\n");
+  fs.writeFileSync(path.join(fx, "checkpoints", "level0.js"), "L0\n");
+  if (seal) {
+    const files = ["index.html", "core.js", "qa.js", "tools/wal-export.js", "checkpoints/level0.js"];
+    const manifest = files.map((f) => ({ file: `demo/${f}`, sha256: crypto.createHash("sha256").update(fs.readFileSync(path.join(fx, f))).digest("hex") }));
+    fs.writeFileSync(path.join(fx, "site", "generated", "provenance.json"),
+      JSON.stringify({ ok: true, head: "abc123def", files: manifest.length, manifest }, null, 2));
+  }
+  if (drift) fs.appendFileSync(path.join(fx, "core.js"), "drift\n");
+  return fx;
+}
+const runCheck = (fx) => spawnSync(process.execPath, [BUILD_CLI, "--check"],
+  { env: { ...process.env, BUILD_SITE_ROOT: fx }, encoding: "utf8" });
+
+test("R93 CHECK-MODE fresh seal: exit 0 + one-line receipt naming files + head", () => {
+  const fx = makeFixture("fresh");
+  const r = runCheck(fx);
+  assert.equal(r.status, 0, `expected exit 0, got ${r.status}: ${r.stderr}`);
+  assert.match(r.stdout, /seal fresh: 5 demo files match the working tree \(sealed at head abc123def…\)/);
+  assert.equal(r.stderr, "", "a fresh seal must not print to stderr");
+});
+
+test("R93 CHECK-MODE stale seal: exit 1 NAMING the drifted file + sealed head", () => {
+  const fx = makeFixture("stale", { drift: true });
+  const r = runCheck(fx);
+  assert.equal(r.status, 1, `expected exit 1, got ${r.status}: ${r.stdout}`);
+  assert.match(r.stderr, /STALE-DIST: sources drifted from the sealed build \(sealed at head abc123def\): demo\/core\.js — run `node tools\/build-site\.mjs` to reseal/);
+  assert.equal(r.stdout, "", "a stale seal must not print the receipt line to stdout");
+});
+
+test("R93 CHECK-MODE no seal: exit 1 NAMING the absent seal + the prescription", () => {
+  const fx = makeFixture("noseal", { seal: false });
+  const r = runCheck(fx);
+  assert.equal(r.status, 1, `expected exit 1, got ${r.status}: ${r.stdout}`);
+  assert.match(r.stderr, /NO-SEAL: no sealed build at site\/generated\/provenance\.json — run `node tools\/build-site\.mjs` to seal/);
+});
+
+test("R93 CHECK-MODE drift computation is the r88 pin's semantics (shared, not re-written)", async () => {
+  const { computeDrift } = await import("../tools/build-site.mjs");
+  const fx = makeFixture("module");
+  const prov = JSON.parse(fs.readFileSync(path.join(fx, "site", "generated", "provenance.json"), "utf8"));
+  assert.deepEqual(computeDrift(fx, prov), [], "fresh fixture must not drift");
+  fs.appendFileSync(path.join(fx, "core.js"), "drift\n");
+  assert.deepEqual(computeDrift(fx, prov), ["demo/core.js"], "drift names the file, demo/-prefixed");
+  // r88 parity: a manifest entry whose live source is MISSING is skipped, not flagged
+  const provMissing = { manifest: [...prov.manifest, { file: "demo/checkpoints/level1.js", sha256: "0".repeat(64) }] };
+  assert.deepEqual(computeDrift(fx, provMissing), ["demo/core.js"],
+    "missing live files are skipped — the exact r88 pin semantics");
+});
