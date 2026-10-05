@@ -2,6 +2,19 @@
 // Round 86 — receipt-audit: re-land receipt claims must name in-tree artifacts
 // (R85 spec item 1, 6th carrying, first build; the R81→R85 carried audit).
 //
+// Round 96 addendum — the --doc mode (R95 spec item 1, 10th carrying, first
+// build; the R87→R95 carried audit-over-README/EXPERIMENTS): the R86 grammar
+// audits PLAYLOG receipts (bullet + in-tree verb), but README.md and
+// EXPERIMENTS.md cite artifacts as REFERENCES — "pinned by `tests/…`",
+// "the R42 pin (`tests/…`)" — in prose, tables, and numbered lists, with no
+// bullet and no verb. R82/R83's invisible-doc-rot class lives in exactly
+// those docs: nothing read their citation prose against the tree, so a
+// re-land dropping a cited file stays green to every pin. In doc mode ANY
+// line's backticked tracked path is an existence claim (the PATH_RE prefix
+// list already excludes hypothetical names like the README's ring_buffer.py
+// analogy column). The R39 format-description carve-out and the R42
+// GENERATED honoring hold unchanged.
+//
 // WHY THIS TOOL EXISTS. R82/R83 found the invisible-doc-rot class: a README
 // table described games that had not existed for 32 rounds, and four rounds
 // of cap-cluster specs carried against a ghost R74 build whose receipt text
@@ -36,7 +49,12 @@
 //     exit 2 + usage on misuse (missing file, unreadable) — REFUSED, never
 //     a quiet vacuous green (N=0 claims also REFUSES: an audit that stopped
 //     finding claims would be applause, not measurement);
-//   - requireable as a module (auditText) AND runnable as a CLI.
+//   - requireable as a module (auditText) AND runnable as a CLI;
+//   - DOC MODE (--doc, this round): `node tools/receipt-audit.js --doc`
+//     audits README.md + EXPERIMENTS.md (or named files after the flag)
+//     under the relaxed grammar — any line, no bullet/verb requirement;
+//     per-file exit semantics unchanged (0 clean / 1 phantoms named /
+//     2 misuse or 0-claims REFUSED — a vacuous doc audit is applause too).
 
 "use strict";
 const fs = require("fs");
@@ -60,13 +78,20 @@ const GENERATED = new Map([
 function normalizePath(p) { return p.replace(/\/+$/, ""); }
 
 // Pure: audit markdown text -> {claims: [{line, path}], formatSkipped: n}.
-// The grammar pin: which lines assert an in-tree artifact.
-function parseClaims(text) {
+// The grammar pin: which lines assert an in-tree artifact. opts.doc relaxes
+// the receipt grammar to the doc grammar (any line may carry a citation).
+function parseClaims(text, opts) {
+  const doc = !!(opts && opts.doc);
   const claims = [];
   let formatSkipped = 0;
   String(text).split("\n").forEach((line, i) => {
-    if (!/^\s*[-*] /.test(line)) return;          // receipt lines are bullets
-    if (!VERB_RE.test(line)) return;              // no in-tree verb, no claim
+    if (!doc) {
+      if (!/^\s*[-*] /.test(line)) return;          // receipt lines are bullets
+      if (!VERB_RE.test(line)) return;              // no in-tree verb, no claim
+    }
+    // doc mode: docs cite artifacts as references in prose/tables/lists —
+    // no bullet or verb required (the R96 addendum; the PATH_RE prefix list
+    // is what keeps hypothetical names out of the claim set)
     PATH_RE.lastIndex = 0;
     let m;
     while ((m = PATH_RE.exec(line))) {
@@ -79,20 +104,25 @@ function parseClaims(text) {
 }
 
 // Audit markdown against a tree root -> {ok, phantoms, checked, formatSkipped, generatedHonored}.
-function auditText(text, root) {
-  const { claims, formatSkipped } = parseClaims(text);
+// opts.doc selects the doc grammar (see parseClaims).
+function auditText(text, root, opts) {
+  const { claims, formatSkipped } = parseClaims(text, opts);
   const generatedHonored = claims.filter(c => GENERATED.has(normalizePath(c.path))).length;
   const phantoms = claims.filter(c => !GENERATED.has(normalizePath(c.path)) && !fs.existsSync(path.join(root, normalizePath(c.path))));
   return { ok: phantoms.length === 0 && claims.length > 0, phantoms, checked: claims.length, formatSkipped, generatedHonored };
 }
 
+// Reference docs audited by --doc (the R96 addendum): the two files whose
+// citation prose the R87→R95 spec wanted machine-checked. Exported for the
+// pin; the CLI defaults to this pair when --doc names no files.
+const DOC_FILES = ["README.md", "EXPERIMENTS.md"];
+
 function usage() {
-  console.error("usage: node tools/receipt-audit.js [markdown-file] (default PLAYLOG.md)");
+  console.error("usage: node tools/receipt-audit.js [--doc] [markdown-file ...] (default: PLAYLOG.md; --doc default: README.md + EXPERIMENTS.md)");
   process.exit(2);
 }
 
-function main() {
-  const target = process.argv[2] || path.join(__dirname, "..", "PLAYLOG.md");
+function auditOne(target, docMode, root) {
   let text;
   try {
     text = fs.readFileSync(target, "utf8");
@@ -100,10 +130,10 @@ function main() {
     console.error("receipt-audit: REFUSED — cannot read " + target + ": " + e.message);
     process.exit(2);
   }
-  const root = path.resolve(__dirname, "..");
-  const { ok, phantoms, checked, formatSkipped, generatedHonored } = auditText(text, root);
+  const { ok, phantoms, checked, formatSkipped, generatedHonored } = auditText(text, root, { doc: docMode });
   if (checked === 0) {
-    console.error("receipt-audit: REFUSED — 0 existence-claims found; the audit degenerated (verb list or path grammar no longer matches the receipt format)");
+    console.error(`receipt-audit: REFUSED — 0 existence-claims found in ${target}; the audit degenerated (` +
+      (docMode ? "path grammar no longer matches the docs' citation style" : "verb list or path grammar no longer matches the receipt format") + ")");
     process.exit(2);
   }
   if (!ok) {
@@ -112,9 +142,29 @@ function main() {
     }
     process.exit(1);
   }
-  console.log(`receipt-audit: OK (${checked} existence-claims checked, ${formatSkipped} format-descriptions skipped, ${generatedHonored} generated-build-outputs honored)`);
+  return { checked, formatSkipped, generatedHonored };
+}
+
+function main() {
+  const args = process.argv.slice(2);
+  const docMode = args.includes("--doc");
+  const files = args.filter(a => a !== "--doc");
+  const root = path.resolve(__dirname, "..");
+  const targets = files.length ? files
+    : docMode ? DOC_FILES.map(f => path.join(root, f))
+    : [path.join(root, "PLAYLOG.md")];
+  const receipts = targets.map(t => ({ target: path.isAbsolute(t) ? path.relative(root, t) : t, ...auditOne(t, docMode, root) }));
+  if (receipts.length === 1) {
+    // legacy single-file shape (the R86 pin asserts this receipt verbatim)
+    const r = receipts[0];
+    console.log(`receipt-audit: OK (${r.checked} existence-claims checked, ${r.formatSkipped} format-descriptions skipped, ${r.generatedHonored} generated-build-outputs honored)`);
+  } else {
+    console.log("receipt-audit: OK (" + receipts.map(r =>
+      `${r.target}: ${r.checked} existence-claims checked, ${r.formatSkipped} format-descriptions skipped, ${r.generatedHonored} generated-build-outputs honored`
+    ).join("; ") + ")");
+  }
   process.exit(0);
 }
 
 if (require.main === module) main();
-module.exports = { parseClaims, auditText, VERB_RE, PATH_RE, GENERATED, normalizePath };
+module.exports = { parseClaims, auditText, VERB_RE, PATH_RE, GENERATED, normalizePath, DOC_FILES };
