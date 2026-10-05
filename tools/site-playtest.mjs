@@ -84,6 +84,32 @@ export function classifyDeployLag({ servedSha256, sealedHead, checkoutHead, seal
     receipt: `deploy lags this checkout by ${aheadCount} commit(s) (sealed head ${s9(sealedHead)}…, checkout ${s9(checkoutHead)}…) but the served checkpoint is byte-faithful to the sealed head's own blob — lag NAMED, not a finding (R91 deploy-lag literacy)` };
 }
 
+// --- R92 abstaining-judge label: exported for the r92 pin (tests/r92-judge-label-glue.test.js) ---
+
+// R92 (R91 spec item 4, [S], 2nd carrying: R91 item 5 → this build): check 5's
+// name claimed "returns a verdict" while PASSing on `verdict null (abstain: …)`
+// — seven straight rounds (R86→R92) the live judge lane was dark (JEV 401)
+// while the check NAME claimed a verdict. The abstention itself was honest
+// (named, never fabricated); the wound was the LABEL: a chronic null wearing a
+// verdict-claim. An honest abstain is not a finding, but it is never a
+// verdict-claim either. Split the states:
+export const JUDGE_LABEL_VERDICT = "judge replays + returns a verdict (live JEV)";
+export const JUDGE_LABEL_ABSTAIN = "judge endpoint dark — abstains NAMED (no verdict claimed)";
+export function classifyJudge(judge) {
+  // a verdict must be a FINITE number — NaN/Infinity pass typeof === "number"
+  // (NaN especially: JSON.parse turns a null verdict into null, but an
+  // internal NaN reaches here as NaN) and are fabricated shape, not a verdict
+  if (judge && typeof judge.verdict === "number" && Number.isFinite(judge.verdict))
+    return { ok: true, kind: "verdict", label: JUDGE_LABEL_VERDICT,
+      receipt: `verdict ${JSON.stringify(judge.verdict)}${judge.abstain ? ` (note: ${judge.abstain})` : ""}` };
+  // an abstention must NAME itself — classified by state, never by substring spoofing
+  if (judge && typeof judge.abstain === "string" && judge.abstain.length > 0)
+    return { ok: true, kind: "abstained", label: JUDGE_LABEL_ABSTAIN,
+      receipt: `abstain: ${judge.abstain} — no verdict claimed, none fabricated` };
+  return { ok: false, kind: "failed", label: JUDGE_LABEL_VERDICT,
+    receipt: `judge returned neither a numeric verdict nor a named abstain: ${JSON.stringify(judge)}` };
+}
+
 async function main() {
   console.log(`playtesting ${BASE}\n`);
 
@@ -113,12 +139,14 @@ async function main() {
   check("8-seed sweep returns a distribution", okRows.length === 8 && digests.size >= 2 && Math.max(...hits) > Math.min(...hits),
     `seeds 42..49: hits ${hits.join(",")}, ${digests.size} unique digests`);
 
-  // 5. judge a claim -> verdict -> recorded on the wall
+  // 5. judge a claim -> verdict (or a NAMED abstention) -> recorded on the wall
   const claimText = `level1 at seed 42 in this sweep scored ${hits[0]} hits`;
   const j = await api("POST", "/api/judge", { level: "level1", seed: 42, claim: claimText });
-  check("judge replays + returns a verdict (live JEV)", j.j?.ok && j.j.replay?.digest &&
-    (typeof j.j.judge?.verdict === "number" || /abstain/i.test(j.j.judge?.abstain || "")),
-    j.j?.ok ? `verdict ${JSON.stringify(j.j.judge.verdict)}${j.j.judge.abstain ? " (abstain: " + j.j.judge.abstain + ")" : ""}, replay digest ${j.j.replay.digest.slice(0, 16)}…` : JSON.stringify(j.j));
+  const jc = classifyJudge(j.j?.judge);
+  check(jc.label, Boolean(j.j?.ok && j.j.replay?.digest && jc.ok),
+    j.j?.ok
+      ? `${jc.receipt}${j.j.replay.digest ? `, replay digest ${j.j.replay.digest.slice(0, 16)}…` : ""}`
+      : `judge transport failed: ${JSON.stringify(j.j)}`);
   check("verdict recorded on the claim wall", j.j?.wall?.recorded === true, `wall key: ${j.j?.wall?.key || "none"}`);
 
   // 6. the wall serves it back, newest first

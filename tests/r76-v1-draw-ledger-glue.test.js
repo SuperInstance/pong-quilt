@@ -99,12 +99,16 @@ function tally(rows) {
 // R91 draw 27 (the one-axis gap-fill: L2 4137 fills the 3687→4766 mid-band
 // gap — interior, a maxGap filler one round after the triple; L0 2225 repeats
 // the floor rung a 4th time, L1 738 repeats the kill-early floor a 5th time —
-// modes hold while one rung is added);
+// modes hold while one rung is added); R92 draw 28 (the all-repeat RETURN,
+// second time this pattern: one round after a gap-fill, every level lands
+// back on an established mode — L0 2935×19 the mode at 70% of value-tallied
+// draws, L1 738×6 the kill-early floor, L2 6125×8 the cap mode — the
+// converge/fill/converge alternation holds a third cycle);
 // the tally moved exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 4, 2841: 1, 2935: 18, 3223: 1, 3295: 1 },
-  L1: { 738: 5, 1242: 3, 1691: 1, 2100: 1, 2833: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
-  L2: { 589: 4, 2383: 3, 2977: 1, 3242: 1, 3687: 1, 4137: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 7, 6225: 1 },
+  L0: { 1918: 1, 2225: 4, 2841: 1, 2935: 19, 3223: 1, 3295: 1 },
+  L1: { 738: 6, 1242: 3, 1691: 1, 2100: 1, 2833: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
+  L2: { 589: 4, 2383: 3, 2977: 1, 3242: 1, 3687: 1, 4137: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 8, 6225: 1 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {
