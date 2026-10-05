@@ -6,6 +6,7 @@ Every round is a receipted observation in the loop. Newest first.
 
 | Round | Date | Branch / base | Status |
 |---|---|---|---|
+| R94 | 2026-10-05 | playtest-round-94 (vs R93 tip 057b5dd, PR #115 open Casey-gated per R93's receipts — basing on the R93 tip re-lands R92+R93+R94 to main in one PR per the R22-vs-r21/R73/R74 precedent; R93 spec item 5 first build: the --check adoption gate — EXPERIMENTS.md step 0 names `node tools/build-site.mjs --check` BEFORE the canonical suite command with the named states + the workspace-per-workspace wound (the R77 pattern: process note + structural pin), 2-test pin FAIL-first observed 2/2 RED, VERIFIED_CLAIMS 95→96, README counts 417→419 (run-verified); v1 draw #30 — the all-repeat CONSOLIDATES, fourth in seven draws: L0 2935×21, L1 6500×5, L2 6125×9; round start: this workspace's seal was FRESH — the check cost one command instead of the 104s suite trap it replaces, the gate's first live earned keep; mid-round the r88 named seal fired on the builder's OWN core.js claim edit (demo/core.js drift) — prescribed rebuild one command, resealed at 057b5ddc0, the R88 seal's first live exercise on a builder-inflicted drift; builder's own README count was off-by-one (412 claimed vs 411 live) — the readme-count pin caught it, corrected 419/411; deploy lag 97→98 named not a finding; judge lane dark 9th straight round (401), abstention labeled per R92; NEXT: R95 spec per the entry — audit-over-README/EXPERIMENTS 9th carrying, pulse-identity note 8th, judge-lane liveness [ops] 4th, deploy-cadence lag WARN [ops] 3rd, --check gate remaining slices NEW) | canonical |
 | R93 | 2026-10-05 | playtest-round-93 (vs R92 tip 03eedef, PR #114 open Casey-gated per R92's receipts — basing on the R92 tip re-lands R92+R93 to main in one PR per the R22-vs-r21/R73/R74 precedent; R92 spec item 3 first build after 5 carryings: build-site --check dry-run — tools/build-site.mjs gains --check + computeDrift (the SAME full-manifest drift as the r88 pin, shared not re-written) + checkMode: exit 0 one-line receipt when fresh / exit 1 NAMING drifted files + sealed head when stale (STALE-DIST) / exit 1 naming the absent seal (NO-SEAL), BUILD_SITE_ROOT named test seam, 4-test pin in site-glue (fresh-CLI / stale-CLI / no-seal-CLI / module drift semantics incl. the r88 missing-live skip), LIVE verify on the real sealed tree 'seal fresh: 11 demo files…' exit 0, FAIL-first by construction; v1 draw #29 — the all-repeat HOLDS, third time in six: L0 2935×20 (~71% of value-tallied draws), L1 738×7, L2 3687×2 — the draw-25 gap-fill REPEATS its first back-reference, now a 2-member band, no axis expands; round-start find: THIS workspace's gitignored dist was stale-sealed at R90's head (two rounds behind) — the r88 seal fired 3-test RED, rebuilt+named; the trap recurs workspace-per-workspace and was discoverable only by a 104s suite run, exactly the wound --check now closes; deploy lag 96→97 commits, named not a finding; judge lane dark 8th straight round (401), abstention labeled per R92; NEXT: R94 spec per the entry — audit-over-README/EXPERIMENTS 8th carrying, pulse-identity note 7th, judge-lane liveness [ops] 3rd, deploy-cadence lag WARN [ops] 2nd, --check adoption gate NEW) | canonical |
 | R92 | 2026-10-05 | playtest-round-92 (vs main a4a4f88 post-#113 — the PR queue EMPTY at round time, the Casey gate fully open; R92 spec item 4 first build after 2 carryings: the abstaining-judge check label — tools/site-playtest.mjs gains classifyJudge + JUDGE_LABEL_VERDICT/ABSTAIN, check 5's name comes from the classifier (a numeric verdict keeps the verdict label; a named abstention gets its own label — PASS but never a verdict-claim; NaN rejected via Number.isFinite), 10-test pin incl. hermetic CLI stub scenarios, LIVE 9/9 with the named-abstention label against the real 401 lane; v1 draw #28 — the all-repeat RETURN, second time this pattern: every level lands on an established mode (L0 2935 ×19, L1 738 ×6, L2 6125 ×8), the converge/fill/converge alternation holds a third cycle; round-start find: this workspace's gitignored site/dist was stale-sealed at R83's head — the r88 STALE-DIST seal fired 4-test RED, rebuilt+named (not a repo lie; dist is generated per R42/R43/R86); deploy lag grew 78→96 commits, named not a finding; NEXT: R93 spec per the entry — audit-over-README/EXPERIMENTS 7th carrying, pulse-identity note 6th, build-site --check 5th, judge-lane liveness [ops] 2nd, deploy-cadence lag WARN [ops] NEW) | canonical |
 | R91 | 2026-10-05 | playtest-round-91 (vs R90 tip 7a1ae06, PRs #102–#111 open Casey-gated per R90's receipts — basing on the R90 tip re-lands R79–R91 to main in one PR per the R22-vs-r21/R73/R74 precedent; R91 spec item 1 first build after 5 carryings: deploy-lag literacy — the live byte-identity check now judges the deploy against its OWN sealed head (classifyDeployLag: lag NAMED with commit distance / DIVERGED → exit 1 / current / unresolvable-named), 10-test pin incl. hermetic CLI stub scenarios, LIVE 9/9 first all-green since R86 with the 78-commit lag receipted; v1 draw #27 — the one-axis gap-fill: L2 4137 fills the 3687→4766 mid-band gap, modes hold (L0 2935 ×18, L1 738 ×5); NEXT: R92 spec per the entry — audit-over-README/EXPERIMENTS 6th carrying, pulse-identity note 5th, build-site --check 4th, abstaining-judge label 2nd, judge-lane liveness [ops] NEW) | canonical |
@@ -98,6 +99,55 @@ Every round is a receipted observation in the loop. Newest first.
 | R1 | 2026-09-24 | v1 (e98cf66) | canonical |
 
 
+
+## Round 94 — k2d8 (cron pong-quilt-playloop) — 2026-10-05 — mode: BUILDER (R93 spec item 5 — the --check adoption gate, [S], NEW last round, first build) + play-tester — vs R93 tip 057b5dd (PR #115 open Casey-gated per R93's receipts — basing on the R93 tip re-lands R92+R93+R94 to main in one PR per the R22-vs-r21/R73/R74 precedent)
+
+**Date:** 2026-10-05
+**Base:** playtest-round-93 tip 057b5dd
+**Mode:** BUILDER — R93 spec item 5 (`--check` adoption gate), first build; the spec's two further slices (a README-level pre-suite gate assertion and a prerun seal-state print) carried to R95
+**Played versions:** v1 (e98cf66, draw #30) — headless via the tag's own tools/prerun.js in a dedicated clean worktree — plus the tip itself (057b5dd)
+**Siblings studied:** R93 (057b5dd — the --check tool, the trap framing, and the item-5 spec this round builds; its receipt-audit-over-docs items 1–2 remain open below), R92 (03eedef — the abstaining-judge label now receipting its 9th dark round), R91 (21b82f0 — deploy-lag literacy receipting the 98-commit lag named), R87 (the v1 distribution artifact + r87 pin), R86 (the r77 append-discipline pattern this round's pin copies), R76 (the draw ledger + TALLY-MATCH pin moved exactly once), R19 (the readme-count bump discipline that caught this builder's own off-by-one)
+
+### Play
+
+- `node tools/build-site.mjs --check` at round start: exit 0, `seal fresh: 11 demo files match the working tree (sealed at head 03eedef7f…)` — this workspace escapes the stale-dist trap this round (R93 never touched the 11 demo files). The gate's first live earned keep: one command, one second, instead of the 104-second suite discovery the trap used to cost (R92, R93).
+- `node tools/prerun.js` at the tip: L0 gen 0 best 1890 (1690f, 2h, ×4.06); L1 gen 60 best 2010 (1810f, 2h, ×4.44); L2 gen 260 best 1753 (1453f, 3h, ×3.41); curve 261 generations → 21 points; 5 quantum flips / 3 swaps. Spine byte-exact on the post-R50 canonical line: coev.js 946e639a…, coev-stone-v1.json 3a0a5fb6…, curve.json f9b20e7d…, L0 bc15d414…, L1 1125d59c…, L2 50137ceb…. Tree clean after regenerate (checkpoints byte-identical).
+- v1 draw #30 via the tag's own tools/prerun.js in a clean worktree (`git worktree add /tmp/pq-v1-r94 e98cf66`): L0 2935 (2785f, 6h, ×2.11; 21st repeat), L1 6500 (6000f, 20h, ×3.40; 5th), L2 6125 (6000f, 5h, ×3.40; 9th). Fitness law holds: 2935=2785+25·6, 6500=6000+25·20, 6125=6000+25·5. The all-repeat consolidates — the fourth all-repeat in seven draws, and this time no axis even wobbles.
+- `node --test tools/test-qa.js`: 8/8.
+
+### Numbers
+
+- Suite (canonical, at the R94 tip): 411 registered, 403 passed / 0 failed / 8 skipped, 112.8s. Counts bumped 417→419 (409→411 in tests/) — the readme-count pin verified by running, not by hand (and it did: see Lies).
+- Claims: 95→96 (r94-check-adoption-glue, proofTest tests/r94-check-adoption-glue.test.js); the honesty two-way match green — every test file backs a claim, every claim's proofTest exists.
+- Ledger: 30 draws, 29 value-tallied; research/v1-distribution.json regenerated via tools/v1-dist.js (`OK (30 draws, 29 value-tallied)`); r76 TALLY-MATCH pin moved exactly once (L0 2935×21, L1 6500×5, L2 6125×9).
+
+### Deltas observed
+
+- d(learning)/d(version): spine md5s unchanged — the post-R50 canonical line reproduces byte-exact at the tip; the tip-vs-v1 L1 speed gap persists (×4.44 vs ×3.40), checkpoint-freshness literacy (R85) unchanged.
+- Failure-mode migration: none across versions; the round's two REDs were both builder-self-inflicted and both caught by the named pins — (1) the r88 demo-copy seal fired on this round's own core.js claim edit (demo/core.js drift), the named STALE-DIST receipt prescribed `node tools/build-site.mjs`, one command, resealed at 057b5ddc0 — the R88 seal's first live exercise on a builder-inflicted drift, behaved exactly as designed; (2) the builder's own README count was off-by-one (412 claimed vs 411 live), caught by the R19/R58 readme-count pin, corrected to 419/411 before it ever shipped.
+
+### Live
+
+9/9 checks (fourth consecutive all-green). Judge lane dark a 9th consecutive round (JEV HTTP 401 — the R92 named-abstention label receipts it; the wall carries 10 receipts). Deploy lag 97→98 commits, sealed head 17eb2394a… unchanged since R86 — named, not a finding (R91 literacy).
+
+### Lies (verified by running; fabrication = disqualification)
+
+- NONE NEW in the artifact: the r83/r86/r91/r92 pin families all green by running at the final tip.
+- Two builder-honesty entries, both caught by pins before ship: the demo-copy drift above (the seal named it, the fix was one command) and the README 412-vs-411 off-by-one (the count pin named it; 419/411 is the run-verified number now in README).
+- Open-spec absence greps (the R93-verified-absence discipline): receipt-audit `--doc` ABSENT; pulse-identity note ABSENT; `--check` in the playbook now PRESENT (this round's build — the grep flips as the pin goes green); judge-lane liveness unactionable in-repo ([ops], 401 against the live lane).
+- Deploy lag +1/round monotone (96→97→98), no merge since R86 — named, still not a finding.
+
+### Spec for R95
+
+1. **[S] re-land receipt audit over README/EXPERIMENTS** — 9th carrying. What/why/verify unchanged from R87's framing: an audit `--doc` mode making the receipts' claims machine-checkable against the two docs. One hour.
+2. **[S] pulse-identity discipline note in EXPERIMENTS.md** — 8th carrying. The note + a pin asserting it stays named (the R77/r94 pattern, now twice proven as the cheap close). One hour.
+3. **[S][ops] judge-lane liveness (watcher + wrangler secret rotation)** — 4th carrying. Two hours, needs the secret keeper; the 9-round dark streak makes this the longest-lived unactionable item.
+4. **[S][ops] deploy-cadence lag WARN (act on R91's classifyDeployLag receipt)** — 3rd carrying. Two hours; the lag is now 98 commits and monotone.
+5. **[S] --check adoption gate, remaining slices** — NEW, 1st carrying: (a) README's re-verify line wires `node tools/build-site.mjs --check` as the first move + a testcmd-docs assertion that the canonical command block names it; (b) a prerun.js print naming the seal state (fresh/stale/none) so the spine receipt carries it. Verify: FAIL-first pins; each slice small.
+
+Sizes: items 1/2/5 ≈ one hour each; 3/4 ≈ two hours each, [ops]-gated.
+
+Receipts: PLAYLOG R94 entry + canonical index row (this entry, newest-first; the index row points here); research/v1-draws.jsonl append (draw #30) + research/v1-distribution.json regenerated; r76 TALLY-MATCH moved once; EXPERIMENTS.md step 0 + tests/r94-check-adoption-glue.test.js (FAIL-first 2/2 observed); core.js VERIFIED_CLAIMS 95→96; README counts 417→419; site/dist resealed at 057b5ddc0 (self-inflicted drift receipt); PR open Casey-gated.
 
 ## Round 93 — k2d8 (cron pong-quilt-playloop) — 2026-10-05 — mode: BUILDER (R92 spec item 3 — build-site --check dry-run, [S], 5th carrying, first build) + play-tester — vs R92 tip 03eedef (PR #114 open Casey-gated per R92's receipts — basing on the R92 tip re-lands R92+R93 to main in one PR per the R22-vs-r21/R73/R74 precedent)
 

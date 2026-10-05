@@ -108,12 +108,18 @@ function tally(rows) {
 // mode at ~71% of value-tallied draws, L1 738×7 the kill-early floor,
 // L2 3687×2 the 3242–4766 mid-band rung REPEATS its first back-reference —
 // the draw-25 gap-fill is now a 2-member band, convergence deepening after
-// the fill, no axis expands);
+// the fill, no axis expands); R94 draw 30 (the all-repeat CONSOLIDATES:
+// a fourth all-repeat in seven draws, and this time even the axes that
+// usually wander stay home — L0 2935×21 the mode, L1 6500×5 the
+// 6000-frame/20-hit plateau mode, L2
+// 6125×9 the cap mode; two draws after the R92/R93 alternation the
+// converge side of converge/fill is dominating, no gap has refilled since
+// R91);
 // the tally moved exactly once per draw, here, not in prose.
 const EXPECTED_TALLIES = {
-  L0: { 1918: 1, 2225: 4, 2841: 1, 2935: 20, 3223: 1, 3295: 1 },
-  L1: { 738: 7, 1242: 3, 1691: 1, 2100: 1, 2833: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 4, 6525: 1, 6575: 1 },
-  L2: { 589: 4, 2383: 3, 2977: 1, 3242: 1, 3687: 2, 4137: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 8, 6225: 1 },
+  L0: { 1918: 1, 2225: 4, 2841: 1, 2935: 21, 3223: 1, 3295: 1 },
+  L1: { 738: 7, 1242: 3, 1691: 1, 2100: 1, 2833: 1, 3490: 1, 3940: 1, 4900: 1, 5156: 1, 5778: 1, 6114: 1, 6150: 1, 6250: 1, 6400: 1, 6500: 5, 6525: 1, 6575: 1 },
+  L2: { 589: 4, 2383: 3, 2977: 1, 3242: 1, 3687: 2, 4137: 1, 4766: 2, 4851: 1, 4878: 1, 4919: 1, 5710: 1, 6075: 1, 6125: 9, 6225: 1 },
 };
 
 test("LEDGER-SHAPE: rows numbered 1..N contiguous, all at v1/e98cf66/seed 20260924", () => {
